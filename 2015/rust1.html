@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+    <meta charset="utf-8" />
+    
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <title>MadMode: studying Knuth&#39;s Mastermind Solver with rust | Code</title>
+    <meta name="description" content="MadMode by Dan Connolly"/>
+    <meta name="viewport" content="width=device-width"/>
+
+    <!-- https://dev.twitter.com/docs/cards -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:creator" content="dckc">
+    <link rel="stylesheet" type="text/css" href="/static/packed.css?1403980370"/>
+    <link rel="alternate" type="application/rss+xml" href="/feed/" title="Everything (RSS)"/>
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+</head>
+<body class="">
+    <!--[if lt IE 7]>
+    <p class="chromeframe">Your browser is <em>ancient!</em> Please <a href="http://www.quirksmode.org/upgrade.html">upgrade</a>.</p>
+    <![endif]-->
+    <div class="container">
+        <header class="main-title">
+            <h1><a href="/">MadMode</a></h1>
+            <small>Dan Connolly's tinkering lab notebook</small>
+        </header>
+        <div class="contents">
+            
+
+    <article lang="en" class="" itemscope="itemscope" itemtype="http://schema.org/BlogPosting">
+    <link itemprop="url" href="/2015/rust1.html" />
+    <header>
+        <h2><a itemprop="name" href="/2015/rust1.html">studying Knuth&#39;s Mastermind Solver with rust</a></h2></header>
+    
+    <section>
+        <p>To celebrate rust turning 1.0, here's what I learned with <a href="https://github.com/dckc/mmind5">mmind5</a>,
+a study of <a href="http://en.wikipedia.org/wiki/Mastermind_%28board_game%29#Five-guess_algorithm">Knuth's five guess algorithm for mastermind</a>.</p>
+<p>While I had my share of frustration with the borrow-checker, the rust
+type system is expressive enough that code is typically correct once it
+compiles. I had only one bug fix in the whole project.</p>
+<p>My first commit was <em>codemaker chooses a random Pattern of CodePegs</em>:</p>
+<pre><code>    #[derive_Rand]
+    #[derive(Debug)]
+    enum CodePeg {
+      Red, Orange, Yellow,
+      Green, Blue, White
+    }
+
+    #[derive(Debug)]
+    struct Pattern {
+      pegs: [CodePeg; 4]
+    }
+
+    impl Rand for Pattern {
+        fn rand&lt;R: Rng&gt;(rng: &amp;mut R) -&gt; Self {
+            Pattern {
+                pegs: [CodePeg::rand(rng),
+                       CodePeg::rand(rng),
+                       CodePeg::rand(rng),
+                       CodePeg::rand(rng)]
+            }
+        }
+    }
+</code></pre>
+<p>But as soon as I started working on scoring a guess vs. the code and
+wanted to iterate over the pegs, my next commit was <em>abandon fixed
+sized array in favor of vec</em>.</p>
+<p>Then we get nice functional code for scoring blacks:</p>
+<pre><code>    let rightColorAndPlace = (0..Pattern::size()).map(|pos| {
+        if g[pos] == s[pos] { Some(KeyPeg::Black) }
+        else { None }
+    }).collect();
+</code></pre>
+<p>White scoring is more involved; I worked it out using sloppy <code>println!()</code>
+debugging. More on testing below.</p>
+<p>As I started to study the algorithm, I changed the representation of
+<code>Pattern</code> to a single <code>u32</code> representing the (lexicographic) index of
+the pattern, converting to a vector of pegs as needed for scoring.
+And I punted on deriving <code>Rand</code>.</p>
+<p>The rust <code>std::collections::BitSet</code> was a good match for <em>... the set
+S of 1296 possible codes, 1111,1112,.., 6666.</em></p>
+<p>I got the first five steps of the algorithm working on the first
+night; or so I thought. On the second night, I got the final minmax
+step coded up and fixed that bug in step 5 (<code>remove_mismatches</code>) and
+tada!  It works.</p>
+<p>Once I got it working, I have found any number of ways to clarify the
+code by refactoring. Each time, it was a matter of making one isolated
+change and letting the compiler guide me through the rest of the places
+in the code that needed fixing.</p>
+<p>For example, I had conversion from patterns to indexes and back mixed
+in with scoring logic:</p>
+<pre><code>    let mut guesses_with_score = HashMap::new();
+    for guess_ix in 0..Pattern::cardinality() {
+        if !self.guessed.contains(&amp;Pattern::ith(guess_ix)) {
+            let score = guess_score(guess_ix);
+            let guess = Pattern::ith(guess_ix);
+            guesses_with_score.entry(score).or_insert(vec![]).push(guess)
+        }
+    }
+</code></pre>
+<p>I was able to factor out <code>PatternSet</code>, hiding the <code>BitSet</code> of indexes, so
+the solver logic looks like:</p>
+<pre><code>    let mut guesses_with_score = HashMap::new();
+    for guess in Pattern::range() {
+        if !self.guessed.contains(&amp;guess) {
+            let score = guess_score(guess);
+            guesses_with_score.entry(score).or_insert(vec![]).push(guess)
+        }
+    }
+</code></pre>
+<p>Implementing <code>Iterator</code> for <code>Solver</code> worked nicely, but doing <code>IntoIterator</code> for
+<code>PatternSet</code> stumped me.  It's frustrating: all I wanted to do was
+factor out the expression <code>Pattern::range().filter(|p| self.s.contains(p))</code>
+as <code>into_iter</code> on <code>s</code>, but its type is a monster to write out and I never
+did get the associated types and lifetimes figured out.</p>
+<p>It seems to make two or three guesses per second, which seems pretty
+speedy, considering it seems to be O(N^2) where N = 1296. Now that
+I think about it, those were debug builds. A release build takes
+a small part of a second to solve the whole thing:</p>
+<pre><code>mmind$ time target/release/mmind 
+codemaker: 4112
+turn 1:    1122  BBW
+turn 2:    1223  WW
+turn 3:    4115  BBB
+turn 4:    4112  BBBB
+
+real    0m0.026s
+user    0m0.026s
+sys 0m0.000s
+</code></pre>
+<p>This is what I would see during development:</p>
+<pre><code>mmind$ time target/debug/mmind
+codemaker: 1553
+turn 1:    1122  B
+turn 2:    1344  BW
+turn 3:    4524  B
+turn 4:    1336  BW
+turn 5:    1553  BBBB
+
+real    0m3.804s
+user    0m3.793s
+sys 0m0.004s
+</code></pre>
+<p>Another thing that felt slow was example documentation tests. Having
+support for them is great; python doctest got me addicted to this
+style. But testing them seems to rely on having the crate built;
+i.e. <code>cargo test</code> isn't enough; I had to do <code>cargo build; cargo
+test</code>. And to see the documentation, it becomes <code>cargo build; cargo
+test; cargo doc</code>.</p>
+<p>I'm also addicted to emacs and flycheck-mode. flycheck-rust works pretty
+well but helping it find the crate root is a little fidgety.</p>
+    </section>
+    <aside>
+        <p>
+            <span class="article-author" itemprop="author" itemscope="itemscope" itemtype="http://schema.org/Person">
+                <span itemprop="name">Dan Connolly</span> —
+            </span>
+            <time datetime="2015-05-20" itemprop="datePublished">2015-05-20</time>
+            
+            — <a href="/2015/rust1.html">Permalink</a>
+            — <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/">License</a>.
+	    <br />
+	    
+        </p>
+    </aside>
+    <hr />
+    <nav>
+        
+        
+        <a class="next" href="/2015/phpPgAdmininstallwoes.html">Installing a web IDE for postgress: three hours of woe</a>
+    </nav>
+</article>
+
+
+        </div>
+        <nav class="sidebar">
+            <ul>
+                <li class="home"><a href="/" hreflang="en">Home</a></li>
+<!-- @@                <li class="code"><a href="@@ url_for("section", section="code") }}" hreflang="en">Blog</a></li> -->
+               <li>Archives
+		 
+               </li>
+
+                <li class="contact"><a href="/contact/" hreflang="en">Contact</a></li>
+            </ul>
+        </nav>
+        <footer class="site-footer">
+            <address>
+                &#169; 1994-2014 Dan Connolly
+		&nbsp;&nbsp;&nbsp;
+                <a href="https://twitter.com/dckc" rel="me">
+		<img src="/static/img/twitter_icon.png"
+		     width="40px" height="40px" class="social-icon"
+		     alt="@dckc" /></a>
+		&nbsp;&nbsp;&nbsp;
+                <a href="http://bitbucket.org/DanC" rel="me">
+		<img src="/static/img/bitbucket_icon.png"
+		     width="40px" height="40px" class="social-icon"
+		     alt="bitbucket/DanC code" /></a>
+		&nbsp;&nbsp;&nbsp;
+                <a href="https://github.com/dckc" rel="me">
+		<img src="/static/img/GitHub-Mark/PNG/GitHub-Mark-64px.png"
+		     width="40px" height="40px" class="social-icon"
+		     alt="dckc on github" /></a>
+		</a>
+		&nbsp;&nbsp;&nbsp;
+                <a href="/contact/">Contact me</a>
+            </address>
+        </footer>
+    </div>
+    <!-- /container -->
+
+    <!-- TODO: add this only to ipython articles -->
+    <!-- cribbed from ipython's html_full.tpl -->
+<!-- updated w.r.t. http://docs.mathjax.org/en/latest/start.html -->
+<script type="text/javascript"
+  src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+<script type="text/javascript">
+init_mathjax = function() {
+    if (window.MathJax) {
+        // MathJax loaded
+        MathJax.Hub.Config({
+            tex2jax: {
+                inlineMath: [ ["\\(","\\)"] ],
+                displayMath: [ ["\\[","\\]"] ]
+            },
+            displayAlign: 'left', // Change this to 'center' to center equations.
+            "HTML-CSS": {
+                styles: {'.MathJax_Display': {"margin": 0}}
+            }
+        });
+        MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+    }
+}
+init_mathjax();
+</script>
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script><![CDATA[window.jQuery || document.write('<script src="js/libs/jquery-1.7.1.min.js"><\/script>')]]></script>
+    <script type="text/javascript" src="/static/packed.js?1403980370"></script>
+    <script src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+</body>
+</html>

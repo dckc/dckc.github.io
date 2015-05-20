@@ -5,9 +5,131 @@
         <link>http://www.madmode.com/</link>
         <description>Dan Connolly's tinkering notebook</description>
         <language>en-us</language>
-        <pubDate>Sun, 05 Apr 2015 17:18:21 +0000</pubDate>
-        <lastBuildDate>Sun, 05 Apr 2015 17:18:21 +0000</lastBuildDate>
+        <pubDate>Wed, 20 May 2015 00:54:32 +0000</pubDate>
+        <lastBuildDate>Wed, 20 May 2015 00:54:32 +0000</lastBuildDate>
         
+        <item>
+            <title>studying Knuth&#39;s Mastermind Solver with rust</title>
+            <link>http://www.madmode.com//2015/rust1/</link>
+            <description>&lt;p&gt;To celebrate rust turning 1.0, here&#39;s what I learned with &lt;a href=&#34;https://github.com/dckc/mmind5&#34;&gt;mmind5&lt;/a&gt;,
+a study of &lt;a href=&#34;http://en.wikipedia.org/wiki/Mastermind_%28board_game%29#Five-guess_algorithm&#34;&gt;Knuth&#39;s five guess algorithm for mastermind&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;While I had my share of frustration with the borrow-checker, the rust
+type system is expressive enough that code is typically correct once it
+compiles. I had only one bug fix in the whole project.&lt;/p&gt;
+&lt;p&gt;My first commit was &lt;em&gt;codemaker chooses a random Pattern of CodePegs&lt;/em&gt;:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;    #[derive_Rand]
+    #[derive(Debug)]
+    enum CodePeg {
+      Red, Orange, Yellow,
+      Green, Blue, White
+    }
+
+    #[derive(Debug)]
+    struct Pattern {
+      pegs: [CodePeg; 4]
+    }
+
+    impl Rand for Pattern {
+        fn rand&amp;lt;R: Rng&amp;gt;(rng: &amp;amp;mut R) -&amp;gt; Self {
+            Pattern {
+                pegs: [CodePeg::rand(rng),
+                       CodePeg::rand(rng),
+                       CodePeg::rand(rng),
+                       CodePeg::rand(rng)]
+            }
+        }
+    }
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;But as soon as I started working on scoring a guess vs. the code and
+wanted to iterate over the pegs, my next commit was &lt;em&gt;abandon fixed
+sized array in favor of vec&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;Then we get nice functional code for scoring blacks:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;    let rightColorAndPlace = (0..Pattern::size()).map(|pos| {
+        if g[pos] == s[pos] { Some(KeyPeg::Black) }
+        else { None }
+    }).collect();
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;White scoring is more involved; I worked it out using sloppy &lt;code&gt;println!()&lt;/code&gt;
+debugging. More on testing below.&lt;/p&gt;
+&lt;p&gt;As I started to study the algorithm, I changed the representation of
+&lt;code&gt;Pattern&lt;/code&gt; to a single &lt;code&gt;u32&lt;/code&gt; representing the (lexicographic) index of
+the pattern, converting to a vector of pegs as needed for scoring.
+And I punted on deriving &lt;code&gt;Rand&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;The rust &lt;code&gt;std::collections::BitSet&lt;/code&gt; was a good match for &lt;em&gt;... the set
+S of 1296 possible codes, 1111,1112,.., 6666.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;I got the first five steps of the algorithm working on the first
+night; or so I thought. On the second night, I got the final minmax
+step coded up and fixed that bug in step 5 (&lt;code&gt;remove_mismatches&lt;/code&gt;) and
+tada!  It works.&lt;/p&gt;
+&lt;p&gt;Once I got it working, I have found any number of ways to clarify the
+code by refactoring. Each time, it was a matter of making one isolated
+change and letting the compiler guide me through the rest of the places
+in the code that needed fixing.&lt;/p&gt;
+&lt;p&gt;For example, I had conversion from patterns to indexes and back mixed
+in with scoring logic:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;    let mut guesses_with_score = HashMap::new();
+    for guess_ix in 0..Pattern::cardinality() {
+        if !self.guessed.contains(&amp;amp;Pattern::ith(guess_ix)) {
+            let score = guess_score(guess_ix);
+            let guess = Pattern::ith(guess_ix);
+            guesses_with_score.entry(score).or_insert(vec![]).push(guess)
+        }
+    }
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;I was able to factor out &lt;code&gt;PatternSet&lt;/code&gt;, hiding the &lt;code&gt;BitSet&lt;/code&gt; of indexes, so
+the solver logic looks like:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;    let mut guesses_with_score = HashMap::new();
+    for guess in Pattern::range() {
+        if !self.guessed.contains(&amp;amp;guess) {
+            let score = guess_score(guess);
+            guesses_with_score.entry(score).or_insert(vec![]).push(guess)
+        }
+    }
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Implementing &lt;code&gt;Iterator&lt;/code&gt; for &lt;code&gt;Solver&lt;/code&gt; worked nicely, but doing &lt;code&gt;IntoIterator&lt;/code&gt; for
+&lt;code&gt;PatternSet&lt;/code&gt; stumped me.  It&#39;s frustrating: all I wanted to do was
+factor out the expression &lt;code&gt;Pattern::range().filter(|p| self.s.contains(p))&lt;/code&gt;
+as &lt;code&gt;into_iter&lt;/code&gt; on &lt;code&gt;s&lt;/code&gt;, but its type is a monster to write out and I never
+did get the associated types and lifetimes figured out.&lt;/p&gt;
+&lt;p&gt;It seems to make two or three guesses per second, which seems pretty
+speedy, considering it seems to be O(N^2) where N = 1296. Now that
+I think about it, those were debug builds. A release build takes
+a small part of a second to solve the whole thing:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;mmind$ time target/release/mmind 
+codemaker: 4112
+turn 1:    1122  BBW
+turn 2:    1223  WW
+turn 3:    4115  BBB
+turn 4:    4112  BBBB
+
+real    0m0.026s
+user    0m0.026s
+sys 0m0.000s
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This is what I would see during development:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;mmind$ time target/debug/mmind
+codemaker: 1553
+turn 1:    1122  B
+turn 2:    1344  BW
+turn 3:    4524  B
+turn 4:    1336  BW
+turn 5:    1553  BBBB
+
+real    0m3.804s
+user    0m3.793s
+sys 0m0.004s
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Another thing that felt slow was example documentation tests. Having
+support for them is great; python doctest got me addicted to this
+style. But testing them seems to rely on having the crate built;
+i.e. &lt;code&gt;cargo test&lt;/code&gt; isn&#39;t enough; I had to do &lt;code&gt;cargo build; cargo
+test&lt;/code&gt;. And to see the documentation, it becomes &lt;code&gt;cargo build; cargo
+test; cargo doc&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;I&#39;m also addicted to emacs and flycheck-mode. flycheck-rust works pretty
+well but helping it find the crate root is a little fidgety.&lt;/p&gt;</description>
+            <pubDate>Wed, 20 May 2015 00:00:00 +0000</pubDate>
+            <guid>http://www.madmode.com//2015/rust1/</guid>
+        </item>
         <item>
             <title>Installing a web IDE for postgress: three hours of woe</title>
             <link>http://www.madmode.com//2015/phpPgAdmininstallwoes/</link>
@@ -3566,45 +3688,6 @@ Wasn&#39;t it Ed Dumbill who said &#34;I don&#39;t want to sysadmin my phone.&#3
 &lt;i&gt;&lt;/em&gt;EDIT: It looks like the $50 price we got at a local T-Mobile store is not widely available.&amp;nbsp;&lt;a href=&#34;http://wireless.amazon.com/Nokia-Lumia-710-Windows-T-Mobile/dp/B006U0X7UY/&#34;&gt;Amazon wants $300&lt;/a&gt;&amp;nbsp;and gives a list price of $500.&lt;/i&gt;&lt;/p&gt;</description>
             <pubDate>Sun, 08 Jul 2012 00:00:00 +0000</pubDate>
             <guid>http://www.madmode.com//2012/07/nokia-lumia-710-with-windows-phone-7-is/</guid>
-        </item>
-        <item>
-            <title>Imagine there&#39;s no ICANN... with namecoin and cjdns</title>
-            <link>http://www.madmode.com//2012/06/imagine-theres-no-icann-with-namecoin/</link>
-            <description>&lt;p&gt;&lt;br /&gt;
-&lt;br /&gt;
-The Web and the Internet are, by design, decentralized. Noteable exceptions are the allocation of DNS and IP addresses, both administered by ICANN. By and large we ignore this wart in the architecture, but this week ICANN showed up in the headlines of the newspaper outside my hotel room:&lt;br /&gt;
-&lt;br /&gt;
-&lt;blockquote&gt;Companies anted up $185,000 per domain to apply for naming rights. ...&amp;nbsp;ICANN, which has received 1,930 applicants, will have to sort out whose claims are strongest.&lt;br /&gt;
-&lt;br /&gt;
-—&amp;nbsp;&lt;a href=&#34;http://www.usatoday.com/tech/story/2012-06-13/new-Internet-suffixes/55566732/1&#34;&gt;Apple, Google, Microsoft, Amazon seek domains from ICANN&lt;/a&gt;&amp;nbsp;By Scott Martin, USA TODAY&lt;/blockquote&gt;&lt;br /&gt;
-That&#39;s a cool $350M. Is that a healthy direction for the cyber-real-estate market? It doesn&#39;t smell like it, to me.&lt;br /&gt;
-&lt;br /&gt;
-Many of us have long accepted this wart in the architecture because we didn&#39;t see any alternatives.&lt;br /&gt;
-&lt;br /&gt;
-Recently, I&#39;ve seen some alternatives:&lt;br /&gt;
-&lt;br /&gt;
-&lt;a name=&#39;more&#39;&gt;&lt;/a&gt;&lt;br /&gt;
-&lt;br /&gt;
-In place of centralized administration of domain names,&amp;nbsp;&lt;a href=&#34;http://dot-bit.org/Namecoin&#34;&gt;namecoin&lt;/a&gt;:&lt;br /&gt;
-&lt;br /&gt;
-&lt;blockquote&gt;&lt;ul&gt;&lt;li&gt;&lt;b&gt;distributed/decentralized&lt;/b&gt;&lt;/li&gt;
-: each user has its own copy of the full database
-&lt;li&gt;&lt;b&gt;secure&lt;/b&gt;&lt;/li&gt;
-: security (with public/private keys) is deeply integrated in the software to allow only the owner of a name to modify it in the distributed database.
-&lt;li&gt;&lt;b&gt;pseudonymous&lt;/b&gt;&lt;/li&gt;
-: all transfers of data are public and linked to random generated addresses
-&lt;li&gt;&lt;b&gt;open&lt;/b&gt;&lt;/li&gt;
-: anybody can use namecoin to register a name or to create its own&amp;nbsp;&lt;a href=&#34;http://dot-bit.org/Namespace&#34;&gt;Namespace&lt;/a&gt;&lt;/ul&gt;&lt;/blockquote&gt;&lt;br /&gt;
-And, with the tip of the hat to&amp;nbsp;&lt;a href=&#34;https://twitter.com/zooko/status/210243661257113600&#34; &gt;zooko 6 Jun&lt;/a&gt;,&amp;nbsp;in place of centralized administration of IP addresses:&lt;br /&gt;
-&lt;br /&gt;
-&lt;blockquote&gt;Imagine an Internet where every packet is cryptographically protected from source to destination against espionage and forgery, getting an IP address is as simple as generating a cryptographic key, core routers move data without a single memory look up, and denial of service is a term read about in history books. Finally, becoming an ISP is no longer confined to the mighty telecoms, anyone can do it by running some wires or turning on a wireless device.&lt;br /&gt;
-This is the&amp;nbsp;&lt;a href=&#34;https://github.com/cjdelisle/cjdns/blob/master/rfcs/Whitepaper.md&#34;&gt;vision of cjdns&lt;/a&gt;.&lt;/blockquote&gt;&lt;br /&gt;
-&lt;br /&gt;
-You may say I&#39;m a dreamer, but I&#39;m not the only one...&lt;br /&gt;
-&lt;br /&gt;
-There are over&amp;nbsp; 55,000 namecoin domains already.&lt;br /&gt;&lt;/p&gt;</description>
-            <pubDate>Fri, 15 Jun 2012 00:00:00 +0000</pubDate>
-            <guid>http://www.madmode.com//2012/06/imagine-theres-no-icann-with-namecoin/</guid>
         </item>
         
     </channel>
