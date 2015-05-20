@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+    <meta charset="utf-8" />
+    
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <title>MadMode: Pebble beats out Garmin Vivofit for my wrist | Code</title>
+    <meta name="description" content="MadMode by Dan Connolly"/>
+    <meta name="viewport" content="width=device-width"/>
+
+    <!-- https://dev.twitter.com/docs/cards -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:creator" content="dckc">
+    <link rel="stylesheet" type="text/css" href="/static/packed.css?1403980370"/>
+    <link rel="alternate" type="application/rss+xml" href="/feed/" title="Everything (RSS)"/>
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+</head>
+<body class="">
+    <!--[if lt IE 7]>
+    <p class="chromeframe">Your browser is <em>ancient!</em> Please <a href="http://www.quirksmode.org/upgrade.html">upgrade</a>.</p>
+    <![endif]-->
+    <div class="container">
+        <header class="main-title">
+            <h1><a href="/">MadMode</a></h1>
+            <small>Dan Connolly's tinkering lab notebook</small>
+        </header>
+        <div class="contents">
+            
+
+    <article lang="en" class="" itemscope="itemscope" itemtype="http://schema.org/BlogPosting">
+    <link itemprop="url" href="/2014/12-watch1.html" />
+    <header>
+        <h2><a itemprop="name" href="/2014/12-watch1.html">Pebble beats out Garmin Vivofit for my wrist</a></h2></header>
+    
+    <section>
+        <p>My wife, big on walking but not usually a gadget freak, got so
+addicted to tracking with her Nike+ that when the web site stopped
+working, it was a major problem. She asked for a fitbit for her
+birthday.</p>
+<p>The sleep tracking would be a nice bonus.</p>
+<p>She talked about getting me one for my birthday too so that I could
+join her fitbit friends leaderboard.</p>
+<p>Why not a smartwatch while I'm at it?</p>
+<p>I have been tracking the market for years, but the Casio 3090 that I
+already have is good enough that it would take something pretty
+special to get me to switch:</p>
+<ol>
+<li>At about $50, I can afford to replace it every five years or so when I
+     break it or lose it.</li>
+<li>It's maintenance free. It sets itself from WWV radio every night;
+     it's water resistant; and it's solar powered, so it <strong>never needs
+     charging</strong>.</li>
+<li>It does one thing really well: keeps time. To the small
+     part of a second. And date. And weekday. And timezones.</li>
+</ol>
+<p>A smartwatch that I have to charge every night loses out to the fitbit
+on sleep tracking. That and the price rules out the current crop
+(Android Wear, Apple Watch).</p>
+<p>A friend recommended the Garmin Vivofit ($75). It interoperates with
+the fitbit web site, tells time, and claims a battery life of around a
+year.</p>
+<p>Another acquaintance loves his Pebble ($100). So do lots of other
+reviewers, while some gripe about style and some report its fitness
+tracking features don't really cut it.</p>
+<p>I ordered them both to see which one I like better. I opened the
+Pebble first.</p>
+<ul>
+<li>It's not as big or bulky as I expected. It's actually smaller and
+    lighter than my Casio.</li>
+<li>Sleep tracking just works. The fitbit took a few nights of
+    fidgeting to figure out how to get it in and out of sleep tracking
+    mode. The Pebble featured a MisFit app when I turned it on. I said
+    sure, go ahead. That night I didn't bother to figure out how to
+    turn on sleep tracking, but when I awoke, lo, there were the data.</li>
+</ul>
+<p>I did hit one glitch where the sleep tracker kicked in when I was
+watching a movie. And there's no web site integration; Android sync is
+<a href="https://apps.getpebble.com/applications/53a898a2cfee2a02c900006c">"coming soon"</a>.</p>
+<p>Speaking of sleep, I didn't get much that first night because...</p>
+<ul>
+<li><strong>Developer support is amazing</strong>. I knew about their open platform
+    with a C SDK, but what blew me away was <a href="http://developer.getpebble.com/guides/js-apps/pebble-js/">Pebble.js</a> and
+    <a href="https://cloudpebble.net/">CloudPebble</a>. Zero install. Just sign up, grab the example
+    javascript, and hit <em>Install and Run</em>, and there it is, running on
+    your watch. It seems like magic, but it's all just open source.</li>
+</ul>
+<p>Two hours later, I had a <a href="https://github.com/dckc/watch1">working prototype</a> of an app I've been
+thinking about since I re-joined the world of commuting: <em>On my way
+home, figure out my ETA and send it to my wife so she can figure it in
+to dinner plans.</em> And if I weren't new to ordinary stuff like
+<a href="http://stackoverflow.com/a/1197947/846824">javascript date handling</a>, the <a href="https://developer.mozilla.org/en-US/docs/Web/API/Geolocation/Using_geolocation">geolocation API</a>, and the
+<a href="https://developers.google.com/maps/documentation/directions/">google maps API</a>, it would have been a lot less than two hours.</p>
+<p>Quite a contrast from trying out
+<a href="http://blog.jetbrains.com/idea/2014/09/developer-tools-for-phonegap-cordova-and-ionic-in-intellij-idea-14/">IntelliJ's IDE support for Cordova</a>; two hours wasn't even enough
+to get the underlying Android SDK installed. I ran out of space on my
+devtools and had to grow it. Twice.</p>
+<p>While I have the ETA on the Pebble now, I haven't figured out how to
+actually send it. I can see how to do it with Ajax to a service like
+twilo, but that seems silly; surely I can just get the phone to send
+the text.</p>
+<p>I might build an app to sync my MisFit data to the fitbit API (though
+I'd rather somebody else did that for me). And I'm itching to try
+embedded app development with <a href="https://github.com/franc0is/RustyPebble">RustyPebble</a>, too.</p>
+<p>Anyway, it's game over. I returned the Vivofit without even opening
+it. The Pebble beat out my Casio watch too:</p>
+<ol>
+<li>It's a good value, though if I lost or broke it, I'm not sure
+     whether I'd replace it right away or make do with the old watch
+     for a while. Time will tell.</li>
+<li>It's pretty low maintenance. It charges quickly enough that
+     there's no conflict with sleep tracking. I just charge it for an
+     hour or so every few days while I commute or while I'm at my
+     desk. The defaults for notifications were a little overwhelming,
+     but it's fine now that I played with the options a bit.</li>
+<li>It tells time and date, plus the weather and steps and sleep and
+     appointments texts and email and anything else developers like me
+     can dream up. Once a boring email message got in the way of job 1
+     when I looked for the time. But I'm happy with the trade. I never
+     miss a phone call now. And thanks to Android Smart Lock
+     integration, it saves me keying in my PIN but about once a day.</li>
+</ol>
+    </section>
+    <aside>
+        <p>
+            <span class="article-author" itemprop="author" itemscope="itemscope" itemtype="http://schema.org/Person">
+                <span itemprop="name">Dan Connolly</span> —
+            </span>
+            <time datetime="2014-12-19" itemprop="datePublished">2014-12-19</time>
+            
+            — <a href="/2014/12-watch1.html">Permalink</a>
+            — <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/">License</a>.
+	    <br />
+	    
+	    | <a class='tag' rel='tag'
+		 href="/search/label/mobile/">mobile</a>
+   	    
+	    | <a class='tag' rel='tag'
+		 href="/search/label/health/">health</a>
+   	    
+	    | <a class='tag' rel='tag'
+		 href="/search/label/javascript/">javascript</a>
+   	    
+	    | <a class='tag' rel='tag'
+		 href="/search/label/android/">android</a>
+   	    
+	    | <a class='tag' rel='tag'
+		 href="/search/label/pebble/">pebble</a>
+   	    
+	    | <a class='tag' rel='tag'
+		 href="/search/label/smartwatch/">smartwatch</a>
+   	    
+	    | <a class='tag' rel='tag'
+		 href="/search/label/quantified-self/">quantified-self</a>
+   	    
+        </p>
+    </aside>
+    <hr />
+    <nav>
+        <a class="prev" href="/2015/phpPgAdmininstallwoes.html">Installing a web IDE for postgress: three hours of woe</a>
+        |
+        <a class="next" href="/2014/08-rust-sqlite3.html">Rust-Sqlite3 -- Rustic bindings for sqlite3</a>
+    </nav>
+</article>
+
+
+        </div>
+        <nav class="sidebar">
+            <ul>
+                <li class="home"><a href="/" hreflang="en">Home</a></li>
+<!-- @@                <li class="code"><a href="@@ url_for("section", section="code") }}" hreflang="en">Blog</a></li> -->
+               <li>Archives
+		 
+               </li>
+
+                <li class="contact"><a href="/contact/" hreflang="en">Contact</a></li>
+            </ul>
+        </nav>
+        <footer class="site-footer">
+            <address>
+                &#169; 1994-2014 Dan Connolly
+		&nbsp;&nbsp;&nbsp;
+                <a href="https://twitter.com/dckc" rel="me">
+		<img src="/static/img/twitter_icon.png"
+		     width="40px" height="40px" class="social-icon"
+		     alt="@dckc" /></a>
+		&nbsp;&nbsp;&nbsp;
+                <a href="http://bitbucket.org/DanC" rel="me">
+		<img src="/static/img/bitbucket_icon.png"
+		     width="40px" height="40px" class="social-icon"
+		     alt="bitbucket/DanC code" /></a>
+		&nbsp;&nbsp;&nbsp;
+                <a href="https://github.com/dckc" rel="me">
+		<img src="/static/img/GitHub-Mark/PNG/GitHub-Mark-64px.png"
+		     width="40px" height="40px" class="social-icon"
+		     alt="dckc on github" /></a>
+		</a>
+		&nbsp;&nbsp;&nbsp;
+                <a href="/contact/">Contact me</a>
+            </address>
+        </footer>
+    </div>
+    <!-- /container -->
+
+    <!-- TODO: add this only to ipython articles -->
+    <!-- cribbed from ipython's html_full.tpl -->
+<!-- updated w.r.t. http://docs.mathjax.org/en/latest/start.html -->
+<script type="text/javascript"
+  src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+<script type="text/javascript">
+init_mathjax = function() {
+    if (window.MathJax) {
+        // MathJax loaded
+        MathJax.Hub.Config({
+            tex2jax: {
+                inlineMath: [ ["\\(","\\)"] ],
+                displayMath: [ ["\\[","\\]"] ]
+            },
+            displayAlign: 'left', // Change this to 'center' to center equations.
+            "HTML-CSS": {
+                styles: {'.MathJax_Display': {"margin": 0}}
+            }
+        });
+        MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+    }
+}
+init_mathjax();
+</script>
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script><![CDATA[window.jQuery || document.write('<script src="js/libs/jquery-1.7.1.min.js"><\/script>')]]></script>
+    <script type="text/javascript" src="/static/packed.js?1403980370"></script>
+    <script src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+</body>
+</html>

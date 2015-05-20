@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+    <meta charset="utf-8" />
+    
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <title>MadMode: Capability Security in E, coffescript, python, dart, and scala | Code</title>
+    <meta name="description" content="MadMode by Dan Connolly"/>
+    <meta name="viewport" content="width=device-width"/>
+
+    <!-- https://dev.twitter.com/docs/cards -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:creator" content="dckc">
+    <link rel="stylesheet" type="text/css" href="/static/packed.css?1403980370"/>
+    <link rel="alternate" type="application/rss+xml" href="/feed/" title="Everything (RSS)"/>
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+</head>
+<body class="">
+    <!--[if lt IE 7]>
+    <p class="chromeframe">Your browser is <em>ancient!</em> Please <a href="http://www.quirksmode.org/upgrade.html">upgrade</a>.</p>
+    <![endif]-->
+    <div class="container">
+        <header class="main-title">
+            <h1><a href="/">MadMode</a></h1>
+            <small>Dan Connolly's tinkering lab notebook</small>
+        </header>
+        <div class="contents">
+            
+
+    <article lang="en" class="" itemscope="itemscope" itemtype="http://schema.org/BlogPosting">
+    <link itemprop="url" href="/2011/11/capability-security-in-e-coffescript.html" />
+    <header>
+        <h2><a itemprop="name" href="/2011/11/capability-security-in-e-coffescript.html">Capability Security in E, coffescript, python, dart, and scala</a></h2></header>
+    
+    <section>
+        <p>A couple months ago, I inherited some Java code and took on the task of fixing a bug in it. The bug turned out to be a consequence of a silent failure; eek! And there were precious few tests and no way to test the parts without being connected to LDAP servers and SQL databases and such. This started me on an exploration of <a href="http://jakegoulding.com/blog/2011/10/10/learned-about-testing-last-year/">current best practices in testing</a>. And since the job of this code was policy enforcement around patient data, I could finally justify getting my hands dirty with <a href="http://en.wikipedia.org/wiki/Capability-based_security">capability-based</a> security. I discovered, as many others have, that both testability and security are well served by some of the same basic object-oriented techniques.<br />
+<br />
+ Dependency injection frameworks always smelled like overkill to me, but after watching <a href="http://misko.hevery.com/2011/02/14/video-recording-slides-psychology-of-testing-at-wealthfront-engineering/">Miško Hevery on testability</a>, I was convinced. <i>If you're in the mood for text rather than video, see his <a href="http://misko.hevery.com/code-reviewers-guide/">Guide: Writing Testable Code</a>.</i> Basically, instead of having some policy enforcement object constructor call an LDAP connection constructor, the policy enforcement object takes the LDAP connection as a constructor argument. "Don't call us; we'll call you" is a handy mnemonic. This lets you substitute a mock LDAP connection for testing.<br />
+<br />
+It also forms patterns of cooperation without vulnerability.<br />
+<br />
+For example, take a look at the <a href="http://www.erights.org/elib/capability/ode/ode-capabilities.html">simple money example in E</a> and the underlying <a href="http://wiki.erights.org/wiki/Walnut/Secure_Distributed_Computing/Capability_Patterns#Sealers_and_Unsealers">sealer/unsealer</a> pattern.<br />
+<br />
+I have been using these as an exercise to explore some of the recent programming language developments:<br />
+<ul>
+<li><a href="https://bitbucket.org/DanC/coffee-craft/src/682d06f02e99/money.coffee">money.coffee</a> in August </li>
+<li><a href="http://informatics.kumc.edu/work/browser/raven-j/heron_wsgi/admin_lib/sealing.py">sealing.py</a> in October </li>
+<li><a href="https://gist.github.com/1357307">money.dart</a> November 10 </li>
+<li><a href="https://gist.github.com/1357438">money.scala</a> November 11</li>
+</ul>
+The coffeescript translation seems completely natural, to me. Given the right static scope (i.e. without most of the JavaScript standard library), I think it has the same security properties as the E version. And the E idioms seemed to translate quite directly.<br />
+<br />
+Python has not only the API authority issues, but also untold introspection loopholes. Plus, I had to kludge around read-only closures and no-assignment-in-lambdas; and while simulating E's method suite idiom is not <i>too</i> ugly, tools like pyflakes don't recognize the results.<br />
+<br />
+Dart is a big disappointment. Everywhere else I look, Google is pushing capability security. But Dart lacks nested classes, so translating E method suites results in something that is only vaguely recognizable, let alone comprehensible.<br />
+<br />
+Scala works reasonably well. The <a href="http://gitorious.org/repo-roscidus/e-core/blobs/fdf9643e419eea182b4d8d983f5b9955c7b73967/src/jsrc/org/erights/e/elib/sealing/SealedBox.java">Java implementation of sealing</a> relies more on&nbsp; strong typing than the object graph for rights amplification; I might want to think that over some more. Also, It's a little boring to spell out the types. I might have to try it in Haskell. But on the other hand, as <a href="http://brendaneich.com/2010/08/static-analysis-ftw/">Brendan Eich observes</a>:<br />
+<blockquote class="tr_bq">
+Dynamic languages are <a href="http://weblogs.mozillazine.org/roadmap/archives/2008/04/popularity.html">popular</a>
+ in large part because programmers can keep types latent in the code, 
+with type checking done imperfectly (yet often more quickly and 
+expressively) in the programmers’ heads and unit tests, and therefore 
+programmers can do more with less code writing in a dynamic language 
+than they could using a static language.</blockquote>
+The balance between static and dynamic languages also shows up in development tools. I had the eclipse with the <a href="http://code.google.com/p/joe-e/">Joe-E</a> verifier, maven, and mercurial working all together at home one evening. The code really does just about write itself at that point. But when I tried to reproduce it at work, I got so frustrated that I retreated to emacs and python and looking up function arguments manually. The python version of the project has gotten complex enough that I'm starting to miss some of the whole-program consistency that Java tools give, but I'm getting by with a bottom-up approach: flymake, doctest, and the like.<br />
+<br />
+<br /></p>
+    </section>
+    <aside>
+        <p>
+            <span class="article-author" itemprop="author" itemscope="itemscope" itemtype="http://schema.org/Person">
+                <span itemprop="name">Dan Connolly</span> —
+            </span>
+            <time datetime="2011-11-23" itemprop="datePublished">2011-11-23</time>
+            
+            — <a href="/2011/11/capability-security-in-e-coffescript.html">Permalink</a>
+            — <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/">License</a>.
+	    <br />
+	    
+	    | <a class='tag' rel='tag'
+		 href="/search/label/security/">security</a>
+   	    
+	    | <a class='tag' rel='tag'
+		 href="/search/label/capabilities/">capabilities</a>
+   	    
+	    | <a class='tag' rel='tag'
+		 href="/search/label/programming/">programming</a>
+   	    
+        </p>
+    </aside>
+    <hr />
+    <nav>
+        <a class="prev" href="/2012/01/big-thanks-for-web-iphoto.html">A big thanks for Web-iPhoto!</a>
+        |
+        <a class="next" href="/2011/11/medical-informatics-peer-review-and.html">Medical Informatics, Peer Review, and Open Access</a>
+    </nav>
+</article>
+
+
+        </div>
+        <nav class="sidebar">
+            <ul>
+                <li class="home"><a href="/" hreflang="en">Home</a></li>
+<!-- @@                <li class="code"><a href="@@ url_for("section", section="code") }}" hreflang="en">Blog</a></li> -->
+               <li>Archives
+		 
+               </li>
+
+                <li class="contact"><a href="/contact/" hreflang="en">Contact</a></li>
+            </ul>
+        </nav>
+        <footer class="site-footer">
+            <address>
+                &#169; 1994-2014 Dan Connolly
+		&nbsp;&nbsp;&nbsp;
+                <a href="https://twitter.com/dckc" rel="me">
+		<img src="/static/img/twitter_icon.png"
+		     width="40px" height="40px" class="social-icon"
+		     alt="@dckc" /></a>
+		&nbsp;&nbsp;&nbsp;
+                <a href="http://bitbucket.org/DanC" rel="me">
+		<img src="/static/img/bitbucket_icon.png"
+		     width="40px" height="40px" class="social-icon"
+		     alt="bitbucket/DanC code" /></a>
+		&nbsp;&nbsp;&nbsp;
+                <a href="https://github.com/dckc" rel="me">
+		<img src="/static/img/GitHub-Mark/PNG/GitHub-Mark-64px.png"
+		     width="40px" height="40px" class="social-icon"
+		     alt="dckc on github" /></a>
+		</a>
+		&nbsp;&nbsp;&nbsp;
+                <a href="/contact/">Contact me</a>
+            </address>
+        </footer>
+    </div>
+    <!-- /container -->
+
+    <!-- TODO: add this only to ipython articles -->
+    <!-- cribbed from ipython's html_full.tpl -->
+<!-- updated w.r.t. http://docs.mathjax.org/en/latest/start.html -->
+<script type="text/javascript"
+  src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+<script type="text/javascript">
+init_mathjax = function() {
+    if (window.MathJax) {
+        // MathJax loaded
+        MathJax.Hub.Config({
+            tex2jax: {
+                inlineMath: [ ["\\(","\\)"] ],
+                displayMath: [ ["\\[","\\]"] ]
+            },
+            displayAlign: 'left', // Change this to 'center' to center equations.
+            "HTML-CSS": {
+                styles: {'.MathJax_Display': {"margin": 0}}
+            }
+        });
+        MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+    }
+}
+init_mathjax();
+</script>
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script><![CDATA[window.jQuery || document.write('<script src="js/libs/jquery-1.7.1.min.js"><\/script>')]]></script>
+    <script type="text/javascript" src="/static/packed.js?1403980370"></script>
+    <script src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+</body>
+</html>

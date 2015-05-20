@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+    <meta charset="utf-8" />
+    
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <title>MadMode: Adventures with Mono | Code</title>
+    <meta name="description" content="MadMode by Dan Connolly"/>
+    <meta name="viewport" content="width=device-width"/>
+
+    <!-- https://dev.twitter.com/docs/cards -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:creator" content="dckc">
+    <link rel="stylesheet" type="text/css" href="/static/packed.css?1403980370"/>
+    <link rel="alternate" type="application/rss+xml" href="/feed/" title="Everything (RSS)"/>
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+</head>
+<body class="">
+    <!--[if lt IE 7]>
+    <p class="chromeframe">Your browser is <em>ancient!</em> Please <a href="http://www.quirksmode.org/upgrade.html">upgrade</a>.</p>
+    <![endif]-->
+    <div class="container">
+        <header class="main-title">
+            <h1><a href="/">MadMode</a></h1>
+            <small>Dan Connolly's tinkering lab notebook</small>
+        </header>
+        <div class="contents">
+            
+
+    <article lang="en" class="" itemscope="itemscope" itemtype="http://schema.org/BlogPosting">
+    <link itemprop="url" href="/2005/advogato_entry0032.html" />
+    <header>
+        <h2><a itemprop="name" href="/2005/advogato_entry0032.html">Adventures with Mono</a></h2></header>
+    
+    <section>
+        <p><b class="title">Adventures with Mono</b></p>
+<p> <p> I just wanted some background music for reading and maybe cleaning up my office a little...
+
+<p> <p> But I'm not really willing to manage my own cache of popular music; the <a href="http://www.riaa.com/about/default.asp">RIAA</a>/<A href="http://www.ascap.com/about/">ASCAP</a> rules cramp my style, which is to store stuff in the web and point to it from whichever of my N machines I happen to be using.
+
+<p> <p> <a href="http://en.wikipedia.org/wiki/Podcasting">podcasting</a> sure sounds cool, though I'm not sure I grok. I searched for a gnome podcast tool and found <a href="http://usefulinc.com/edd/blog/contents/2005/06/17-monopod/read">monopod</a>. No, there's no debian package for it, but I just got a copy of Edd's
+<cite><a href="http://usefulinc.com/edd/books/mono-notebook">Mono: A Developer's Notebook</a></cite>, so I thought I'd try to build monopod from <a href="http://downloads.usefulinc.com/monopod/monopod-0.2.tar.gz">source</a>.
+
+<p> <p> untar it; blow past README and INSTALL and go straight to  <tt>./configure &amp;&amp; make</tt> and so begins the game of hunt-the-build-deps...
+
+<p> <p> <pre>
+checking for mono &gt;= 1.1.6... Package mono was not found
+</pre>
+
+<p> <p> so I counter with
+
+<p> <p> <pre>
+$ sudo apt-get install mono-devel mono-gmcs
+</pre>
+
+<p> <p> but that turns out to be a diversion; what I really needed was...
+
+<p> <p> <pre>
+$ sudo apt-get install libmono-dev
+</pre>
+
+<p> <p> Next hurdle:
+
+<p> <p> <pre>
+checking for gtk-sharp-2.0 &gt;= 1.9.5... Package gtk-sharp-2.0 was not found ...
+</pre>
+
+<p> <p> Easy enough:
+
+<p> <p> <pre>
+$ sudo apt-get install gtk-sharp2
+</pre>
+
+<p> <p> And lo! the configure script wins, but make fails thusly:
+
+<p> <p> <pre>
+./ChannelWindow.cs(144) error CS1501: No overload for method `SetSortFunc' takes `2' arguments
+</pre>
+
+<p> <p> Unfortunately, C# is not like python and Modula-3; it
+fails the <a href="http://www.w3.org/TR/1998/NOTE-webarch-extlang-19980210#Ambiguity">unambiguitiy requirement</a> so I can't tell just by looking at <tt>ChannelWindow.cs</tt> where <tt>SetSortFunc</tt> comes from. I can see that it comes from <tt>ListStore</tt>.
+Maybe an IDE will teach me the tricks for navigating C# files...
+
+<p> <p> <pre>
+$ sudo apt-get install monodevelop
+</pre>
+
+<p> <p> but starting monodevelop loses with
+
+<p> <p> <pre>
+System.Reflection.TargetInvocationException: Exception has been thrown by the target of an invocation.
+---&gt; System.IO.FileNotFoundException:
+Could not find file "/usr/lib/monodoc/monodoc.xml". : /usr/lib/monodoc/monodoc.xml
+</pre>
+
+<p> <p> but thanks to <a href="http://www.debian.org/distrib/packages">debian package search</a> it's easy enough to find the relevant package:
+
+<p> <p> <pre>
+$ sudo apt-get install monodoc-manual
+</pre>
+
+<p> <p> and now I can open <tt>ChannelWindow.cs</tt> in monodevelop, but when I hover over <tt>ListStore</tt>, I don't get any lisp-machine-like context-sensitive help. 
+
+<p> <p> There are only a few imports at the top:
+
+<p> <p> <pre>
+using System;
+using Gtk;
+using Mono.Posix;
+</pre>
+
+<p> <p> So I'm willing to try a brute-force search. Aha... <a href="http://www.go-mono.com/docs/monodoc.ashx?link=T%3aGtk.ListStore">ListStore</a> in the Gtk# docs.
+
+<p> <p> <tt>SetSortFunc</tt> takes 4 args. How did this code ever compile? I check for version skew... apt-cache policy and the README agree: Gtk# version 1.9.5. I don't get it.
+<em>postscript: Edd suspects ETOONEW; he uses mono 1.1.7 and I got 1.1.8</em>
+
+<p>  I try filling in 0s for the arguments, but C# is too strongly typed for that. I try to figure out what the C# equivalent of <tt>None</tt> or <tt>nil</tt> is for a <a href="http://www.go-mono.com/docs/monodoc.ashx?link=ecmaspec%3a22">delegate</a>, but it doesn't jump out at me.
+
+<p> <p> Then... duh.. there's a <a href="http://usefulinc.com/edd/blog/contents/2005/07/31-monopod/read">monopod 1.4 release</a>. I grab that, but building it fails with:
+
+<p> <p> <pre>
+Internal() warning CS8018: Could not find the symbol writer assembly (Mono.CSharp.Debugger.dll). This is normally an installation problem. Please make sure to compile and install the mcs/class/Mono.CSharp.Debugger directory.
+</pre>
+
+<p> <p> OK, I give.
+
+<p> <p> In some ways, the mono platform is coming along more quickly than Java, but the fact remains: <b>it takes a long time to deploy a new platform</b>. The <a href="http://wiki.debian.net/?MonoDebianPla">MonoDebianPlan</a> shows lots of scary packaging issues.
+
+<p> <p> Tags:
+<a rel="tag" href="http://del.icio.us/connolly/programming">programming</a>, 
+<a rel="tag" href="http://del.icio.us/connolly/debian">debian</a>,
+<a rel="tag" href="http://del.icio.us/connolly/media">media</a>, 
+
+<p> <p> See also: <a href="http://www.ilrt.bris.ac.uk/discovery/chatlogs/swig/2005-08-02#T04-13-51">#swig notes</a> from tonight's journey.
+    </section>
+    <aside>
+        <p>
+            <span class="article-author" itemprop="author" itemscope="itemscope" itemtype="http://schema.org/Person">
+                <span itemprop="name">Dan Connolly</span> —
+            </span>
+            <time datetime="2005-08-05" itemprop="datePublished">2005-08-05</time>
+            
+            — <a href="/2005/advogato_entry0032.html">Permalink</a>
+            — <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/">License</a>.
+	    <br />
+	    
+	    | <a class='tag' rel='tag'
+		 href="/search/label/programming/">programming</a>
+   	    
+	    | <a class='tag' rel='tag'
+		 href="/search/label/debian/">debian</a>
+   	    
+	    | <a class='tag' rel='tag'
+		 href="/search/label/media/">media</a>
+   	    
+        </p>
+    </aside>
+    <hr />
+    <nav>
+        <a class="prev" href="/2005/advogato_entry0033.html">04 Sep 2005</a>
+        |
+        <a class="next" href="/2005/advogato_entry0031.html">20 Jul 2005</a>
+    </nav>
+</article>
+
+
+        </div>
+        <nav class="sidebar">
+            <ul>
+                <li class="home"><a href="/" hreflang="en">Home</a></li>
+<!-- @@                <li class="code"><a href="@@ url_for("section", section="code") }}" hreflang="en">Blog</a></li> -->
+               <li>Archives
+		 
+               </li>
+
+                <li class="contact"><a href="/contact/" hreflang="en">Contact</a></li>
+            </ul>
+        </nav>
+        <footer class="site-footer">
+            <address>
+                &#169; 1994-2014 Dan Connolly
+		&nbsp;&nbsp;&nbsp;
+                <a href="https://twitter.com/dckc" rel="me">
+		<img src="/static/img/twitter_icon.png"
+		     width="40px" height="40px" class="social-icon"
+		     alt="@dckc" /></a>
+		&nbsp;&nbsp;&nbsp;
+                <a href="http://bitbucket.org/DanC" rel="me">
+		<img src="/static/img/bitbucket_icon.png"
+		     width="40px" height="40px" class="social-icon"
+		     alt="bitbucket/DanC code" /></a>
+		&nbsp;&nbsp;&nbsp;
+                <a href="https://github.com/dckc" rel="me">
+		<img src="/static/img/GitHub-Mark/PNG/GitHub-Mark-64px.png"
+		     width="40px" height="40px" class="social-icon"
+		     alt="dckc on github" /></a>
+		</a>
+		&nbsp;&nbsp;&nbsp;
+                <a href="/contact/">Contact me</a>
+            </address>
+        </footer>
+    </div>
+    <!-- /container -->
+
+    <!-- TODO: add this only to ipython articles -->
+    <!-- cribbed from ipython's html_full.tpl -->
+<!-- updated w.r.t. http://docs.mathjax.org/en/latest/start.html -->
+<script type="text/javascript"
+  src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+<script type="text/javascript">
+init_mathjax = function() {
+    if (window.MathJax) {
+        // MathJax loaded
+        MathJax.Hub.Config({
+            tex2jax: {
+                inlineMath: [ ["\\(","\\)"] ],
+                displayMath: [ ["\\[","\\]"] ]
+            },
+            displayAlign: 'left', // Change this to 'center' to center equations.
+            "HTML-CSS": {
+                styles: {'.MathJax_Display': {"margin": 0}}
+            }
+        });
+        MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+    }
+}
+init_mathjax();
+</script>
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script><![CDATA[window.jQuery || document.write('<script src="js/libs/jquery-1.7.1.min.js"><\/script>')]]></script>
+    <script type="text/javascript" src="/static/packed.js?1403980370"></script>
+    <script src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+</body>
+</html>

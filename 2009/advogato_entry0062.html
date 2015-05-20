@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+    <meta charset="utf-8" />
+    
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <title>MadMode: XO-1 as music front-end? | Code</title>
+    <meta name="description" content="MadMode by Dan Connolly"/>
+    <meta name="viewport" content="width=device-width"/>
+
+    <!-- https://dev.twitter.com/docs/cards -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:creator" content="dckc">
+    <link rel="stylesheet" type="text/css" href="/static/packed.css?1403980370"/>
+    <link rel="alternate" type="application/rss+xml" href="/feed/" title="Everything (RSS)"/>
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+</head>
+<body class="">
+    <!--[if lt IE 7]>
+    <p class="chromeframe">Your browser is <em>ancient!</em> Please <a href="http://www.quirksmode.org/upgrade.html">upgrade</a>.</p>
+    <![endif]-->
+    <div class="container">
+        <header class="main-title">
+            <h1><a href="/">MadMode</a></h1>
+            <small>Dan Connolly's tinkering lab notebook</small>
+        </header>
+        <div class="contents">
+            
+
+    <article lang="en" class="" itemscope="itemscope" itemtype="http://schema.org/BlogPosting">
+    <link itemprop="url" href="/2009/advogato_entry0062.html" />
+    <header>
+        <h2><a itemprop="name" href="/2009/advogato_entry0062.html">XO-1 as music front-end?</a></h2></header>
+    
+    <section>
+        <p><strong>XO-1 as music front-end?</strong></p>
+<p> <p> <p> <blockquote>
+Latest mt-daapd transcodes. Sweet. No more ripping flac to
+mp3 just
+for stupid iTunes
+  -- <a href="http://identi.ca/notice/1550602">ndw 21 Dec
+2008</a>
+</blockquote>
+
+<p> <p> <p> Perfect; now that I have a new big disk, I can take our
+iTunes libraries, which have gotten sorta mixed up, and
+merge them into one big honkin networked library.
+<a href="http://wiki.mt-daapd.org/wiki/Quickstart_Ubuntu">mt-daapd
+Ubuntu quickstart</a> worked fine.
+
+<p> <p> <p> But... how to access the songs from the living room?
+The roku soundbridge and stuff look nice, but I can't
+justify the cost. Likewise airport express.
+
+<p> <p> <p> It just hit me: my xo-1 has wifi and a headphone
+jack.
+
+<p> <p> <p><strong>update: it works!</strong> I used <a href="http://wiki.archlinux.org/index.php/Streaming_With_Icecast_and_MPD">mpd
+with output to icecast2</a>. The documentation could use some
+diagrams, but once I got the picture, it was
+reasonably straightforward:
+<ul>
+<li>mpd indexes the music, takes commands over a network
+protocol from various clients such as pympd (linux) and
+theramin (mac), queues songs, and decodes and streams them
+
+<p> <li>icecast takes streams and buffers and
+multiplexes them to multiple clients
+<li><a href="http://olpcnews.com/forum/index.php?topic=863.0">mplayer
+on the XO-1</a>
+listens to the stream and plays it thru the headphone
+jack
+<li>powered speakers in the living room play the results
+</ul>
+
+<p> <p> <p> For bonus points: I'd like to control it from my
+sidekick
+(or g1). That should be just a matter of setting up a
+web-based mpd client and exposing it thru the firewall.
+
+<p> <hr>
+My related work:
+
+<p> <ul>
+<li>
+ <cite><a href="http://dig.csail.mit.edu/breadcrumbs/node/228
+">hAudio for microformats mixtapes, in progress</a></cite>
+ by connolly on Thu, 2008-03-06
+
+<p> <li>
+<a href="http://homer.w3.org/~connolly/projects/cdcat/">cdcat
+hg project</a>
+2:20cfcde22c4e 2008-03-21 show barcodes not found in html output
+</ul>
+
+<p> Related work by others:
+
+<p> <ul>
+<li><cite><a href="http://siliconflorist.com/2009/01/08/using-your-android-phone-as-a-remote-for-controlling-music-playback/">Using
+your Android phone as a remote for controlling music
+playback</a></cite>
+
+<p> Rick Turoczy | January 8, 2009 
+
+</ul></hr>
+    </section>
+    <aside>
+        <p>
+            <span class="article-author" itemprop="author" itemscope="itemscope" itemtype="http://schema.org/Person">
+                <span itemprop="name">Dan Connolly</span> —
+            </span>
+            <time datetime="2009-01-11" itemprop="datePublished">2009-01-11</time>
+            
+            — <a href="/2009/advogato_entry0062.html">Permalink</a>
+            — <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/">License</a>.
+	    <br />
+	    
+        </p>
+    </aside>
+    <hr />
+    <nav>
+        <a class="prev" href="/2009/advogato_entry0063.html">19 Jan 2009</a>
+        |
+        <a class="next" href="/2009/advogato_entry0060.html">Reviving Home Movies with kino and ffmpeg</a>
+    </nav>
+</article>
+
+
+        </div>
+        <nav class="sidebar">
+            <ul>
+                <li class="home"><a href="/" hreflang="en">Home</a></li>
+<!-- @@                <li class="code"><a href="@@ url_for("section", section="code") }}" hreflang="en">Blog</a></li> -->
+               <li>Archives
+		 
+               </li>
+
+                <li class="contact"><a href="/contact/" hreflang="en">Contact</a></li>
+            </ul>
+        </nav>
+        <footer class="site-footer">
+            <address>
+                &#169; 1994-2014 Dan Connolly
+		&nbsp;&nbsp;&nbsp;
+                <a href="https://twitter.com/dckc" rel="me">
+		<img src="/static/img/twitter_icon.png"
+		     width="40px" height="40px" class="social-icon"
+		     alt="@dckc" /></a>
+		&nbsp;&nbsp;&nbsp;
+                <a href="http://bitbucket.org/DanC" rel="me">
+		<img src="/static/img/bitbucket_icon.png"
+		     width="40px" height="40px" class="social-icon"
+		     alt="bitbucket/DanC code" /></a>
+		&nbsp;&nbsp;&nbsp;
+                <a href="https://github.com/dckc" rel="me">
+		<img src="/static/img/GitHub-Mark/PNG/GitHub-Mark-64px.png"
+		     width="40px" height="40px" class="social-icon"
+		     alt="dckc on github" /></a>
+		</a>
+		&nbsp;&nbsp;&nbsp;
+                <a href="/contact/">Contact me</a>
+            </address>
+        </footer>
+    </div>
+    <!-- /container -->
+
+    <!-- TODO: add this only to ipython articles -->
+    <!-- cribbed from ipython's html_full.tpl -->
+<!-- updated w.r.t. http://docs.mathjax.org/en/latest/start.html -->
+<script type="text/javascript"
+  src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+<script type="text/javascript">
+init_mathjax = function() {
+    if (window.MathJax) {
+        // MathJax loaded
+        MathJax.Hub.Config({
+            tex2jax: {
+                inlineMath: [ ["\\(","\\)"] ],
+                displayMath: [ ["\\[","\\]"] ]
+            },
+            displayAlign: 'left', // Change this to 'center' to center equations.
+            "HTML-CSS": {
+                styles: {'.MathJax_Display': {"margin": 0}}
+            }
+        });
+        MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+    }
+}
+init_mathjax();
+</script>
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script><![CDATA[window.jQuery || document.write('<script src="js/libs/jquery-1.7.1.min.js"><\/script>')]]></script>
+    <script type="text/javascript" src="/static/packed.js?1403980370"></script>
+    <script src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+</body>
+</html>

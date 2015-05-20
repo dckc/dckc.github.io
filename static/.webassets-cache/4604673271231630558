@@ -1,0 +1,25 @@
+/* cribbed from ipython notebook styles */
+.anchor-link {
+  text-decoration: none;
+  padding: 0px 20px;
+  visibility: hidden;
+}
+
+h2:hover .anchor-link {
+    visibility: visible;
+}
+
+.input_prompt {
+  float: left
+}
+
+.input_area pre {
+  border-radius: 4px;
+  padding: 4px;
+}
+
+.output_area pre {
+  padding: 4px;
+  color: black;
+  background: transparent;
+}

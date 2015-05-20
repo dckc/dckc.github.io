@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+    <meta charset="utf-8" />
+    
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <title>MadMode: A search for usb midi keyboard support and an example of great open source software marketing | Code</title>
+    <meta name="description" content="MadMode by Dan Connolly"/>
+    <meta name="viewport" content="width=device-width"/>
+
+    <!-- https://dev.twitter.com/docs/cards -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:creator" content="dckc">
+    <link rel="stylesheet" type="text/css" href="/static/packed.css?1403980370"/>
+    <link rel="alternate" type="application/rss+xml" href="/feed/" title="Everything (RSS)"/>
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+</head>
+<body class="">
+    <!--[if lt IE 7]>
+    <p class="chromeframe">Your browser is <em>ancient!</em> Please <a href="http://www.quirksmode.org/upgrade.html">upgrade</a>.</p>
+    <![endif]-->
+    <div class="container">
+        <header class="main-title">
+            <h1><a href="/">MadMode</a></h1>
+            <small>Dan Connolly's tinkering lab notebook</small>
+        </header>
+        <div class="contents">
+            
+
+    <article lang="en" class="" itemscope="itemscope" itemtype="http://schema.org/BlogPosting">
+    <link itemprop="url" href="/2004/advogato_entry0010.html" />
+    <header>
+        <h2><a itemprop="name" href="/2004/advogato_entry0010.html">A search for usb midi keyboard support and an example of great open source software marketing</a></h2></header>
+    
+    <section>
+        <p><b>A search for usb midi keyboard support and an example of great open source software marketing</b></p>
+<p> <blockquote>Beast is a powerful music composition and modular synthesis application released as free software under the GNU GPL and GNU LGPL, that runs under unix. It supports a wide range of standards in the field, such as MIDI, WAV/AIFF/MP3/OggVorbis/etc audio files and LADSPA modules. It has excellent technical abilities like multitrack editing, unlimited undo/redo support, real-time synthesis support, 32bit audio rendering, full duplex support, multiprocessor support, precise timing down to sample granularity, on demand loading of partial wave files, on the fly decoding and full scriptability in scheme. The plugins, synthesis core and the user interface are actively being developed and translated into a variety of languages, regularly assimilating user feedback such as from our FeatureRequests page.
+ --  <a href="http://beast.gtk.org/about.html">about beast</a>
+</blockquote>
+
+<p> Yay! That's exactly what I wanted to know about it.
+(I'm still looking for a blurb about
+<a href="http://plone.org/">plone</a> that will
+serve the same purpose.)
+
+<p> I have an m-audio keystation 49e usb-keyboard (a <a href="//www.apple.com/ilife/garageband/accessories.html">garage band accessory</a>) and I wanted to see if it would
+work with any open source software.
+
+<p> After restarting hotplug, I got as far as:
+
+<p> <pre>Bus 002 Device 005: ID 0a4d:0090 Evolution Electronics, Ltd</pre>
+
+<p> Then I tried apt-cache search midi, but (a) I couldn't
+really tell from the descriptions which one was likely
+to work, and (b) the first few I tried spewed
+screenfuls of diagnostics and keeled over.
+(<a href="//www.ilrt.bris.ac.uk/discovery/chatlogs/rdfig/2004-03-26.html#T03-09-20">notes</a> ).
+
+<p> OK, so debian's core competency is not multimedia.
+So I went up the food chain, to gnome... a search
+for midi in their footnotes zine yielded a
+<a href="http://www.gnomedesktop.org/article.php?sid=1708">beast release article</a>. So I followed the link and I was
+very pleased to find an attractive website with both
+the latest news <em>and</em> the basic about blurb above.
+
+<p> Then I discovered there's a <a  href="http://packages.debian.org/beast">beast debian package</a> after all. I fired it up... no spew
+of diagnostics... demo right there in the menu... and
+it works! wow! (ok, a few diagnostics there, but
+hey, I've got some candy already...). And in the help
+menu, I find a quickstart guide! Yeah!
+
+<p> Too many open source projects tout "it's completely
+extensible: you can write your own modules!" before
+they explain the hello-world features of the app.
+
+<p> But using a midi keyboard wasn't covered in the quickstart
+guide.
+
+<p> But hey! There's an IRC channel... and the developer
+was right there and gave me some real-time support...
+enough to discover that /dev/midi wasn't working.
+(cat should show output when you play the keys.)
+
+<p> Now that I've done my chearleading, anybody wanna help
+me out? send me some mail or visit
+<a href="http://wiki.debian.net/index.cgi?QandA">QandA
+in the debian wiki</a> and help the whole community out.
+
+<p> hotplug seems to relate the device to the  "audio" module in 2.4.16. Do I need to use alsa?
+
+<p> <p>
+I read the <a href="//www.midi-howto.com/">linux midi howto</a>, but it doesn't suggest any software that you can use to confirm that your hardware setup is right. in particular, it says to look at /dev/sndstat, but I get "no such device", even though sound output is working fine.
+    </section>
+    <aside>
+        <p>
+            <span class="article-author" itemprop="author" itemscope="itemscope" itemtype="http://schema.org/Person">
+                <span itemprop="name">Dan Connolly</span> —
+            </span>
+            <time datetime="2004-03-26" itemprop="datePublished">2004-03-26</time>
+            
+            — <a href="/2004/advogato_entry0010.html">Permalink</a>
+            — <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/">License</a>.
+	    <br />
+	    
+        </p>
+    </aside>
+    <hr />
+    <nav>
+        <a class="prev" href="/2004/advogato_entry0011.html">Using XSLT to get from XHTML to LaTeX</a>
+        |
+        <a class="next" href="/2004/advogato_entry0009.html">13 Jan 2004</a>
+    </nav>
+</article>
+
+
+        </div>
+        <nav class="sidebar">
+            <ul>
+                <li class="home"><a href="/" hreflang="en">Home</a></li>
+<!-- @@                <li class="code"><a href="@@ url_for("section", section="code") }}" hreflang="en">Blog</a></li> -->
+               <li>Archives
+		 
+               </li>
+
+                <li class="contact"><a href="/contact/" hreflang="en">Contact</a></li>
+            </ul>
+        </nav>
+        <footer class="site-footer">
+            <address>
+                &#169; 1994-2014 Dan Connolly
+		&nbsp;&nbsp;&nbsp;
+                <a href="https://twitter.com/dckc" rel="me">
+		<img src="/static/img/twitter_icon.png"
+		     width="40px" height="40px" class="social-icon"
+		     alt="@dckc" /></a>
+		&nbsp;&nbsp;&nbsp;
+                <a href="http://bitbucket.org/DanC" rel="me">
+		<img src="/static/img/bitbucket_icon.png"
+		     width="40px" height="40px" class="social-icon"
+		     alt="bitbucket/DanC code" /></a>
+		&nbsp;&nbsp;&nbsp;
+                <a href="https://github.com/dckc" rel="me">
+		<img src="/static/img/GitHub-Mark/PNG/GitHub-Mark-64px.png"
+		     width="40px" height="40px" class="social-icon"
+		     alt="dckc on github" /></a>
+		</a>
+		&nbsp;&nbsp;&nbsp;
+                <a href="/contact/">Contact me</a>
+            </address>
+        </footer>
+    </div>
+    <!-- /container -->
+
+    <!-- TODO: add this only to ipython articles -->
+    <!-- cribbed from ipython's html_full.tpl -->
+<!-- updated w.r.t. http://docs.mathjax.org/en/latest/start.html -->
+<script type="text/javascript"
+  src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+<script type="text/javascript">
+init_mathjax = function() {
+    if (window.MathJax) {
+        // MathJax loaded
+        MathJax.Hub.Config({
+            tex2jax: {
+                inlineMath: [ ["\\(","\\)"] ],
+                displayMath: [ ["\\[","\\]"] ]
+            },
+            displayAlign: 'left', // Change this to 'center' to center equations.
+            "HTML-CSS": {
+                styles: {'.MathJax_Display': {"margin": 0}}
+            }
+        });
+        MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+    }
+}
+init_mathjax();
+</script>
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script><![CDATA[window.jQuery || document.write('<script src="js/libs/jquery-1.7.1.min.js"><\/script>')]]></script>
+    <script type="text/javascript" src="/static/packed.js?1403980370"></script>
+    <script src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+</body>
+</html>

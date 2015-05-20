@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+    <meta charset="utf-8" />
+    
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <title>MadMode: Adding server operations, DBA to my bag of tricks | Code</title>
+    <meta name="description" content="MadMode by Dan Connolly"/>
+    <meta name="viewport" content="width=device-width"/>
+
+    <!-- https://dev.twitter.com/docs/cards -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:creator" content="dckc">
+    <link rel="stylesheet" type="text/css" href="/static/packed.css?1403980370"/>
+    <link rel="alternate" type="application/rss+xml" href="/feed/" title="Everything (RSS)"/>
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+</head>
+<body class="">
+    <!--[if lt IE 7]>
+    <p class="chromeframe">Your browser is <em>ancient!</em> Please <a href="http://www.quirksmode.org/upgrade.html">upgrade</a>.</p>
+    <![endif]-->
+    <div class="container">
+        <header class="main-title">
+            <h1><a href="/">MadMode</a></h1>
+            <small>Dan Connolly's tinkering lab notebook</small>
+        </header>
+        <div class="contents">
+            
+
+    <article lang="en" class="" itemscope="itemscope" itemtype="http://schema.org/BlogPosting">
+    <link itemprop="url" href="/2011/03/adding-server-operations-dba-to-my-bag.html" />
+    <header>
+        <h2><a itemprop="name" href="/2011/03/adding-server-operations-dba-to-my-bag.html">Adding server operations, DBA to my bag of tricks</a></h2></header>
+    
+    <section>
+        <div>I've always been a programmer. Then I learned enough about shipping software products at Convex and Dazel, and then global collaboration at W3C. I have always respected the people who keep the servers running<span class="Apple-style-span" style="font-family: sans-serif; font-size: 13px; line-height: 19px;">—</span>the <a href="http://www.w3.org/blog/systeam/">W3C systems team</a> rocks!<span class="Apple-style-span" style="font-family: sans-serif; font-size: 13px; line-height: 19px;">—</span>and now I'm learning a bit of that stuff too.</div>
+
+<div><a name='more'></a></div>
+
+<div>I mostly taught myself to program as a teenager. Then I worked at Convex, developing software supercomputers. It was a mature engineering organization; a great place to learn about shipping software products. Then I helped set up the engineering organization at a startup company, Dazel. Between these jobs, I learned&nbsp;the difference between a program and a product: a program works for the one who wrote it, while a product works for users. For the same set of features, developing a product is about a hundred times as much work as developing a program.</div>
+
+<div><br />
+</div>
+
+<div>My job at W3C struck a nice balance between research and development for a good long while. In my short stint at Science Commons, I wrote "writing software to support research" in a status update, and I have hung on to that since. That's pretty much what I do at KUMC.</div>
+
+<div><br />
+</div>
+
+<div>We're building a data repository for clinical researchers. It has just a handful of users now, but we're gearing up for more. So it's time to think about server operations. I did a little bit of system administration at W3C... it was something of a tradition that each new hire on the technical staff played that role... but eventually we grew up and hired real system administrators. Since then I have managed to avoid responsibility for server operations.</div>
+
+<div><br />
+</div>
+
+<div>The informatics group isn't big enough for that yet, so I spent a few days learning the state of the art in open source monitoring tools.&nbsp;<a href="http://informatics.kumc.edu/work/blog/2011/03/slug">Getting ahead of the ball with service monitoring</a> is a happy result.</div>
+
+<div><br />
+</div>
+
+<div>It's certainly happier than the feedback I've been getting while trying to learn about Oracle administration. (Frank isn't the name this guy used, but he <i>was</i> very frank.)</div>
+
+<div><br />
+</div>
+
+<div><div><div><danc><span class="Apple-tab-span" style="white-space: pre;"> </span>if I make a cold backup on AIX (big-endian) and I try to restore it on linux (little endian), am I more likely to win or lose?</danc></div><div><frank><span class="Apple-tab-span" style="white-space: pre;"> </span>lose</frank></div><div><frank><span class="Apple-tab-span" style="white-space: pre;"> </span>you need to use rman or [...]</frank></div><div><frank><span class="Apple-tab-span" style="white-space: pre;"> </span>but you guys really should hire a dba</frank></div><div><frank><span class="Apple-tab-span" style="white-space: pre;"> </span>you could afford oracle, and a server for aix, and now a new linux server</frank></div><div><frank><span class="Apple-tab-span" style="white-space: pre;"> </span>you can afford a dba for a few hours</frank></div><div><frank><span class="Apple-tab-span" style="white-space: pre;"> </span>Or else, you could totally screw stuff up, especially the configuration and tuning of the linux DB</frank></div></div></div>
+
+<div>[...]</div>
+
+<div><div><frank><span class="Apple-tab-span" style="white-space: pre;"> </span>most admins now are giant #$%@# idiots who dont know that sqlplus exists.&nbsp;</frank></div><div><frank><span class="Apple-tab-span" style="white-space: pre;"> </span>or they are "developers" &nbsp;which their company put them in charge of the database</frank></div><div><frank><span class="Apple-tab-span" style="white-space: pre;"> </span>and are giant clueless idiots</frank></div></div>
+
+<div><br />
+</div>
+    </section>
+    <aside>
+        <p>
+            <span class="article-author" itemprop="author" itemscope="itemscope" itemtype="http://schema.org/Person">
+                <span itemprop="name">Dan Connolly</span> —
+            </span>
+            <time datetime="2011-03-15" itemprop="datePublished">2011-03-15</time>
+            
+            — <a href="/2011/03/adding-server-operations-dba-to-my-bag.html">Permalink</a>
+            — <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/">License</a>.
+	    <br />
+	    
+	    | <a class='tag' rel='tag'
+		 href="/search/label/data/">data</a>
+   	    
+	    | <a class='tag' rel='tag'
+		 href="/search/label/programming/">programming</a>
+   	    
+        </p>
+    </aside>
+    <hr />
+    <nav>
+        <a class="prev" href="/2011/03/google-smiles-on-kc.html">Google smiles on KC</a>
+        |
+        <a class="next" href="/2011/02/cleaning-up-my-contacts-with-batch.html">Cleaning up my contacts with batch edits in the Google Contacts Data API</a>
+    </nav>
+</article>
+
+
+        </div>
+        <nav class="sidebar">
+            <ul>
+                <li class="home"><a href="/" hreflang="en">Home</a></li>
+<!-- @@                <li class="code"><a href="@@ url_for("section", section="code") }}" hreflang="en">Blog</a></li> -->
+               <li>Archives
+		 
+               </li>
+
+                <li class="contact"><a href="/contact/" hreflang="en">Contact</a></li>
+            </ul>
+        </nav>
+        <footer class="site-footer">
+            <address>
+                &#169; 1994-2014 Dan Connolly
+		&nbsp;&nbsp;&nbsp;
+                <a href="https://twitter.com/dckc" rel="me">
+		<img src="/static/img/twitter_icon.png"
+		     width="40px" height="40px" class="social-icon"
+		     alt="@dckc" /></a>
+		&nbsp;&nbsp;&nbsp;
+                <a href="http://bitbucket.org/DanC" rel="me">
+		<img src="/static/img/bitbucket_icon.png"
+		     width="40px" height="40px" class="social-icon"
+		     alt="bitbucket/DanC code" /></a>
+		&nbsp;&nbsp;&nbsp;
+                <a href="https://github.com/dckc" rel="me">
+		<img src="/static/img/GitHub-Mark/PNG/GitHub-Mark-64px.png"
+		     width="40px" height="40px" class="social-icon"
+		     alt="dckc on github" /></a>
+		</a>
+		&nbsp;&nbsp;&nbsp;
+                <a href="/contact/">Contact me</a>
+            </address>
+        </footer>
+    </div>
+    <!-- /container -->
+
+    <!-- TODO: add this only to ipython articles -->
+    <!-- cribbed from ipython's html_full.tpl -->
+<!-- updated w.r.t. http://docs.mathjax.org/en/latest/start.html -->
+<script type="text/javascript"
+  src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+<script type="text/javascript">
+init_mathjax = function() {
+    if (window.MathJax) {
+        // MathJax loaded
+        MathJax.Hub.Config({
+            tex2jax: {
+                inlineMath: [ ["\\(","\\)"] ],
+                displayMath: [ ["\\[","\\]"] ]
+            },
+            displayAlign: 'left', // Change this to 'center' to center equations.
+            "HTML-CSS": {
+                styles: {'.MathJax_Display': {"margin": 0}}
+            }
+        });
+        MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+    }
+}
+init_mathjax();
+</script>
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script><![CDATA[window.jQuery || document.write('<script src="js/libs/jquery-1.7.1.min.js"><\/script>')]]></script>
+    <script type="text/javascript" src="/static/packed.js?1403980370"></script>
+    <script src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+</body>
+</html>

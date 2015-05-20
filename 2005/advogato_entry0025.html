@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+    <meta charset="utf-8" />
+    
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <title>MadMode: no longer happy with my personal wiki | Code</title>
+    <meta name="description" content="MadMode by Dan Connolly"/>
+    <meta name="viewport" content="width=device-width"/>
+
+    <!-- https://dev.twitter.com/docs/cards -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:creator" content="dckc">
+    <link rel="stylesheet" type="text/css" href="/static/packed.css?1403980370"/>
+    <link rel="alternate" type="application/rss+xml" href="/feed/" title="Everything (RSS)"/>
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+</head>
+<body class="">
+    <!--[if lt IE 7]>
+    <p class="chromeframe">Your browser is <em>ancient!</em> Please <a href="http://www.quirksmode.org/upgrade.html">upgrade</a>.</p>
+    <![endif]-->
+    <div class="container">
+        <header class="main-title">
+            <h1><a href="/">MadMode</a></h1>
+            <small>Dan Connolly's tinkering lab notebook</small>
+        </header>
+        <div class="contents">
+            
+
+    <article lang="en" class="" itemscope="itemscope" itemtype="http://schema.org/BlogPosting">
+    <link itemprop="url" href="/2005/advogato_entry0025.html" />
+    <header>
+        <h2><a itemprop="name" href="/2005/advogato_entry0025.html">no longer happy with my personal wiki</a></h2></header>
+    
+    <section>
+        <p>I'm <a href="http://dm93.org/z2001/AboutThisWiki#msg20050608050701+0000@dm93.org">no longer happy with my personal wiki</a>; since upgrading to a version of zwiki that supports dated comments, I find that I'm more comfortable doing "episodic publishing" (i.e. blogging) than collaborating on collected wisdom. <b>A personal wiki is an oxymoron; the wiki genre is all about collaboration</b>.</p>
+<p> So I started thinking about how to migrate my content to a blogging system. The first step was to somehow grok all the data I've got in there. I asked in the #zope channel about .zexp format and was discouraged from peeking inside. I was advised to write an
+<a href="http://www.zope.org/Documentation/Books/ZopeBook/2_6Edition/ScriptingZope.stx">external method</a> that runs inside Zope to export my data,
+but by the time I saw that advice, I already had dumpwiki.xsl converting the zope XML export format to XHTML. The actual contents of the wiki pages was quoted, so I'm undoing that with python and <a href="http://www.aaronsw.com/2002/xmltramp/">xmltramp</a>. I think I hit a bug in the xmltramp serializer. Gotta look into that.
+
+<p> Anyway... the #zope guys were surprised that I had never done any Zope methods. I explained that I use Zope because it's the only server you can apt-get and write to (with iPhoto or emacs eldav mode) out of the box, with elephant-never-forgets versioning.
+
+<p> That got me thinking... with the <b>"cvs is good enough" orthodoxy eroding</b>, and all the work on subversion and arch and darcs, maybe it's time to take another look at the versioning part of WebDAV. Especially git, with its cryptographically secure history... because <b>the problem with   the <a href="http://www.oreillynet.com/pub/t/84">writeable web</a> is more social than technical.</b> People use sftp rather than HTTP because the social protocol is well known, not because FTP is a better protocol than HTTP for writing.
+
+<p> Hmm... if I had a <a rel="tag" href="http://www.policyawareweb.org/">PAW</a> blog or a <a href="http://groups.csail.mit.edu/dig/" rel="tag">DIG</a> blog, this might belong there. Maybe reltag will work...
+
+<p> I sure wish python had more penetration in the blogging world. PHP is clearly the server-side deployment vehicle these days, and javascript is the way to juice up clients, but <b>neither PHP nor javascript  meets the <a href="http://www.w3.org/TR/1998/NOTE-webarch-extlang-19980210#Ambiguity ">unambiguity requirement</a> that I think is critical for software engineering in the large.</b>
+    </section>
+    <aside>
+        <p>
+            <span class="article-author" itemprop="author" itemscope="itemscope" itemtype="http://schema.org/Person">
+                <span itemprop="name">Dan Connolly</span> —
+            </span>
+            <time datetime="2005-06-10" itemprop="datePublished">2005-06-10</time>
+            
+            — <a href="/2005/advogato_entry0025.html">Permalink</a>
+            — <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/">License</a>.
+	    <br />
+	    
+	    | <a class='tag' rel='tag'
+		 href="/search/label/aaronsw/">aaronsw</a>
+   	    
+	    | <a class='tag' rel='tag'
+		 href="/search/label/publishing/">publishing</a>
+   	    
+	    | <a class='tag' rel='tag'
+		 href="/search/label/writing/">writing</a>
+   	    
+        </p>
+    </aside>
+    <hr />
+    <nav>
+        <a class="prev" href="/2005/advogato_entry0026.html">Using hCard, XSLT, and RDF to sync the family cellphones</a>
+        |
+        <a class="next" href="/2005/advogato_entry0024.html">17 May 2005</a>
+    </nav>
+</article>
+
+
+        </div>
+        <nav class="sidebar">
+            <ul>
+                <li class="home"><a href="/" hreflang="en">Home</a></li>
+<!-- @@                <li class="code"><a href="@@ url_for("section", section="code") }}" hreflang="en">Blog</a></li> -->
+               <li>Archives
+		 
+               </li>
+
+                <li class="contact"><a href="/contact/" hreflang="en">Contact</a></li>
+            </ul>
+        </nav>
+        <footer class="site-footer">
+            <address>
+                &#169; 1994-2014 Dan Connolly
+		&nbsp;&nbsp;&nbsp;
+                <a href="https://twitter.com/dckc" rel="me">
+		<img src="/static/img/twitter_icon.png"
+		     width="40px" height="40px" class="social-icon"
+		     alt="@dckc" /></a>
+		&nbsp;&nbsp;&nbsp;
+                <a href="http://bitbucket.org/DanC" rel="me">
+		<img src="/static/img/bitbucket_icon.png"
+		     width="40px" height="40px" class="social-icon"
+		     alt="bitbucket/DanC code" /></a>
+		&nbsp;&nbsp;&nbsp;
+                <a href="https://github.com/dckc" rel="me">
+		<img src="/static/img/GitHub-Mark/PNG/GitHub-Mark-64px.png"
+		     width="40px" height="40px" class="social-icon"
+		     alt="dckc on github" /></a>
+		</a>
+		&nbsp;&nbsp;&nbsp;
+                <a href="/contact/">Contact me</a>
+            </address>
+        </footer>
+    </div>
+    <!-- /container -->
+
+    <!-- TODO: add this only to ipython articles -->
+    <!-- cribbed from ipython's html_full.tpl -->
+<!-- updated w.r.t. http://docs.mathjax.org/en/latest/start.html -->
+<script type="text/javascript"
+  src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+<script type="text/javascript">
+init_mathjax = function() {
+    if (window.MathJax) {
+        // MathJax loaded
+        MathJax.Hub.Config({
+            tex2jax: {
+                inlineMath: [ ["\\(","\\)"] ],
+                displayMath: [ ["\\[","\\]"] ]
+            },
+            displayAlign: 'left', // Change this to 'center' to center equations.
+            "HTML-CSS": {
+                styles: {'.MathJax_Display': {"margin": 0}}
+            }
+        });
+        MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+    }
+}
+init_mathjax();
+</script>
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script><![CDATA[window.jQuery || document.write('<script src="js/libs/jquery-1.7.1.min.js"><\/script>')]]></script>
+    <script type="text/javascript" src="/static/packed.js?1403980370"></script>
+    <script src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+</body>
+</html>

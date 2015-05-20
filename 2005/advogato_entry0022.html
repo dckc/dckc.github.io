@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+    <meta charset="utf-8" />
+    
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <title>MadMode: Grokking Triples from Spreadsheets | Code</title>
+    <meta name="description" content="MadMode by Dan Connolly"/>
+    <meta name="viewport" content="width=device-width"/>
+
+    <!-- https://dev.twitter.com/docs/cards -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:creator" content="dckc">
+    <link rel="stylesheet" type="text/css" href="/static/packed.css?1403980370"/>
+    <link rel="alternate" type="application/rss+xml" href="/feed/" title="Everything (RSS)"/>
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+</head>
+<body class="">
+    <!--[if lt IE 7]>
+    <p class="chromeframe">Your browser is <em>ancient!</em> Please <a href="http://www.quirksmode.org/upgrade.html">upgrade</a>.</p>
+    <![endif]-->
+    <div class="container">
+        <header class="main-title">
+            <h1><a href="/">MadMode</a></h1>
+            <small>Dan Connolly's tinkering lab notebook</small>
+        </header>
+        <div class="contents">
+            
+
+    <article lang="en" class="" itemscope="itemscope" itemtype="http://schema.org/BlogPosting">
+    <link itemprop="url" href="/2005/advogato_entry0022.html" />
+    <header>
+        <h2><a itemprop="name" href="/2005/advogato_entry0022.html">Grokking Triples from Spreadsheets</a></h2></header>
+    
+    <section>
+        <p><b>Grokking Triples from Spreadsheets</b></p>
+<p> <p><a href="http://seanmcgrath.blogspot.com/2005_05_08_seanmcgrath_archive.html#111589444959575264">Sean  notes that there are lots of triples in spreadsheets</a>. Yup. After my <a href="http://www.w3.org/People/Connolly/events/#exml2003">Aug 2003 trip to Montreal for Extreme</a>,
+I used gnumeric as an RDF authoring tool
+to collect all the gas receipts and such; then the
+<a href="http://www.w3.org/2003/08dc-ymx/Makefile">Makefile</a> has this stanza to convert it to RDF:
+
+<p> <pre>
+triplog.rdf: triplog.xml grokSheet.xsl
+    $(XSLTPROC) --novalid <a href="http://www.w3.org/2003/08dc-ymx/grokSheet.xsl">grokSheet.xsl</a> triplog.xml &gt;$@
+</pre>
+
+<p> <p>I haven't scrubbed the data, so this is somewhat incomplete as a demo.
+
+<p> <p>Yes, this is another <a href="http://www.w3.org/2004/01/rdxh/spec">GRDDL</a>
+style transformation.
+
+<p> <p>A comment on Sean's blog said "don't forget RDBs".
+Of course not. See <a href="http://www.w3.org/DesignIssues/RDB-RDF.html">Relational Databases and the Semantic Web</a>;
+I hope to update my implementation,
+<a href="http://www.w3.org/2000/10/swap/dbork/dbview.py">dbview.py</a>
+to use <a href="http://www.w3.org/TR/rdf-sparql-protocol/">SPARQL</a> before too much longer.
+
+<p> <p>Hmm... where are timbl's slides on RDF, trees, tables, and such?
+    </section>
+    <aside>
+        <p>
+            <span class="article-author" itemprop="author" itemscope="itemscope" itemtype="http://schema.org/Person">
+                <span itemprop="name">Dan Connolly</span> —
+            </span>
+            <time datetime="2005-05-13" itemprop="datePublished">2005-05-13</time>
+            
+            — <a href="/2005/advogato_entry0022.html">Permalink</a>
+            — <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/">License</a>.
+	    <br />
+	    
+        </p>
+    </aside>
+    <hr />
+    <nav>
+        <a class="prev" href="/2005/advogato_entry0023.html">14 May 2005</a>
+        |
+        <a class="next" href="/2005/advogato_entry0018.html">taking the plunge to Ubuntu Hoary</a>
+    </nav>
+</article>
+
+
+        </div>
+        <nav class="sidebar">
+            <ul>
+                <li class="home"><a href="/" hreflang="en">Home</a></li>
+<!-- @@                <li class="code"><a href="@@ url_for("section", section="code") }}" hreflang="en">Blog</a></li> -->
+               <li>Archives
+		 
+               </li>
+
+                <li class="contact"><a href="/contact/" hreflang="en">Contact</a></li>
+            </ul>
+        </nav>
+        <footer class="site-footer">
+            <address>
+                &#169; 1994-2014 Dan Connolly
+		&nbsp;&nbsp;&nbsp;
+                <a href="https://twitter.com/dckc" rel="me">
+		<img src="/static/img/twitter_icon.png"
+		     width="40px" height="40px" class="social-icon"
+		     alt="@dckc" /></a>
+		&nbsp;&nbsp;&nbsp;
+                <a href="http://bitbucket.org/DanC" rel="me">
+		<img src="/static/img/bitbucket_icon.png"
+		     width="40px" height="40px" class="social-icon"
+		     alt="bitbucket/DanC code" /></a>
+		&nbsp;&nbsp;&nbsp;
+                <a href="https://github.com/dckc" rel="me">
+		<img src="/static/img/GitHub-Mark/PNG/GitHub-Mark-64px.png"
+		     width="40px" height="40px" class="social-icon"
+		     alt="dckc on github" /></a>
+		</a>
+		&nbsp;&nbsp;&nbsp;
+                <a href="/contact/">Contact me</a>
+            </address>
+        </footer>
+    </div>
+    <!-- /container -->
+
+    <!-- TODO: add this only to ipython articles -->
+    <!-- cribbed from ipython's html_full.tpl -->
+<!-- updated w.r.t. http://docs.mathjax.org/en/latest/start.html -->
+<script type="text/javascript"
+  src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+<script type="text/javascript">
+init_mathjax = function() {
+    if (window.MathJax) {
+        // MathJax loaded
+        MathJax.Hub.Config({
+            tex2jax: {
+                inlineMath: [ ["\\(","\\)"] ],
+                displayMath: [ ["\\[","\\]"] ]
+            },
+            displayAlign: 'left', // Change this to 'center' to center equations.
+            "HTML-CSS": {
+                styles: {'.MathJax_Display': {"margin": 0}}
+            }
+        });
+        MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+    }
+}
+init_mathjax();
+</script>
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script><![CDATA[window.jQuery || document.write('<script src="js/libs/jquery-1.7.1.min.js"><\/script>')]]></script>
+    <script type="text/javascript" src="/static/packed.js?1403980370"></script>
+    <script src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+</body>
+</html>
