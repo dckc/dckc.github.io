@@ -5,9 +5,2609 @@
         <link>http://www.madmode.com/</link>
         <description>Dan Connolly's tinkering notebook</description>
         <language>en-us</language>
-        <pubDate>Wed, 20 May 2015 00:54:32 +0000</pubDate>
-        <lastBuildDate>Wed, 20 May 2015 00:54:32 +0000</lastBuildDate>
+        <pubDate>Wed, 08 Jul 2015 00:50:50 +0000</pubDate>
+        <lastBuildDate>Wed, 08 Jul 2015 00:50:50 +0000</lastBuildDate>
         
+        <item>
+            <title>Syncing a 5 Year iPhoto Library with flickr</title>
+            <link>http://www.madmode.com//2015/photo-flickr-explore/</link>
+            <description>&lt;div class=&#34;cell border-box-sizing text_cell rendered&#34;&gt;
+&lt;div class=&#34;prompt input_prompt&#34;&gt;
+&lt;/div&gt;
+&lt;div class=&#34;inner_cell&#34;&gt;
+&lt;div class=&#34;text_cell_render border-box-sizing rendered_html&#34;&gt;
+&lt;p&gt;Yay! jawj&#39;s &lt;a href=&#34;https://github.com/jawj/iphoto-flickr&#34;&gt;iphoto-flickr&lt;/a&gt; sync&#39;d a 30GB iPhoto library flickr. Not only did it upload the images, but it made a map from iPhoto metadata to flickr metadata that lets me continue on with the flickr API, syncing dates and such, during and after the upload.&lt;/p&gt;
+
+&lt;/div&gt;
+
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&#34;cell border-box-sizing text_cell rendered&#34;&gt;
+&lt;div class=&#34;prompt input_prompt&#34;&gt;
+&lt;/div&gt;
+&lt;div class=&#34;inner_cell&#34;&gt;
+&lt;div class=&#34;text_cell_render border-box-sizing rendered_html&#34;&gt;
+&lt;h2 id=&#34;OS-X-Yosemite-runs-iPhoto,-reluctantly&#34;&gt;OS X Yosemite runs iPhoto, reluctantly&lt;a class=&#34;anchor-link&#34; href=&#34;#OS-X-Yosemite-runs-iPhoto,-reluctantly&#34;&gt;&amp;#182;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Having replaced it with a newer model, I gave &lt;strong&gt;airbook&lt;/strong&gt;, our late 2008 MacBook Air MB543LL/A, a complete labotomy and installed OS X Yosemite. When I tried to re-introduce it to our photo archive, Apple told me iPhoto is no longer; Photos is the new thing, complete with iCloud hip-ness.&lt;/p&gt;
+&lt;p&gt;So I&#39;m faced with another &#34;to Mac or not to Mac?&#34; moment.&lt;/p&gt;
+&lt;p&gt;This time I figure no, I lead a multi-platform life and I want something more web-native.&lt;/p&gt;
+&lt;p&gt;I spent a bunch of time trying to downgrade to Mavericks. Just when I had given up trying to do it myself and ordered Mavericks on a USB flash drive via eBay, I learned that if you &lt;a href=&#34;http://www.simplehelp.net/2015/05/01/how-to-install-iphoto-in-yosemite-os-x-10-10/#comment-2097851737&#34;&gt;start iPhoto from a command prompt&lt;/a&gt;, it runs on Yosemite after all.&lt;/p&gt;
+&lt;p&gt;The only complication was a dangling reference to &lt;code&gt;iLifeSlideshow.framework&lt;/code&gt; in &lt;code&gt;/System/Library/PrivateFrameworks&lt;/code&gt;. (Thank you &lt;a href=&#34;https://bombich.com/&#34;&gt;Carbon Copy Cloner&lt;/a&gt; for a complete backup!)&lt;/p&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&#34;cell border-box-sizing text_cell rendered&#34;&gt;
+&lt;div class=&#34;prompt input_prompt&#34;&gt;
+&lt;/div&gt;
+&lt;div class=&#34;inner_cell&#34;&gt;
+&lt;div class=&#34;text_cell_render border-box-sizing rendered_html&#34;&gt;
+&lt;p&gt;it&#39;s time to take flickr up on the terabyte storage offer from they&#39;ve been running since May 2013. My friends-and-family photo sharing community mostly uses facebook these days, but for curating an archive, flickr is a much better match:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;datetaken separate from date uploaded&lt;/li&gt;
+&lt;li&gt;easy access to original photo&lt;/li&gt;
+&lt;li&gt;archive by date taken&lt;/li&gt;
+&lt;li&gt;by place on map&lt;/li&gt;
+&lt;li&gt;by tag&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;2004 flickr DanC (er... or was that when I created the affiliated yahoo account?)
+2006-03: dckc on flickr: travel, kids, dogs, banff, roadtrip, ...
+&lt;a href=&#34;https://www.flickr.com/photos/dckc/archives/date-posted/2004/12/calendar/&#34;&gt;https://www.flickr.com/photos/dckc/archives/date-posted/2004/12/calendar/&lt;/a&gt; shows I posted in Dec 2004&lt;/p&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&#34;cell border-box-sizing text_cell rendered&#34;&gt;
+&lt;div class=&#34;prompt input_prompt&#34;&gt;
+&lt;/div&gt;
+&lt;div class=&#34;inner_cell&#34;&gt;
+&lt;div class=&#34;text_cell_render border-box-sizing rendered_html&#34;&gt;
+&lt;h3 id=&#34;Home-directory-in-encrypted-sparsebundle&#34;&gt;Home directory in encrypted sparsebundle&lt;a class=&#34;anchor-link&#34; href=&#34;#Home-directory-in-encrypted-sparsebundle&#34;&gt;&amp;#182;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;This photo library is on an external USB drive, in an encrypted sparsebundle. The &lt;a href=&#34;https://discussions.apple.com/thread/2082558?tstart=0&#34;&gt;sparsebundle support discussion&lt;/a&gt; said all I have to do is double-click it, but it&#39;s hidden (filename starts with a dot). Command-line to the rescue, again: &lt;code&gt;open /Users/.maryc&lt;/code&gt;.&lt;/p&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&#34;cell border-box-sizing text_cell rendered&#34;&gt;
+&lt;div class=&#34;prompt input_prompt&#34;&gt;
+&lt;/div&gt;
+&lt;div class=&#34;inner_cell&#34;&gt;
+&lt;div class=&#34;text_cell_render border-box-sizing rendered_html&#34;&gt;
+&lt;h2 id=&#34;Flickr-is-the-web-photo-service-for-the-closet-librarian&#34;&gt;Flickr is the web photo service for the closet librarian&lt;a class=&#34;anchor-link&#34; href=&#34;#Flickr-is-the-web-photo-service-for-the-closet-librarian&#34;&gt;&amp;#182;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;As an Android mobile user, Google&#39;s photo offerings were tempting. Then I discovered browsing photos of person X only works within one album. And to put a photo in multiple albums, you have to copy it, i.e. maintain the tags and such twice.&lt;/p&gt;
+&lt;p&gt;My friends-and-family photo sharing community mostly uses facebook these days, but for curating an archive, flickr is a much better match. Imagine my horror when I downloaded some of my photos from facebook and discovered they were only available at reduced resolution. Perhaps they&#39;ve addressed that since, but I still haven&#39;t seen any support for date-taken as separate from date-uploaded on facebook. There&#39;s little, if any, support for quietly curating without notifications firing every which way.&lt;/p&gt;
+&lt;p&gt;My photostream on flickr goes back to &lt;a href=&#34;https://www.flickr.com/photos/dckc/archives/date-posted/2004/12/calendar/&#34;&gt;Dec 2004&lt;/a&gt; when it was big in the open web community. I could never bring myself to go premium, but in May 2013 when they announced the terabyte storage offer, I dusted it off. Re-establishing my long lost yahoo credentials was no small feat, but I managed.&lt;/p&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&#34;cell border-box-sizing text_cell rendered&#34;&gt;
+&lt;div class=&#34;prompt input_prompt&#34;&gt;
+&lt;/div&gt;
+&lt;div class=&#34;inner_cell&#34;&gt;
+&lt;div class=&#34;text_cell_render border-box-sizing rendered_html&#34;&gt;
+&lt;h2 id=&#34;Flickr-Backup-from-Mac-App-Store-was-a-Bust&#34;&gt;Flickr Backup from Mac App Store was a Bust&lt;a class=&#34;anchor-link&#34; href=&#34;#Flickr-Backup-from-Mac-App-Store-was-a-Bust&#34;&gt;&amp;#182;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;A quick search of the Mac App store turned up promising results:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://itunes.apple.com/us/app/backup-to-flickr-for-iphoto/id733300407?mt=12&#34;&gt;Backup to Flickr for iPhoto&lt;/a&gt;&lt;br&gt;
+By Sonia Bohelay&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;It was just a few bucks, so I went ahead. But oops: &lt;strong&gt;Your iPhoto library is either too old (iPhoto version &amp;lt; 9.0) or no photo found&lt;/strong&gt;. Indeed, my library is from 8.1.2. I might have been able to upgrade the library, but with Apple pushing Photos over iPhoto, I didn&#39;t want to bet on it.&lt;/p&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&#34;cell border-box-sizing text_cell rendered&#34;&gt;
+&lt;div class=&#34;prompt input_prompt&#34;&gt;
+&lt;/div&gt;
+&lt;div class=&#34;inner_cell&#34;&gt;
+&lt;div class=&#34;text_cell_render border-box-sizing rendered_html&#34;&gt;
+&lt;h2 id=&#34;iPhoto--&amp;gt;-Flickr-in-350-lines-of-code&#34;&gt;iPhoto -&amp;gt; Flickr in 350 lines of code&lt;a class=&#34;anchor-link&#34; href=&#34;#iPhoto--&amp;gt;-Flickr-in-350-lines-of-code&#34;&gt;&amp;#182;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;I was thinking about rolling my own with the flickr API when I discovered a kindred spirit had already been down this path and come up with &lt;a href=&#34;https://github.com/jawj/iphoto-flickr&#34;&gt;iPhoto -&amp;gt; Flickr&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;It worked in one go, so the incremental upload support wasn&#39;t necessary for the initial bulk upload, but to further sync the metadata, the resulting &lt;code&gt;uploaded-photo-ids-map.txt&lt;/code&gt; is critical. In fact, I had to wrestle with iPhoto a bit to get ids that are useful without iPhoto running.&lt;/p&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&#34;cell border-box-sizing text_cell rendered&#34;&gt;
+&lt;div class=&#34;prompt input_prompt&#34;&gt;
+&lt;/div&gt;
+&lt;div class=&#34;inner_cell&#34;&gt;
+&lt;div class=&#34;text_cell_render border-box-sizing rendered_html&#34;&gt;
+&lt;h3 id=&#34;Just-Add-API-Key-and-Authorize-with-OAuth&#34;&gt;Just Add API Key and Authorize with OAuth&lt;a class=&#34;anchor-link&#34; href=&#34;#Just-Add-API-Key-and-Authorize-with-OAuth&#34;&gt;&amp;#182;&lt;/a&gt;&lt;/h3&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&#34;cell border-box-sizing text_cell rendered&#34;&gt;
+&lt;div class=&#34;prompt input_prompt&#34;&gt;
+&lt;/div&gt;
+&lt;div class=&#34;inner_cell&#34;&gt;
+&lt;div class=&#34;text_cell_render border-box-sizing rendered_html&#34;&gt;
+&lt;p&gt;It works pretty much like it says on the tin. (&lt;em&gt;The &lt;a href=&#34;https://github.com/jawj/iphoto-flickr/issues/22&#34;&gt;colorize dependency issue&lt;/a&gt; was easy enough to figure out.&lt;/em&gt;)&lt;/p&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&#34;cell border-box-sizing text_cell rendered&#34;&gt;
+&lt;div class=&#34;prompt input_prompt&#34;&gt;
+&lt;/div&gt;
+&lt;div class=&#34;inner_cell&#34;&gt;
+&lt;div class=&#34;text_cell_render border-box-sizing rendered_html&#34;&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;airbook:src connolly$ git clone https://github.com/jawj/flickrbackup.git  # e339169212
+airbook:flickrbackup connolly$ sudo gem install flickraw-cached colorize
+Successfully installed flickraw-0.9.8
+Successfully installed flickraw-cached-20120701
+Successfully installed colorize-0.7.7
+
+airbook:flickrbackup connolly$ ruby flickrbackup.rb 
+
+Flickr API key: 0481...
+Flickr API shared secret: 897...
+Authorise access to your Flickr account: press [Return] when ready
+Authorisation code: 162-...
+
+2015-07-04 13:47:28 -0500  Authenticated as: DanC
+
+2015-07-04 13:47:44 -0500  8057 photos and 78 standard albums in iPhoto library
+2015-07-04 13:47:44 -0500  8057 photos not yet uploaded to Flickr&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&#34;cell border-box-sizing text_cell rendered&#34;&gt;
+&lt;div class=&#34;prompt input_prompt&#34;&gt;
+&lt;/div&gt;
+&lt;div class=&#34;inner_cell&#34;&gt;
+&lt;div class=&#34;text_cell_render border-box-sizing rendered_html&#34;&gt;
+&lt;h2 id=&#34;Platform-Independent-Data&#34;&gt;Platform Independent Data&lt;a class=&#34;anchor-link&#34; href=&#34;#Platform-Independent-Data&#34;&gt;&amp;#182;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;The kernel for this notebook is on my linux desktop, but iPhoto is running on &lt;strong&gt;airbook&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Since spaces in filenames are a royal pain over ssh, I made a convenient symlink.&lt;/em&gt;&lt;/p&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&#34;cell border-box-sizing code_cell rendered&#34;&gt;
+&lt;div class=&#34;input&#34;&gt;
+&lt;div class=&#34;prompt input_prompt&#34;&gt;In&amp;nbsp;[190]:&lt;/div&gt;
+&lt;div class=&#34;inner_cell&#34;&gt;
+    &lt;div class=&#34;input_area&#34;&gt;
+&lt;div class=&#34; highlight hl-ipython2&#34;&gt;&lt;pre&gt;&lt;span class=&#34;o&#34;&gt;!&lt;/span&gt;ssh airbook.local ls -l Pictures/flickrbackup
+&lt;/pre&gt;&lt;/div&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/p&gt;
+&lt;div class=&#34;output_wrapper&#34;&gt;
+&lt;div class=&#34;output&#34;&gt;
+
+&lt;div class=&#34;output_area&#34;&gt;&lt;div class=&#34;prompt&#34;&gt;&lt;/div&gt;
+&lt;div class=&#34;output_subarea output_stream output_stdout output_text&#34;&gt;
+&lt;pre&gt;lrwxr-xr-x  1 connolly  staff  57 Jul  5 09:34 Pictures/flickrbackup -&amp;gt; /Users/connolly/Library/Application Support/flickrbackup/
+&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
+&lt;/div&gt;
+
+&lt;p&gt;&lt;/div&gt;
+&lt;div class=&#34;cell border-box-sizing text_cell rendered&#34;&gt;
+&lt;div class=&#34;prompt input_prompt&#34;&gt;
+&lt;/div&gt;
+&lt;div class=&#34;inner_cell&#34;&gt;
+&lt;div class=&#34;text_cell_render border-box-sizing rendered_html&#34;&gt;
+&lt;h2 id=&#34;Upload-Map-DataFrame&#34;&gt;Upload Map DataFrame&lt;a class=&#34;anchor-link&#34; href=&#34;#Upload-Map-DataFrame&#34;&gt;&amp;#182;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;It carefully logs the correspondence to support incremental update:&lt;/p&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;2015-07-04 13:47:44 -0500  (1/8057)  Uploading &#39;...2002/Sep 25, 2002/....jpg&#39; ... 4294967334 -&amp;gt; 19226418710&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Let&#39;s make sure we have redundant copies of the map. And let&#39;s use ordinary CSV rather than the funky &lt;code&gt;-&amp;gt;&lt;/code&gt; format.&lt;/p&gt;
+
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&#34;cell border-box-sizing code_cell rendered&#34;&gt;
+&lt;div class=&#34;input&#34;&gt;
+&lt;div class=&#34;prompt input_prompt&#34;&gt;In&amp;nbsp;[191]:&lt;/div&gt;
+&lt;div class=&#34;inner_cell&#34;&gt;
+    &lt;div class=&#34;input_area&#34;&gt;
+&lt;div class=&#34; highlight hl-ipython2&#34;&gt;&lt;pre&gt;&lt;span class=&#34;kn&#34;&gt;from&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;IPython.display&lt;/span&gt; &lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;display&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Image&lt;/span&gt;
+&lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;pandas&lt;/span&gt; &lt;span class=&#34;kn&#34;&gt;as&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;pd&lt;/span&gt;
+&lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;numpy&lt;/span&gt; &lt;span class=&#34;kn&#34;&gt;as&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;np&lt;/span&gt;
+&lt;span class=&#34;nb&#34;&gt;dict&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;pandas&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;pd&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;&lt;strong&gt;version&lt;/strong&gt;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;numpy&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;np&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;&lt;strong&gt;version&lt;/strong&gt;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/p&gt;
+&lt;div class=&#34;output_wrapper&#34;&gt;
+&lt;div class=&#34;output&#34;&gt;
+
+&lt;div class=&#34;output_area&#34;&gt;&lt;div class=&#34;prompt output_prompt&#34;&gt;Out[191]:&lt;/div&gt;
+
+&lt;div class=&#34;output_text output_subarea output_execute_result&#34;&gt;
+&lt;pre&gt;{&amp;apos;numpy&amp;apos;: &amp;apos;1.9.2&amp;apos;, &amp;apos;pandas&amp;apos;: &amp;apos;0.14.1&amp;apos;}&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;div class=&#34;cell border-box-sizing code_cell rendered&#34;&gt;
+&lt;div class=&#34;input&#34;&gt;
+&lt;div class=&#34;prompt input_prompt&#34;&gt;In&amp;nbsp;[112]:&lt;/div&gt;
+&lt;div class=&#34;inner_cell&#34;&gt;
+    &lt;div class=&#34;input_area&#34;&gt;
+&lt;div class=&#34; highlight hl-ipython2&#34;&gt;&lt;pre&gt;&lt;span class=&#34;n&#34;&gt;upload_map&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;!&lt;/span&gt;ssh airbook.local cat Pictures/flickrbackup/uploaded-photo-ids-map.txt
+&lt;span class=&#34;n&#34;&gt;upload_map&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;pd&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;DataFrame&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;dict&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;apple&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;int&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;a&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;),&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;flickr&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;int&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;f&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;))&lt;/span&gt;
+                          &lt;span class=&#34;k&#34;&gt;for&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;a&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;f&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;ow&#34;&gt;in&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;line&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;split&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#39; -&amp;gt; &amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;for&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;line&lt;/span&gt; &lt;span class=&#34;ow&#34;&gt;in&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;upload_map&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;])&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;upload_map&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;head&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/p&gt;
+&lt;div class=&#34;output_wrapper&#34;&gt;
+&lt;div class=&#34;output&#34;&gt;
+
+&lt;div class=&#34;output_area&#34;&gt;&lt;div class=&#34;prompt output_prompt&#34;&gt;Out[112]:&lt;/div&gt;
+
+&lt;div class=&#34;output_html rendered_html output_subarea output_execute_result&#34;&gt;
+&lt;div style=&#34;max-height:1000px;max-width:1500px;overflow:auto;&#34;&gt;
+&lt;table border=&#34;1&#34; class=&#34;dataframe&#34;&gt;
+  &lt;thead&gt;
+    &lt;tr style=&#34;text-align: right;&#34;&gt;
+      &lt;th&gt;&lt;/th&gt;
+      &lt;th&gt;apple&lt;/th&gt;
+      &lt;th&gt;flickr&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;th&gt;0&lt;/th&gt;
+      &lt;td&gt; 4294967334&lt;/td&gt;
+      &lt;td&gt; 19226418710&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;1&lt;/th&gt;
+      &lt;td&gt; 4294976544&lt;/td&gt;
+      &lt;td&gt; 18793385783&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;2&lt;/th&gt;
+      &lt;td&gt; 4294976530&lt;/td&gt;
+      &lt;td&gt; 18793388523&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;3&lt;/th&gt;
+      &lt;td&gt; 4294976542&lt;/td&gt;
+      &lt;td&gt; 18791506174&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;4&lt;/th&gt;
+      &lt;td&gt; 4294971867&lt;/td&gt;
+      &lt;td&gt; 19414016905&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;div class=&#34;cell border-box-sizing code_cell rendered&#34;&gt;
+&lt;div class=&#34;input&#34;&gt;
+&lt;div class=&#34;prompt input_prompt&#34;&gt;In&amp;nbsp;[187]:&lt;/div&gt;
+&lt;div class=&#34;inner_cell&#34;&gt;
+    &lt;div class=&#34;input_area&#34;&gt;
+&lt;div class=&#34; highlight hl-ipython2&#34;&gt;&lt;pre&gt;&lt;span class=&#34;n&#34;&gt;upload_map&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;to_csv&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#39;uploaded-photo-ids-map.csv&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;div class=&#34;cell border-box-sizing text_cell rendered&#34;&gt;
+&lt;div class=&#34;prompt input_prompt&#34;&gt;
+&lt;/div&gt;
+&lt;div class=&#34;inner_cell&#34;&gt;
+&lt;div class=&#34;text_cell_render border-box-sizing rendered_html&#34;&gt;
+&lt;h2 id=&#34;Flickr-metadata-access&#34;&gt;Flickr metadata access&lt;a class=&#34;anchor-link&#34; href=&#34;#Flickr-metadata-access&#34;&gt;&amp;#182;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Let&#39;s take a at the results on flickr. I experimented with python flickr apis; the main one seems to be &lt;a href=&#34;http://stuvel.eu/media/flickrapi-docs/documentation/index.html&#34;&gt;Python Flickr&lt;/a&gt;. &lt;a href=&#34;flickdata.py&#34;&gt;flickdata.py&lt;/a&gt; (in &lt;a href=&#34;http://bitbucket.org/DanC/palmagent/&#34;&gt;palmagent&lt;/a&gt;) is a least-authority packaging of that API.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;TODO: use a separate Photo object for setDates.&lt;/em&gt;&lt;/p&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&#34;cell border-box-sizing code_cell rendered&#34;&gt;
+&lt;div class=&#34;input&#34;&gt;
+&lt;div class=&#34;prompt input_prompt&#34;&gt;In&amp;nbsp;[168]:&lt;/div&gt;
+&lt;div class=&#34;inner_cell&#34;&gt;
+    &lt;div class=&#34;input_area&#34;&gt;
+&lt;div class=&#34; highlight hl-ipython2&#34;&gt;&lt;pre&gt;&lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;flickdata&lt;/span&gt;
+&lt;span class=&#34;nb&#34;&gt;reload&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;flickdata&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;flickdata&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;&lt;strong&gt;version&lt;/strong&gt;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/p&gt;
+&lt;div class=&#34;output_wrapper&#34;&gt;
+&lt;div class=&#34;output&#34;&gt;
+
+&lt;div class=&#34;output_area&#34;&gt;&lt;div class=&#34;prompt output_prompt&#34;&gt;Out[168]:&lt;/div&gt;
+
+&lt;div class=&#34;output_text output_subarea output_execute_result&#34;&gt;
+&lt;pre&gt;&amp;apos;0.4&amp;apos;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;div class=&#34;cell border-box-sizing text_cell rendered&#34;&gt;
+&lt;div class=&#34;prompt input_prompt&#34;&gt;
+&lt;/div&gt;
+&lt;div class=&#34;inner_cell&#34;&gt;
+&lt;div class=&#34;text_cell_render border-box-sizing rendered_html&#34;&gt;
+&lt;p&gt;To make a &lt;code&gt;flickdata.Account&lt;/code&gt;, we use the privileged iPython notebook environment to get network access and the API key (&lt;em&gt;and OAuth credentials... where do they get squirrelled away?&lt;/em&gt;) and pass it to &lt;code&gt;flickdata&lt;/code&gt;:&lt;/p&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&#34;cell border-box-sizing code_cell rendered&#34;&gt;
+&lt;div class=&#34;input&#34;&gt;
+&lt;div class=&#34;prompt input_prompt&#34;&gt;In&amp;nbsp;[45]:&lt;/div&gt;
+&lt;div class=&#34;inner_cell&#34;&gt;
+    &lt;div class=&#34;input_area&#34;&gt;
+&lt;div class=&#34; highlight hl-ipython2&#34;&gt;&lt;pre&gt;&lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;json&lt;/span&gt;
+&lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;logging&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;logger&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;logging&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;getLogger&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;logger&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;setLevel&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;logging&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;INFO&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;logging&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;info&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#39;We try to log I/O.&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/p&gt;
+&lt;div class=&#34;output_wrapper&#34;&gt;
+&lt;div class=&#34;output&#34;&gt;
+
+&lt;div class=&#34;output_area&#34;&gt;&lt;div class=&#34;prompt&#34;&gt;&lt;/div&gt;
+&lt;div class=&#34;output_subarea output_stream output_stderr output_text&#34;&gt;
+&lt;pre&gt;INFO:root:We try to log I/O.
+&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
+&lt;/div&gt;
+
+&lt;p&gt;&lt;/div&gt;
+&lt;div class=&#34;cell border-box-sizing code_cell rendered&#34;&gt;
+&lt;div class=&#34;input&#34;&gt;
+&lt;div class=&#34;prompt input_prompt&#34;&gt;In&amp;nbsp;[75]:&lt;/div&gt;
+&lt;div class=&#34;inner_cell&#34;&gt;
+    &lt;div class=&#34;input_area&#34;&gt;
+&lt;div class=&#34; highlight hl-ipython2&#34;&gt;&lt;pre&gt;&lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;myFlickrAcct&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;user_id&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#39;14874637@N00&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
+    &lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;pathlib&lt;/span&gt;
+    &lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;flickrapi&lt;/span&gt;
+    &lt;span class=&#34;n&#34;&gt;api_secret&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;pathlib&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Path&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#39;flickr_api_secret&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;open&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;read&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;strip&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;flickdata&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Read&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;make&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;flickrapi&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;api_secret&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;user_id&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;n&#34;&gt;myAcct&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;myFlickrAcct&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/p&gt;
+&lt;div class=&#34;output_wrapper&#34;&gt;
+&lt;div class=&#34;output&#34;&gt;
+
+&lt;div class=&#34;output_area&#34;&gt;&lt;div class=&#34;prompt&#34;&gt;&lt;/div&gt;
+&lt;div class=&#34;output_subarea output_stream output_stderr output_text&#34;&gt;
+&lt;pre&gt;INFO:flickdata:authenticating...
+INFO:flickrapi.core:Calling {&amp;apos;nojsoncallback&amp;apos;: 1, &amp;apos;method&amp;apos;: &amp;apos;flickr.auth.oauth.checkToken&amp;apos;, &amp;apos;format&amp;apos;: &amp;apos;parsed-json&amp;apos;}
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTPS connection (1): api.flickr.com
+INFO:flickrapi.core:REST Parser: using xml.etree.cElementTree
+&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
+&lt;/div&gt;
+
+&lt;p&gt;&lt;/div&gt;
+&lt;div class=&#34;cell border-box-sizing text_cell rendered&#34;&gt;
+&lt;div class=&#34;prompt input_prompt&#34;&gt;
+&lt;/div&gt;
+&lt;div class=&#34;inner_cell&#34;&gt;
+&lt;div class=&#34;text_cell_render border-box-sizing rendered_html&#34;&gt;
+&lt;h3 id=&#34;Photostream-confused-about-recent-photos&#34;&gt;Photostream confused about recent photos&lt;a class=&#34;anchor-link&#34; href=&#34;#Photostream-confused-about-recent-photos&#34;&gt;&amp;#182;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;A bunch of old photos and videos are showing up as recent in my photostream as the upload progresses.&lt;/p&gt;
+&lt;p&gt;Flickr seems to set datetaken = date uploaded when there&#39;s no EXIF date, so let&#39;s look at these supposedly recent photos.&lt;/p&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&#34;cell border-box-sizing code_cell rendered&#34;&gt;
+&lt;div class=&#34;input&#34;&gt;
+&lt;div class=&#34;prompt input_prompt&#34;&gt;In&amp;nbsp;[172]:&lt;/div&gt;
+&lt;div class=&#34;inner_cell&#34;&gt;
+    &lt;div class=&#34;input_area&#34;&gt;
+&lt;div class=&#34; highlight hl-ipython2&#34;&gt;&lt;pre&gt;&lt;span class=&#34;n&#34;&gt;records&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;
+    &lt;span class=&#34;n&#34;&gt;r&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;for&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;page&lt;/span&gt; &lt;span class=&#34;ow&#34;&gt;in&lt;/span&gt;
+    &lt;span class=&#34;n&#34;&gt;myAcct&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;getPhotos&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;
+        &lt;span class=&#34;n&#34;&gt;min_taken_date&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#39;2015-07&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+        &lt;span class=&#34;n&#34;&gt;max_taken_date&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#39;2015-08&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+        &lt;span class=&#34;n&#34;&gt;sort&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#39;date-taken-asc&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;for&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;r&lt;/span&gt; &lt;span class=&#34;ow&#34;&gt;in&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;page&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;photo&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;pd&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;DataFrame&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;records&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;photo&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#39;id&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;photo&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;id&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;astype&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;int&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;  &lt;span class=&#34;c&#34;&gt;# odd... even in JSON format, ids come back as strings&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;photo&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;photo&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;set_index&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#39;id&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;span class=&#34;nb&#34;&gt;len&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;photo&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/p&gt;
+&lt;div class=&#34;output_wrapper&#34;&gt;
+&lt;div class=&#34;output&#34;&gt;
+
+&lt;div class=&#34;output_area&#34;&gt;&lt;div class=&#34;prompt&#34;&gt;&lt;/div&gt;
+&lt;div class=&#34;output_subarea output_stream output_stderr output_text&#34;&gt;
+&lt;pre&gt;INFO:flickdata:getPhotos page 1 cirt: {&amp;apos;sort&amp;apos;: &amp;apos;date-taken-asc&amp;apos;, &amp;apos;min_taken_date&amp;apos;: &amp;apos;2015-07&amp;apos;, &amp;apos;max_taken_date&amp;apos;: &amp;apos;2015-08&amp;apos;}...
+INFO:flickrapi.core:Calling {&amp;apos;nojsoncallback&amp;apos;: 1, &amp;apos;method&amp;apos;: &amp;apos;flickr.people.getPhotos&amp;apos;, &amp;apos;format&amp;apos;: &amp;apos;parsed-json&amp;apos;}
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTPS connection (1): api.flickr.com
+INFO:flickdata:page 1 of 1
+&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;div class=&#34;output_area&#34;&gt;&lt;div class=&#34;prompt output_prompt&#34;&gt;Out[172]:&lt;/div&gt;
+
+&lt;div class=&#34;output_text output_subarea output_execute_result&#34;&gt;
+&lt;pre&gt;78&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;div class=&#34;cell border-box-sizing text_cell rendered&#34;&gt;
+&lt;div class=&#34;prompt input_prompt&#34;&gt;
+&lt;/div&gt;
+&lt;div class=&#34;inner_cell&#34;&gt;
+&lt;div class=&#34;text_cell_render border-box-sizing rendered_html&#34;&gt;
+&lt;h3 id=&#34;Photo-URLs:-Thumbnail&#34;&gt;Photo URLs: Thumbnail&lt;a class=&#34;anchor-link&#34; href=&#34;#Photo-URLs:-Thumbnail&#34;&gt;&amp;#182;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Flickr&#39;s &lt;a href=&#34;https://www.flickr.com/services/api/misc.urls.html&#34;&gt;URLs API&lt;/a&gt; uses &#34;secrets&#34; so they serve as nice tasty &lt;a href=&#34;http://www.w3.org/TR/capability-urls/&#34;&gt;capability URLs&lt;/a&gt; for the photos. So we can see this thumbnail from this iPython notebook even though we&#39;re not logged in to flickr here.&lt;/p&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&#34;cell border-box-sizing code_cell rendered&#34;&gt;
+&lt;div class=&#34;input&#34;&gt;
+&lt;div class=&#34;prompt input_prompt&#34;&gt;In&amp;nbsp;[173]:&lt;/div&gt;
+&lt;div class=&#34;inner_cell&#34;&gt;
+    &lt;div class=&#34;input_area&#34;&gt;
+&lt;div class=&#34; highlight hl-ipython2&#34;&gt;&lt;pre&gt;&lt;span class=&#34;n&#34;&gt;Image&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;url&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;photo&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;iloc&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;url_t&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/p&gt;
+&lt;div class=&#34;output_wrapper&#34;&gt;
+&lt;div class=&#34;output&#34;&gt;
+
+&lt;div class=&#34;output_area&#34;&gt;&lt;div class=&#34;prompt output_prompt&#34;&gt;Out[173]:&lt;/div&gt;
+
+&lt;div class=&#34;output_html rendered_html output_subarea output_execute_result&#34;&gt;
+&lt;img src=&#34;https://farm1.staticflickr.com/540/19350464562_2ff03b551d_t.jpg&#34;/&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;div class=&#34;cell border-box-sizing text_cell rendered&#34;&gt;
+&lt;div class=&#34;prompt input_prompt&#34;&gt;
+&lt;/div&gt;
+&lt;div class=&#34;inner_cell&#34;&gt;
+&lt;div class=&#34;text_cell_render border-box-sizing rendered_html&#34;&gt;
+&lt;h3 id=&#34;Photo-info-fields&#34;&gt;Photo info fields&lt;a class=&#34;anchor-link&#34; href=&#34;#Photo-info-fields&#34;&gt;&amp;#182;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;&lt;em&gt;Note: this isn&#39;t all fields available from &lt;a href=&#34;https://www.flickr.com/services/api/flickr.galleries.getPhotos.html&#34;&gt;getPhotos&lt;/a&gt;&lt;/em&gt;.&lt;/p&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&#34;cell border-box-sizing code_cell rendered&#34;&gt;
+&lt;div class=&#34;input&#34;&gt;
+&lt;div class=&#34;prompt input_prompt&#34;&gt;In&amp;nbsp;[174]:&lt;/div&gt;
+&lt;div class=&#34;inner_cell&#34;&gt;
+    &lt;div class=&#34;input_area&#34;&gt;
+&lt;div class=&#34; highlight hl-ipython2&#34;&gt;&lt;pre&gt;&lt;span class=&#34;n&#34;&gt;photo&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;iloc&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/p&gt;
+&lt;div class=&#34;output_wrapper&#34;&gt;
+&lt;div class=&#34;output&#34;&gt;
+
+&lt;div class=&#34;output_area&#34;&gt;&lt;div class=&#34;prompt output_prompt&#34;&gt;Out[174]:&lt;/div&gt;
+
+&lt;div class=&#34;output_text output_subarea output_execute_result&#34;&gt;
+&lt;pre&gt;accuracy                                                               16
+context                                                                 0
+datetaken                                             2015-07-02 11:28:40
+datetakengranularity                                                    0
+datetakenunknown                                                        0
+dateupload                                                     1435854531
+description                                            {u&amp;apos;_content&amp;apos;: u&amp;apos;&amp;apos;}
+farm                                                                    1
+geo_is_contact                                                          0
+geo_is_family                                                           0
+geo_is_friend                                                           0
+geo_is_public                                                           1
+height_k                                                             1516
+height_o                                                             2368
+height_t                                                               74
+height_z                                                              474
+isfamily                                                                0
+isfriend                                                                0
+ispublic                                                                0
+latitude                                                        39.054611
+longitude                                                      -94.611264
+machine_tags                                                             
+owner                                                        14874637@N00
+place_id                                               _zncmCVTVLmQsuBlEg
+secret                                                         2ff03b551d
+server                                                                540
+tags                                                                     
+title                                                 IMG_20150702_112835
+url_k                   https://farm1.staticflickr.com/540/19350464562...
+url_o                   https://farm1.staticflickr.com/540/19350464562...
+url_t                   https://farm1.staticflickr.com/540/19350464562...
+url_z                   https://farm1.staticflickr.com/540/19350464562...
+width_k                                                              2048
+width_o                                                              3200
+width_t                                                               100
+width_z                                                               640
+woeid                                                            26342889
+Name: 19350464562, dtype: object&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;div class=&#34;cell border-box-sizing text_cell rendered&#34;&gt;
+&lt;div class=&#34;prompt input_prompt&#34;&gt;
+&lt;/div&gt;
+&lt;div class=&#34;inner_cell&#34;&gt;
+&lt;div class=&#34;text_cell_render border-box-sizing rendered_html&#34;&gt;
+&lt;p&gt;Ah. Good. When the display defaults date taken to upload date, the underlying data tells us so:&lt;/p&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&#34;cell border-box-sizing code_cell rendered&#34;&gt;
+&lt;div class=&#34;input&#34;&gt;
+&lt;div class=&#34;prompt input_prompt&#34;&gt;In&amp;nbsp;[176]:&lt;/div&gt;
+&lt;div class=&#34;inner_cell&#34;&gt;
+    &lt;div class=&#34;input_area&#34;&gt;
+&lt;div class=&#34; highlight hl-ipython2&#34;&gt;&lt;pre&gt;&lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;datetime&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;n&#34;&gt;photo&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#39;upload_date&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;np&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;datetime64&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;datetime&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;datetime&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;fromtimestamp&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;int&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ts&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)))&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;for&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;ts&lt;/span&gt; &lt;span class=&#34;ow&#34;&gt;in&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;photo&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;dateupload&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;photo&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;photo&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;datetakenunknown&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;==&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;1&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;][[&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#39;datetaken&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;upload_date&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;title&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;width_o&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;height_o&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]]&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;head&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/p&gt;
+&lt;div class=&#34;output_wrapper&#34;&gt;
+&lt;div class=&#34;output&#34;&gt;
+
+&lt;div class=&#34;output_area&#34;&gt;&lt;div class=&#34;prompt output_prompt&#34;&gt;Out[176]:&lt;/div&gt;
+
+&lt;div class=&#34;output_html rendered_html output_subarea output_execute_result&#34;&gt;
+&lt;div style=&#34;max-height:1000px;max-width:1500px;overflow:auto;&#34;&gt;
+&lt;table border=&#34;1&#34; class=&#34;dataframe&#34;&gt;
+  &lt;thead&gt;
+    &lt;tr style=&#34;text-align: right;&#34;&gt;
+      &lt;th&gt;&lt;/th&gt;
+      &lt;th&gt;datetaken&lt;/th&gt;
+      &lt;th&gt;upload_date&lt;/th&gt;
+      &lt;th&gt;title&lt;/th&gt;
+      &lt;th&gt;width_o&lt;/th&gt;
+      &lt;th&gt;height_o&lt;/th&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;id&lt;/th&gt;
+      &lt;th&gt;&lt;/th&gt;
+      &lt;th&gt;&lt;/th&gt;
+      &lt;th&gt;&lt;/th&gt;
+      &lt;th&gt;&lt;/th&gt;
+      &lt;th&gt;&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;th&gt;19426161436&lt;/th&gt;
+      &lt;td&gt; 2015-07-05 20:23:04&lt;/td&gt;
+      &lt;td&gt;2015-07-05 20:23:04&lt;/td&gt;
+      &lt;td&gt;  segway tour - 4&lt;/td&gt;
+      &lt;td&gt;  466&lt;/td&gt;
+      &lt;td&gt;  630&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;19456508621&lt;/th&gt;
+      &lt;td&gt; 2015-07-05 20:23:10&lt;/td&gt;
+      &lt;td&gt;2015-07-05 20:23:10&lt;/td&gt;
+      &lt;td&gt; segway tour - 28&lt;/td&gt;
+      &lt;td&gt;  851&lt;/td&gt;
+      &lt;td&gt;  630&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;19266094319&lt;/th&gt;
+      &lt;td&gt; 2015-07-05 20:23:12&lt;/td&gt;
+      &lt;td&gt;2015-07-05 20:23:12&lt;/td&gt;
+      &lt;td&gt;  segway tour - 2&lt;/td&gt;
+      &lt;td&gt;  466&lt;/td&gt;
+      &lt;td&gt;  630&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;19264673498&lt;/th&gt;
+      &lt;td&gt; 2015-07-05 20:23:16&lt;/td&gt;
+      &lt;td&gt;2015-07-05 20:23:16&lt;/td&gt;
+      &lt;td&gt; segway tour - 33&lt;/td&gt;
+      &lt;td&gt;  466&lt;/td&gt;
+      &lt;td&gt;  630&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;19445946592&lt;/th&gt;
+      &lt;td&gt; 2015-07-05 20:23:47&lt;/td&gt;
+      &lt;td&gt;2015-07-05 20:23:47&lt;/td&gt;
+      &lt;td&gt; Brennan baby tub&lt;/td&gt;
+      &lt;td&gt; 2351&lt;/td&gt;
+      &lt;td&gt; 2945&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;div class=&#34;cell border-box-sizing text_cell rendered&#34;&gt;
+&lt;div class=&#34;prompt input_prompt&#34;&gt;
+&lt;/div&gt;
+&lt;div class=&#34;inner_cell&#34;&gt;
+&lt;div class=&#34;text_cell_render border-box-sizing rendered_html&#34;&gt;
+&lt;p&gt;These were uploaded very soon after being taken; I suppose I turned on auto-upload on my phone:&lt;/p&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&#34;cell border-box-sizing code_cell rendered&#34;&gt;
+&lt;div class=&#34;input&#34;&gt;
+&lt;div class=&#34;prompt input_prompt&#34;&gt;In&amp;nbsp;[192]:&lt;/div&gt;
+&lt;div class=&#34;inner_cell&#34;&gt;
+    &lt;div class=&#34;input_area&#34;&gt;
+&lt;div class=&#34; highlight hl-ipython2&#34;&gt;&lt;pre&gt;&lt;span class=&#34;n&#34;&gt;photo&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;photo&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;datetakenunknown&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;==&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;0&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;][[&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#39;datetaken&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;upload_date&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;title&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;width_o&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;height_o&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]]&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;head&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/p&gt;
+&lt;div class=&#34;output_wrapper&#34;&gt;
+&lt;div class=&#34;output&#34;&gt;
+
+&lt;div class=&#34;output_area&#34;&gt;&lt;div class=&#34;prompt output_prompt&#34;&gt;Out[192]:&lt;/div&gt;
+
+&lt;div class=&#34;output_html rendered_html output_subarea output_execute_result&#34;&gt;
+&lt;div style=&#34;max-height:1000px;max-width:1500px;overflow:auto;&#34;&gt;
+&lt;table border=&#34;1&#34; class=&#34;dataframe&#34;&gt;
+  &lt;thead&gt;
+    &lt;tr style=&#34;text-align: right;&#34;&gt;
+      &lt;th&gt;&lt;/th&gt;
+      &lt;th&gt;datetaken&lt;/th&gt;
+      &lt;th&gt;upload_date&lt;/th&gt;
+      &lt;th&gt;title&lt;/th&gt;
+      &lt;th&gt;width_o&lt;/th&gt;
+      &lt;th&gt;height_o&lt;/th&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;id&lt;/th&gt;
+      &lt;th&gt;&lt;/th&gt;
+      &lt;th&gt;&lt;/th&gt;
+      &lt;th&gt;&lt;/th&gt;
+      &lt;th&gt;&lt;/th&gt;
+      &lt;th&gt;&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;th&gt;19350464562&lt;/th&gt;
+      &lt;td&gt; 2015-07-02 11:28:40&lt;/td&gt;
+      &lt;td&gt;2015-07-02 11:28:51&lt;/td&gt;
+      &lt;td&gt; IMG_20150702_112835&lt;/td&gt;
+      &lt;td&gt; 3200&lt;/td&gt;
+      &lt;td&gt; 2368&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;19425609241&lt;/th&gt;
+      &lt;td&gt; 2015-07-04 13:17:22&lt;/td&gt;
+      &lt;td&gt;2015-07-04 19:49:20&lt;/td&gt;
+      &lt;td&gt;                    &lt;/td&gt;
+      &lt;td&gt; 1122&lt;/td&gt;
+      &lt;td&gt;  712&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;19235236159&lt;/th&gt;
+      &lt;td&gt; 2015-07-04 13:17:33&lt;/td&gt;
+      &lt;td&gt;2015-07-04 19:49:22&lt;/td&gt;
+      &lt;td&gt;                    &lt;/td&gt;
+      &lt;td&gt;  458&lt;/td&gt;
+      &lt;td&gt;   46&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;18800793223&lt;/th&gt;
+      &lt;td&gt; 2015-07-04 13:17:43&lt;/td&gt;
+      &lt;td&gt;2015-07-04 19:49:23&lt;/td&gt;
+      &lt;td&gt;                    &lt;/td&gt;
+      &lt;td&gt;  546&lt;/td&gt;
+      &lt;td&gt;  100&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;div class=&#34;cell border-box-sizing text_cell rendered&#34;&gt;
+&lt;div class=&#34;prompt input_prompt&#34;&gt;
+&lt;/div&gt;
+&lt;div class=&#34;inner_cell&#34;&gt;
+&lt;div class=&#34;text_cell_render border-box-sizing rendered_html&#34;&gt;
+&lt;p&gt;I verified the most recent upload dates against iphoto-flickr logs to be sure there were no timezone issues:&lt;/p&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&#34;cell border-box-sizing code_cell rendered&#34;&gt;
+&lt;div class=&#34;input&#34;&gt;
+&lt;div class=&#34;prompt input_prompt&#34;&gt;In&amp;nbsp;[177]:&lt;/div&gt;
+&lt;div class=&#34;inner_cell&#34;&gt;
+    &lt;div class=&#34;input_area&#34;&gt;
+&lt;div class=&#34; highlight hl-ipython2&#34;&gt;&lt;pre&gt;&lt;span class=&#34;n&#34;&gt;photo&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[[&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#39;datetaken&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;upload_date&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;title&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;width_o&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;height_o&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]]&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;sort&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#39;upload_date&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;ascending&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;bp&#34;&gt;False&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;head&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/p&gt;
+&lt;div class=&#34;output_wrapper&#34;&gt;
+&lt;div class=&#34;output&#34;&gt;
+
+&lt;div class=&#34;output_area&#34;&gt;&lt;div class=&#34;prompt output_prompt&#34;&gt;Out[177]:&lt;/div&gt;
+
+&lt;div class=&#34;output_html rendered_html output_subarea output_execute_result&#34;&gt;
+&lt;div style=&#34;max-height:1000px;max-width:1500px;overflow:auto;&#34;&gt;
+&lt;table border=&#34;1&#34; class=&#34;dataframe&#34;&gt;
+  &lt;thead&gt;
+    &lt;tr style=&#34;text-align: right;&#34;&gt;
+      &lt;th&gt;&lt;/th&gt;
+      &lt;th&gt;datetaken&lt;/th&gt;
+      &lt;th&gt;upload_date&lt;/th&gt;
+      &lt;th&gt;title&lt;/th&gt;
+      &lt;th&gt;width_o&lt;/th&gt;
+      &lt;th&gt;height_o&lt;/th&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;id&lt;/th&gt;
+      &lt;th&gt;&lt;/th&gt;
+      &lt;th&gt;&lt;/th&gt;
+      &lt;th&gt;&lt;/th&gt;
+      &lt;th&gt;&lt;/th&gt;
+      &lt;th&gt;&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;th&gt;19453379905&lt;/th&gt;
+      &lt;td&gt; 2015-07-05 21:18:18&lt;/td&gt;
+      &lt;td&gt;2015-07-05 21:18:18&lt;/td&gt;
+      &lt;td&gt; 11223919_10103150053978467_4385673914430987089_n&lt;/td&gt;
+      &lt;td&gt; 960&lt;/td&gt;
+      &lt;td&gt; 639&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;19457659531&lt;/th&gt;
+      &lt;td&gt; 2015-07-05 21:18:17&lt;/td&gt;
+      &lt;td&gt;2015-07-05 21:18:17&lt;/td&gt;
+      &lt;td&gt;                        Dining_Room_Turned_Office&lt;/td&gt;
+      &lt;td&gt; 550&lt;/td&gt;
+      &lt;td&gt; 400&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;19447074092&lt;/th&gt;
+      &lt;td&gt; 2015-07-05 21:18:04&lt;/td&gt;
+      &lt;td&gt;2015-07-05 21:18:04&lt;/td&gt;
+      &lt;td&gt; 11261973_10103150053743937_5354724846552149885_n&lt;/td&gt;
+      &lt;td&gt; 960&lt;/td&gt;
+      &lt;td&gt; 639&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;19447070902&lt;/th&gt;
+      &lt;td&gt; 2015-07-05 21:17:59&lt;/td&gt;
+      &lt;td&gt;2015-07-05 21:17:59&lt;/td&gt;
+      &lt;td&gt; 11143223_10103150052730967_2134381211714517553_n&lt;/td&gt;
+      &lt;td&gt; 960&lt;/td&gt;
+      &lt;td&gt; 639&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;19457651521&lt;/th&gt;
+      &lt;td&gt; 2015-07-05 21:17:55&lt;/td&gt;
+      &lt;td&gt;2015-07-05 21:17:55&lt;/td&gt;
+      &lt;td&gt; 11265214_10103150052591247_2966764364887797640_n&lt;/td&gt;
+      &lt;td&gt; 960&lt;/td&gt;
+      &lt;td&gt; 639&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;div class=&#34;cell border-box-sizing text_cell rendered&#34;&gt;
+&lt;div class=&#34;prompt input_prompt&#34;&gt;
+&lt;/div&gt;
+&lt;div class=&#34;inner_cell&#34;&gt;
+&lt;div class=&#34;text_cell_render border-box-sizing rendered_html&#34;&gt;
+&lt;h2 id=&#34;iPhoto,-give-me-my-data-back!&#34;&gt;iPhoto, give me my data back!&lt;a class=&#34;anchor-link&#34; href=&#34;#iPhoto,-give-me-my-data-back!&#34;&gt;&amp;#182;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;flickrbackup found the library I&#39;m interested in even though it&#39;s not in the default path. Ah... it&#39;s using Applescript.&lt;/p&gt;
+&lt;p&gt;iPhoto uses fairly nice .xml and .db files with a nice, sturdy uuid for each photo. But the id &lt;code&gt;flickerbackup.rb&lt;/code&gt; got via applescript is nowhere to be found in there!&lt;/p&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&#34;cell border-box-sizing code_cell rendered&#34;&gt;
+&lt;div class=&#34;input&#34;&gt;
+&lt;div class=&#34;prompt input_prompt&#34;&gt;In&amp;nbsp;[16]:&lt;/div&gt;
+&lt;div class=&#34;inner_cell&#34;&gt;
+    &lt;div class=&#34;input_area&#34;&gt;
+&lt;div class=&#34; highlight hl-ipython2&#34;&gt;&lt;pre&gt;&lt;span class=&#34;o&#34;&gt;!&lt;/span&gt;ssh airbook.local grep &lt;span class=&#34;o&#34;&gt;{&lt;/span&gt;photo.index&lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;0&lt;span class=&#34;o&#34;&gt;]}&lt;/span&gt; Pictures/flickrbackup/uploaded-photo-ids-map.txt 
+&lt;/pre&gt;&lt;/div&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/p&gt;
+&lt;div class=&#34;output_wrapper&#34;&gt;
+&lt;div class=&#34;output&#34;&gt;
+
+&lt;div class=&#34;output_area&#34;&gt;&lt;div class=&#34;prompt&#34;&gt;&lt;/div&gt;
+&lt;div class=&#34;output_subarea output_stream output_stdout output_text&#34;&gt;
+&lt;pre&gt;4294967334 -&amp;gt; 19226418710
+&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
+&lt;/div&gt;
+
+&lt;p&gt;&lt;/div&gt;
+&lt;div class=&#34;cell border-box-sizing code_cell rendered&#34;&gt;
+&lt;div class=&#34;input&#34;&gt;
+&lt;div class=&#34;prompt input_prompt&#34;&gt;In&amp;nbsp;[17]:&lt;/div&gt;
+&lt;div class=&#34;inner_cell&#34;&gt;
+    &lt;div class=&#34;input_area&#34;&gt;
+&lt;div class=&#34; highlight hl-ipython2&#34;&gt;&lt;pre&gt;&lt;span class=&#34;o&#34;&gt;!&lt;/span&gt;ssh airbook.local grep &lt;span class=&#34;m&#34;&gt;4294967334&lt;/span&gt; Pictures/iphoto-maryc/AlbumData.xml
+&lt;/pre&gt;&lt;/div&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;div class=&#34;cell border-box-sizing code_cell rendered&#34;&gt;
+&lt;div class=&#34;input&#34;&gt;
+&lt;div class=&#34;prompt input_prompt&#34;&gt;In&amp;nbsp;[18]:&lt;/div&gt;
+&lt;div class=&#34;inner_cell&#34;&gt;
+    &lt;div class=&#34;input_area&#34;&gt;
+&lt;div class=&#34; highlight hl-ipython2&#34;&gt;&lt;pre&gt;&lt;span class=&#34;o&#34;&gt;!&lt;/span&gt;ssh airbook.local sqlite3 Pictures/iphoto-maryc/iPhotoMain.db .dump &lt;span class=&#34;p&#34;&gt;|&lt;/span&gt; grep &lt;span class=&#34;m&#34;&gt;4294967334&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;div class=&#34;cell border-box-sizing text_cell rendered&#34;&gt;
+&lt;div class=&#34;prompt input_prompt&#34;&gt;
+&lt;/div&gt;
+&lt;div class=&#34;inner_cell&#34;&gt;
+&lt;div class=&#34;text_cell_render border-box-sizing rendered_html&#34;&gt;
+&lt;p&gt;The &lt;a href=&#34;http://www.mugginsoft.com/html/kosmictask/ASDictionaryDocs/Apple/iPhoto/OS-X-10.7/iPhoto-9.2.3/html/&#34;&gt;iPhoto script dictionary&lt;/a&gt; doesn&#39;t show a uid property. &lt;strong&gt;Darn.&lt;/strong&gt; We&#39;ll have to use file paths or something.&lt;/p&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&#34;cell border-box-sizing text_cell rendered&#34;&gt;
+&lt;div class=&#34;prompt input_prompt&#34;&gt;
+&lt;/div&gt;
+&lt;div class=&#34;inner_cell&#34;&gt;
+&lt;div class=&#34;text_cell_render border-box-sizing rendered_html&#34;&gt;
+&lt;h3 id=&#34;iPhoto-takes-orders-in-JavaScript&#34;&gt;iPhoto takes orders in JavaScript&lt;a class=&#34;anchor-link&#34; href=&#34;#iPhoto-takes-orders-in-JavaScript&#34;&gt;&amp;#182;&lt;/a&gt;&lt;/h3&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&#34;cell border-box-sizing text_cell rendered&#34;&gt;
+&lt;div class=&#34;prompt input_prompt&#34;&gt;
+&lt;/div&gt;
+&lt;div class=&#34;inner_cell&#34;&gt;
+&lt;div class=&#34;text_cell_render border-box-sizing rendered_html&#34;&gt;
+&lt;p&gt;Ooh! We can use &lt;a href=&#34;https://developer.apple.com/library/mac/releasenotes/InterapplicationCommunication/RN-JavaScriptForAutomation/&#34;&gt;JXA&lt;/a&gt;, JavaScript for Automation. Somebody made a nice &lt;a href=&#34;https://github.com/dtinth/JXA-Cookbook/wiki/Using-JavaScript-for-Automation&#34;&gt;cookbook&lt;/a&gt; on github.&lt;/p&gt;
+&lt;p&gt;The first API I found for writing a string to a file was this &lt;code&gt;$.NSString&lt;/code&gt; objective-C bridge thing. Oh well. It works.&lt;/p&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&#34;cell border-box-sizing code_cell rendered&#34;&gt;
+&lt;div class=&#34;input&#34;&gt;
+&lt;div class=&#34;prompt input_prompt&#34;&gt;In&amp;nbsp;[39]:&lt;/div&gt;
+&lt;div class=&#34;inner_cell&#34;&gt;
+    &lt;div class=&#34;input_area&#34;&gt;
+&lt;div class=&#34; highlight hl-ipython2&#34;&gt;&lt;pre&gt;&lt;span class=&#34;n&#34;&gt;export_keys&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;
+&lt;span class=&#34;s&#34;&gt;#!/usr/bin/env osascript -l JavaScript&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;s&#34;&gt;function save(info, where) {&lt;/span&gt;
+&lt;span class=&#34;s&#34;&gt;    console.log(&amp;#39;saving to...&amp;#39;, where)&lt;/span&gt;
+&lt;span class=&#34;s&#34;&gt;    var str = $.NSString.alloc.initWithUTF8String(JSON.stringify(info));&lt;/span&gt;
+&lt;span class=&#34;s&#34;&gt;    str.writeToFileAtomicallyEncodingError(where, true, $.NSUTF8StringEncoding, null);    &lt;/span&gt;
+&lt;span class=&#34;s&#34;&gt;}&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;s&#34;&gt;function getKeys(iPhoto) {&lt;/span&gt;
+&lt;span class=&#34;s&#34;&gt;    var photos = iPhoto.photoLibraryAlbum().photos;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;s&#34;&gt;    return {&lt;/span&gt;
+&lt;span class=&#34;s&#34;&gt;        id: photos.id(),&lt;/span&gt;
+&lt;span class=&#34;s&#34;&gt;        date: photos.date(),&lt;/span&gt;
+&lt;span class=&#34;s&#34;&gt;        width: photos.width(),&lt;/span&gt;
+&lt;span class=&#34;s&#34;&gt;        height: photos.height(),&lt;/span&gt;
+&lt;span class=&#34;s&#34;&gt;        originalPath: photos.originalPath(),&lt;/span&gt;
+&lt;span class=&#34;s&#34;&gt;        imagePath: photos.imagePath()&lt;/span&gt;
+&lt;span class=&#34;s&#34;&gt;    };&lt;/span&gt;
+&lt;span class=&#34;s&#34;&gt;}&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;s&#34;&gt;function run(argv) {&lt;/span&gt;
+&lt;span class=&#34;s&#34;&gt;    out = argv[0];&lt;/span&gt;
+&lt;span class=&#34;s&#34;&gt;    iPhoto = Application(&amp;#39;iPhoto&amp;#39;);&lt;/span&gt;
+&lt;span class=&#34;s&#34;&gt;    save(getKeys(iPhoto), out)&lt;/span&gt;
+&lt;span class=&#34;s&#34;&gt;}&lt;/span&gt;
+&lt;span class=&#34;s&#34;&gt;&amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;strip&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;div class=&#34;cell border-box-sizing text_cell rendered&#34;&gt;
+&lt;div class=&#34;prompt input_prompt&#34;&gt;
+&lt;/div&gt;
+&lt;div class=&#34;inner_cell&#34;&gt;
+&lt;div class=&#34;text_cell_render border-box-sizing rendered_html&#34;&gt;
+&lt;p&gt;Let&#39;s save it, &lt;code&gt;scp&lt;/code&gt; it over, run it, and &lt;code&gt;scp&lt;/code&gt; the results back:&lt;/p&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&#34;cell border-box-sizing code_cell rendered&#34;&gt;
+&lt;div class=&#34;input&#34;&gt;
+&lt;div class=&#34;prompt input_prompt&#34;&gt;In&amp;nbsp;[40]:&lt;/div&gt;
+&lt;div class=&#34;inner_cell&#34;&gt;
+    &lt;div class=&#34;input_area&#34;&gt;
+&lt;div class=&#34; highlight hl-ipython2&#34;&gt;&lt;pre&gt;&lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;save_script&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;name&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;text&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
+    &lt;span class=&#34;kn&#34;&gt;from&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;pathlib&lt;/span&gt; &lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Path&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;with&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Path&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#39;photo_keys.js&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;open&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#39;wb&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;as&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;out&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
+        &lt;span class=&#34;n&#34;&gt;out&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;write&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;export_keys&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;n&#34;&gt;save_script&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#39;photo_keys.js&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;export_keys&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;div class=&#34;cell border-box-sizing code_cell rendered&#34;&gt;
+&lt;div class=&#34;input&#34;&gt;
+&lt;div class=&#34;prompt input_prompt&#34;&gt;In&amp;nbsp;[41]:&lt;/div&gt;
+&lt;div class=&#34;inner_cell&#34;&gt;
+    &lt;div class=&#34;input_area&#34;&gt;
+&lt;div class=&#34; highlight hl-ipython2&#34;&gt;&lt;pre&gt;&lt;span class=&#34;o&#34;&gt;!&lt;/span&gt;scp photo_keys.js airbook.local:Pictures/
+&lt;/pre&gt;&lt;/div&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/p&gt;
+&lt;div class=&#34;output_wrapper&#34;&gt;
+&lt;div class=&#34;output&#34;&gt;
+
+&lt;div class=&#34;output_area&#34;&gt;&lt;div class=&#34;prompt&#34;&gt;&lt;/div&gt;
+&lt;div class=&#34;output_subarea output_stream output_stdout output_text&#34;&gt;
+&lt;pre&gt;photo_keys.js                                 100%  687     0.7KB/s   00:00    
+&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
+&lt;/div&gt;
+
+&lt;p&gt;&lt;/div&gt;
+&lt;div class=&#34;cell border-box-sizing code_cell rendered&#34;&gt;
+&lt;div class=&#34;input&#34;&gt;
+&lt;div class=&#34;prompt input_prompt&#34;&gt;In&amp;nbsp;[42]:&lt;/div&gt;
+&lt;div class=&#34;inner_cell&#34;&gt;
+    &lt;div class=&#34;input_area&#34;&gt;
+&lt;div class=&#34; highlight hl-ipython2&#34;&gt;&lt;pre&gt;&lt;span class=&#34;o&#34;&gt;!&lt;/span&gt;ssh airbook.local osascript -l JavaScript Pictures/photo_keys.js Pictures/keys.json
+&lt;/pre&gt;&lt;/div&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/p&gt;
+&lt;div class=&#34;output_wrapper&#34;&gt;
+&lt;div class=&#34;output&#34;&gt;
+
+&lt;div class=&#34;output_area&#34;&gt;&lt;div class=&#34;prompt&#34;&gt;&lt;/div&gt;
+&lt;div class=&#34;output_subarea output_stream output_stdout output_text&#34;&gt;
+&lt;pre&gt;saving to... Pictures/keys.json
+
+&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;div class=&#34;cell border-box-sizing code_cell rendered&#34;&gt;
+&lt;div class=&#34;input&#34;&gt;
+&lt;div class=&#34;prompt input_prompt&#34;&gt;In&amp;nbsp;[43]:&lt;/div&gt;
+&lt;div class=&#34;inner_cell&#34;&gt;
+    &lt;div class=&#34;input_area&#34;&gt;
+&lt;div class=&#34; highlight hl-ipython2&#34;&gt;&lt;pre&gt;&lt;span class=&#34;o&#34;&gt;!&lt;/span&gt;scp airbook.local:Pictures/keys.json .
+&lt;/pre&gt;&lt;/div&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/p&gt;
+&lt;div class=&#34;output_wrapper&#34;&gt;
+&lt;div class=&#34;output&#34;&gt;
+
+&lt;div class=&#34;output_area&#34;&gt;&lt;div class=&#34;prompt&#34;&gt;&lt;/div&gt;
+&lt;div class=&#34;output_subarea output_stream output_stdout output_text&#34;&gt;
+&lt;pre&gt;keys.json                                     100% 1697KB 848.6KB/s   00:02    
+&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
+&lt;/div&gt;
+
+&lt;p&gt;&lt;/div&gt;
+&lt;div class=&#34;cell border-box-sizing text_cell rendered&#34;&gt;
+&lt;div class=&#34;prompt input_prompt&#34;&gt;
+&lt;/div&gt;
+&lt;div class=&#34;inner_cell&#34;&gt;
+&lt;div class=&#34;text_cell_render border-box-sizing rendered_html&#34;&gt;
+&lt;p&gt;Now we can ground these ids in key information such as file paths, dates, and image sizes that we can join with other sources:&lt;/p&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&#34;cell border-box-sizing code_cell rendered&#34;&gt;
+&lt;div class=&#34;input&#34;&gt;
+&lt;div class=&#34;prompt input_prompt&#34;&gt;In&amp;nbsp;[47]:&lt;/div&gt;
+&lt;div class=&#34;inner_cell&#34;&gt;
+    &lt;div class=&#34;input_area&#34;&gt;
+&lt;div class=&#34; highlight hl-ipython2&#34;&gt;&lt;pre&gt;&lt;span class=&#34;n&#34;&gt;pk&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;pd&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;DataFrame&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;json&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;load&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;open&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#39;keys.json&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)))&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;set_index&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#39;id&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;pk&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;head&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/p&gt;
+&lt;div class=&#34;output_wrapper&#34;&gt;
+&lt;div class=&#34;output&#34;&gt;
+
+&lt;div class=&#34;output_area&#34;&gt;&lt;div class=&#34;prompt output_prompt&#34;&gt;Out[47]:&lt;/div&gt;
+
+&lt;div class=&#34;output_html rendered_html output_subarea output_execute_result&#34;&gt;
+&lt;div style=&#34;max-height:1000px;max-width:1500px;overflow:auto;&#34;&gt;
+&lt;table border=&#34;1&#34; class=&#34;dataframe&#34;&gt;
+  &lt;thead&gt;
+    &lt;tr style=&#34;text-align: right;&#34;&gt;
+      &lt;th&gt;&lt;/th&gt;
+      &lt;th&gt;date&lt;/th&gt;
+      &lt;th&gt;height&lt;/th&gt;
+      &lt;th&gt;imagePath&lt;/th&gt;
+      &lt;th&gt;originalPath&lt;/th&gt;
+      &lt;th&gt;width&lt;/th&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;id&lt;/th&gt;
+      &lt;th&gt;&lt;/th&gt;
+      &lt;th&gt;&lt;/th&gt;
+      &lt;th&gt;&lt;/th&gt;
+      &lt;th&gt;&lt;/th&gt;
+      &lt;th&gt;&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;th&gt;4294967334&lt;/th&gt;
+      &lt;td&gt; 2002-09-25T15:14:23.000Z&lt;/td&gt;
+      &lt;td&gt;  600&lt;/td&gt;
+      &lt;td&gt; /Volumes/maryc/Pictures/iPhoto Library/Origina...&lt;/td&gt;
+      &lt;td&gt; /Volumes/maryc/Pictures/iPhoto Library/Origina...&lt;/td&gt;
+      &lt;td&gt;  800&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;4294976544&lt;/th&gt;
+      &lt;td&gt; 2003-07-21T03:52:05.000Z&lt;/td&gt;
+      &lt;td&gt; 1385&lt;/td&gt;
+      &lt;td&gt; /Volumes/maryc/Pictures/iPhoto Library/Origina...&lt;/td&gt;
+      &lt;td&gt; /Volumes/maryc/Pictures/iPhoto Library/Origina...&lt;/td&gt;
+      &lt;td&gt; 1332&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;4294976530&lt;/th&gt;
+      &lt;td&gt; 2003-08-08T20:09:51.000Z&lt;/td&gt;
+      &lt;td&gt; 1459&lt;/td&gt;
+      &lt;td&gt; /Volumes/maryc/Pictures/iPhoto Library/Modifie...&lt;/td&gt;
+      &lt;td&gt; /Volumes/maryc/Pictures/iPhoto Library/Origina...&lt;/td&gt;
+      &lt;td&gt; 1647&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;4294976542&lt;/th&gt;
+      &lt;td&gt; 2003-08-08T20:09:51.000Z&lt;/td&gt;
+      &lt;td&gt; 1536&lt;/td&gt;
+      &lt;td&gt; /Volumes/maryc/Pictures/iPhoto Library/Origina...&lt;/td&gt;
+      &lt;td&gt; /Volumes/maryc/Pictures/iPhoto Library/Origina...&lt;/td&gt;
+      &lt;td&gt; 2048&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;4294971867&lt;/th&gt;
+      &lt;td&gt; 2006-02-01T17:05:22.000Z&lt;/td&gt;
+      &lt;td&gt;  377&lt;/td&gt;
+      &lt;td&gt; /Volumes/maryc/Pictures/iPhoto Library/Origina...&lt;/td&gt;
+      &lt;td&gt; /Volumes/maryc/Pictures/iPhoto Library/Origina...&lt;/td&gt;
+      &lt;td&gt;  495&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;div class=&#34;cell border-box-sizing text_cell rendered&#34;&gt;
+&lt;div class=&#34;prompt input_prompt&#34;&gt;
+&lt;/div&gt;
+&lt;div class=&#34;inner_cell&#34;&gt;
+&lt;div class=&#34;text_cell_render border-box-sizing rendered_html&#34;&gt;
+&lt;p&gt;Applescript reports the full image paths, but we&#39;ll need library-relative paths for our work below.&lt;/p&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&#34;cell border-box-sizing code_cell rendered&#34;&gt;
+&lt;div class=&#34;input&#34;&gt;
+&lt;div class=&#34;prompt input_prompt&#34;&gt;In&amp;nbsp;[62]:&lt;/div&gt;
+&lt;div class=&#34;inner_cell&#34;&gt;
+    &lt;div class=&#34;input_area&#34;&gt;
+&lt;div class=&#34; highlight hl-ipython2&#34;&gt;&lt;pre&gt;&lt;span class=&#34;n&#34;&gt;libloc&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;/Volumes/maryc/Pictures/iPhoto Library/&amp;#39;&lt;/span&gt;  &lt;span class=&#34;c&#34;&gt;# TODO: get from applescript?&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;n&#34;&gt;pk&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#39;relativePath&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;p&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;len&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;libloc&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):]&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;for&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;p&lt;/span&gt; &lt;span class=&#34;ow&#34;&gt;in&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;pk&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;imagePath&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;n&#34;&gt;pk&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;pk&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;date&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;gt;=&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;2002-09&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;amp;&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;pk&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;date&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;2002-10&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)][[&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#39;date&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;height&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;width&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;relativePath&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]]&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/p&gt;
+&lt;div class=&#34;output_wrapper&#34;&gt;
+&lt;div class=&#34;output&#34;&gt;
+
+&lt;div class=&#34;output_area&#34;&gt;&lt;div class=&#34;prompt output_prompt&#34;&gt;Out[62]:&lt;/div&gt;
+
+&lt;div class=&#34;output_html rendered_html output_subarea output_execute_result&#34;&gt;
+&lt;div style=&#34;max-height:1000px;max-width:1500px;overflow:auto;&#34;&gt;
+&lt;table border=&#34;1&#34; class=&#34;dataframe&#34;&gt;
+  &lt;thead&gt;
+    &lt;tr style=&#34;text-align: right;&#34;&gt;
+      &lt;th&gt;&lt;/th&gt;
+      &lt;th&gt;date&lt;/th&gt;
+      &lt;th&gt;height&lt;/th&gt;
+      &lt;th&gt;width&lt;/th&gt;
+      &lt;th&gt;relativePath&lt;/th&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;id&lt;/th&gt;
+      &lt;th&gt;&lt;/th&gt;
+      &lt;th&gt;&lt;/th&gt;
+      &lt;th&gt;&lt;/th&gt;
+      &lt;th&gt;&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;th&gt;4294967334&lt;/th&gt;
+      &lt;td&gt; 2002-09-25T15:14:23.000Z&lt;/td&gt;
+      &lt;td&gt; 600&lt;/td&gt;
+      &lt;td&gt; 800&lt;/td&gt;
+      &lt;td&gt; Originals/2002/Sep 25, 2002/Santa Cecelia gran...&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;div class=&#34;cell border-box-sizing text_cell rendered&#34;&gt;
+&lt;div class=&#34;prompt input_prompt&#34;&gt;
+&lt;/div&gt;
+&lt;div class=&#34;inner_cell&#34;&gt;
+&lt;div class=&#34;text_cell_render border-box-sizing rendered_html&#34;&gt;
+&lt;h2 id=&#34;iPhoto-data-without-iPhoto&#34;&gt;iPhoto data without iPhoto&lt;a class=&#34;anchor-link&#34; href=&#34;#iPhoto-data-without-iPhoto&#34;&gt;&amp;#182;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;iPhoto keeps nice sqlite3 databases.&lt;/p&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&#34;cell border-box-sizing code_cell rendered&#34;&gt;
+&lt;div class=&#34;input&#34;&gt;
+&lt;div class=&#34;prompt input_prompt&#34;&gt;In&amp;nbsp;[207]:&lt;/div&gt;
+&lt;div class=&#34;inner_cell&#34;&gt;
+    &lt;div class=&#34;input_area&#34;&gt;
+&lt;div class=&#34; highlight hl-ipython2&#34;&gt;&lt;pre&gt;&lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;my_photo_db&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;path&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#39;maryc-airbook-iphoto-meta/iPhotoMain.db&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
+    &lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;sqlite3&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;sqlite3&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;connect&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;path&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;n&#34;&gt;db1&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;my_photo_db&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;n&#34;&gt;q&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;
+&lt;span class=&#34;s&#34;&gt;select count(distinct uid) from SqPhotoInfo&lt;/span&gt;
+&lt;span class=&#34;s&#34;&gt;&amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;pd&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;read_sql&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;q&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;db1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/p&gt;
+&lt;div class=&#34;output_wrapper&#34;&gt;
+&lt;div class=&#34;output&#34;&gt;
+
+&lt;div class=&#34;output_area&#34;&gt;&lt;div class=&#34;prompt output_prompt&#34;&gt;Out[207]:&lt;/div&gt;
+
+&lt;div class=&#34;output_html rendered_html output_subarea output_execute_result&#34;&gt;
+&lt;div style=&#34;max-height:1000px;max-width:1500px;overflow:auto;&#34;&gt;
+&lt;table border=&#34;1&#34; class=&#34;dataframe&#34;&gt;
+  &lt;thead&gt;
+    &lt;tr style=&#34;text-align: right;&#34;&gt;
+      &lt;th&gt;&lt;/th&gt;
+      &lt;th&gt;count(distinct uid)&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;th&gt;0&lt;/th&gt;
+      &lt;td&gt; 8607&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;div class=&#34;cell border-box-sizing code_cell rendered&#34;&gt;
+&lt;div class=&#34;input&#34;&gt;
+&lt;div class=&#34;prompt input_prompt&#34;&gt;In&amp;nbsp;[212]:&lt;/div&gt;
+&lt;div class=&#34;inner_cell&#34;&gt;
+    &lt;div class=&#34;input_area&#34;&gt;
+&lt;div class=&#34; highlight hl-ipython2&#34;&gt;&lt;pre&gt;&lt;span class=&#34;n&#34;&gt;q&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;
+&lt;span class=&#34;s&#34;&gt;select count(&lt;em&gt;) qty, year from (&lt;/span&gt;
+&lt;span class=&#34;s&#34;&gt;  select substr(datetime(photoDate +  julianday(&amp;#39;2000-01-01 00:00:00&amp;#39;)), 1, 4) year&lt;/span&gt;
+&lt;span class=&#34;s&#34;&gt;  from SqPhotoInfo&lt;/span&gt;
+&lt;span class=&#34;s&#34;&gt;) t&lt;/span&gt;
+&lt;span class=&#34;s&#34;&gt;group by year&lt;/span&gt;
+&lt;span class=&#34;s&#34;&gt;having count(&lt;/em&gt;) &amp;gt; 10&lt;/span&gt;
+&lt;span class=&#34;s&#34;&gt;&amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;pd&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;read_sql&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;q&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;db1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/p&gt;
+&lt;div class=&#34;output_wrapper&#34;&gt;
+&lt;div class=&#34;output&#34;&gt;
+
+&lt;div class=&#34;output_area&#34;&gt;&lt;div class=&#34;prompt output_prompt&#34;&gt;Out[212]:&lt;/div&gt;
+
+&lt;div class=&#34;output_html rendered_html output_subarea output_execute_result&#34;&gt;
+&lt;div style=&#34;max-height:1000px;max-width:1500px;overflow:auto;&#34;&gt;
+&lt;table border=&#34;1&#34; class=&#34;dataframe&#34;&gt;
+  &lt;thead&gt;
+    &lt;tr style=&#34;text-align: right;&#34;&gt;
+      &lt;th&gt;&lt;/th&gt;
+      &lt;th&gt;qty&lt;/th&gt;
+      &lt;th&gt;year&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;th&gt;0&lt;/th&gt;
+      &lt;td&gt;  306&lt;/td&gt;
+      &lt;td&gt; 2011&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;1&lt;/th&gt;
+      &lt;td&gt; 4368&lt;/td&gt;
+      &lt;td&gt; 2012&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;2&lt;/th&gt;
+      &lt;td&gt; 1564&lt;/td&gt;
+      &lt;td&gt; 2013&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;3&lt;/th&gt;
+      &lt;td&gt; 2190&lt;/td&gt;
+      &lt;td&gt; 2014&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;4&lt;/th&gt;
+      &lt;td&gt;  161&lt;/td&gt;
+      &lt;td&gt; 2015&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;div class=&#34;cell border-box-sizing text_cell rendered&#34;&gt;
+&lt;div class=&#34;prompt input_prompt&#34;&gt;
+&lt;/div&gt;
+&lt;div class=&#34;inner_cell&#34;&gt;
+&lt;div class=&#34;text_cell_render border-box-sizing rendered_html&#34;&gt;
+&lt;h3 id=&#34;Cameras&#34;&gt;Cameras&lt;a class=&#34;anchor-link&#34; href=&#34;#Cameras&#34;&gt;&amp;#182;&lt;/a&gt;&lt;/h3&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&#34;cell border-box-sizing code_cell rendered&#34;&gt;
+&lt;div class=&#34;input&#34;&gt;
+&lt;div class=&#34;prompt input_prompt&#34;&gt;In&amp;nbsp;[195]:&lt;/div&gt;
+&lt;div class=&#34;inner_cell&#34;&gt;
+    &lt;div class=&#34;input_area&#34;&gt;
+&lt;div class=&#34; highlight hl-ipython2&#34;&gt;&lt;pre&gt;&lt;span class=&#34;n&#34;&gt;q&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;
+&lt;span class=&#34;s&#34;&gt;select qty,&lt;/span&gt;
+&lt;span class=&#34;s&#34;&gt; datetime(min_date +  julianday(&amp;#39;2000-01-01 00:00:00&amp;#39;)) min_date,&lt;/span&gt;
+&lt;span class=&#34;s&#34;&gt; datetime(max_date +  julianday(&amp;#39;2000-01-01 00:00:00&amp;#39;)) max_date,&lt;/span&gt;
+&lt;span class=&#34;s&#34;&gt; cameraModel from (&lt;/span&gt;
+&lt;span class=&#34;s&#34;&gt;select count(*) qty, min(photoDate) min_date, max(photoDate) max_date, cameraModel&lt;/span&gt;
+&lt;span class=&#34;s&#34;&gt; from&lt;/span&gt;
+&lt;span class=&#34;s&#34;&gt;sqphotoinfo&lt;/span&gt;
+&lt;span class=&#34;s&#34;&gt;where photoDate &amp;gt;  julianday(&amp;#39;1993-01-01&amp;#39;) - julianday(&amp;#39;2000-01-01 00:00:00&amp;#39;)&lt;/span&gt;
+&lt;span class=&#34;s&#34;&gt;group by cameraModel&lt;/span&gt;
+&lt;span class=&#34;s&#34;&gt;)&lt;/span&gt;
+&lt;span class=&#34;s&#34;&gt;where qty &amp;gt;= 10&lt;/span&gt;
+&lt;span class=&#34;s&#34;&gt;order by 1 desc&lt;/span&gt;
+&lt;span class=&#34;s&#34;&gt;&amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;pd&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;read_sql&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;q&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;db1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/p&gt;
+&lt;div class=&#34;output_wrapper&#34;&gt;
+&lt;div class=&#34;output&#34;&gt;
+
+&lt;div class=&#34;output_area&#34;&gt;&lt;div class=&#34;prompt output_prompt&#34;&gt;Out[195]:&lt;/div&gt;
+
+&lt;div class=&#34;output_html rendered_html output_subarea output_execute_result&#34;&gt;
+&lt;div style=&#34;max-height:1000px;max-width:1500px;overflow:auto;&#34;&gt;
+&lt;table border=&#34;1&#34; class=&#34;dataframe&#34;&gt;
+  &lt;thead&gt;
+    &lt;tr style=&#34;text-align: right;&#34;&gt;
+      &lt;th&gt;&lt;/th&gt;
+      &lt;th&gt;qty&lt;/th&gt;
+      &lt;th&gt;min_date&lt;/th&gt;
+      &lt;th&gt;max_date&lt;/th&gt;
+      &lt;th&gt;cameraModel&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;th&gt;0 &lt;/th&gt;
+      &lt;td&gt; 5568&lt;/td&gt;
+      &lt;td&gt; 2009-11-25 17:28:32&lt;/td&gt;
+      &lt;td&gt; 2013-11-04 11:05:02&lt;/td&gt;
+      &lt;td&gt;   Canon PowerShot SD1100 IS&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;1 &lt;/th&gt;
+      &lt;td&gt;  872&lt;/td&gt;
+      &lt;td&gt; 2013-12-04 07:02:10&lt;/td&gt;
+      &lt;td&gt; 2015-04-18 15:50:41&lt;/td&gt;
+      &lt;td&gt;               FinePix S4850&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;2 &lt;/th&gt;
+      &lt;td&gt;  641&lt;/td&gt;
+      &lt;td&gt; 2006-02-01 11:05:22&lt;/td&gt;
+      &lt;td&gt; 2015-05-23 09:47:31&lt;/td&gt;
+      &lt;td&gt;                        None&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;3 &lt;/th&gt;
+      &lt;td&gt;  401&lt;/td&gt;
+      &lt;td&gt; 2012-09-21 11:06:43&lt;/td&gt;
+      &lt;td&gt; 2015-01-02 09:22:16&lt;/td&gt;
+      &lt;td&gt;                Galaxy Nexus&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;4 &lt;/th&gt;
+      &lt;td&gt;  399&lt;/td&gt;
+      &lt;td&gt; 2014-08-13 15:55:36&lt;/td&gt;
+      &lt;td&gt; 2014-08-19 11:15:30&lt;/td&gt;
+      &lt;td&gt;                  NIKON D800&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;5 &lt;/th&gt;
+      &lt;td&gt;  273&lt;/td&gt;
+      &lt;td&gt; 2014-05-16 16:59:18&lt;/td&gt;
+      &lt;td&gt; 2014-06-28 14:09:51&lt;/td&gt;
+      &lt;td&gt;                 NIKON D3200&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;6 &lt;/th&gt;
+      &lt;td&gt;  137&lt;/td&gt;
+      &lt;td&gt; 2012-11-14 17:35:19&lt;/td&gt;
+      &lt;td&gt; 2013-11-29 13:29:43&lt;/td&gt;
+      &lt;td&gt;             FinePix S5Pro  &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;7 &lt;/th&gt;
+      &lt;td&gt;   90&lt;/td&gt;
+      &lt;td&gt; 2012-10-19 17:55:45&lt;/td&gt;
+      &lt;td&gt; 2015-03-12 11:37:07&lt;/td&gt;
+      &lt;td&gt;                   iPhone 4S&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;8 &lt;/th&gt;
+      &lt;td&gt;   78&lt;/td&gt;
+      &lt;td&gt; 2012-09-15 18:21:05&lt;/td&gt;
+      &lt;td&gt; 2012-10-21 18:17:14&lt;/td&gt;
+      &lt;td&gt; Canon PowerShot ELPH 100 HS&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;9 &lt;/th&gt;
+      &lt;td&gt;   65&lt;/td&gt;
+      &lt;td&gt; 2011-04-18 12:19:47&lt;/td&gt;
+      &lt;td&gt; 2012-05-05 15:40:20&lt;/td&gt;
+      &lt;td&gt;                   NIKON D90&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;10&lt;/th&gt;
+      &lt;td&gt;   28&lt;/td&gt;
+      &lt;td&gt; 2014-06-27 22:17:35&lt;/td&gt;
+      &lt;td&gt; 2014-06-28 01:07:04&lt;/td&gt;
+      &lt;td&gt;   Canon PowerShot SD1200 IS&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;11&lt;/th&gt;
+      &lt;td&gt;   28&lt;/td&gt;
+      &lt;td&gt; 2014-10-02 13:22:41&lt;/td&gt;
+      &lt;td&gt; 2014-10-02 15:31:08&lt;/td&gt;
+      &lt;td&gt;                    SGH-T999&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;div class=&#34;cell border-box-sizing text_cell rendered&#34;&gt;
+&lt;div class=&#34;prompt input_prompt&#34;&gt;
+&lt;/div&gt;
+&lt;div class=&#34;inner_cell&#34;&gt;
+&lt;div class=&#34;text_cell_render border-box-sizing rendered_html&#34;&gt;
+&lt;h3 id=&#34;Photos-and-Images&#34;&gt;Photos and Images&lt;a class=&#34;anchor-link&#34; href=&#34;#Photos-and-Images&#34;&gt;&amp;#182;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;The model is nice and clean, separating photos, relating any number of possibly-edited images to each photo-taking event, and issuing a uuid to the photo-taking event.&lt;/p&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&#34;cell border-box-sizing code_cell rendered&#34;&gt;
+&lt;div class=&#34;input&#34;&gt;
+&lt;div class=&#34;prompt input_prompt&#34;&gt;In&amp;nbsp;[139]:&lt;/div&gt;
+&lt;div class=&#34;inner_cell&#34;&gt;
+    &lt;div class=&#34;input_area&#34;&gt;
+&lt;div class=&#34; highlight hl-ipython2&#34;&gt;&lt;pre&gt;&lt;span class=&#34;n&#34;&gt;q&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;s&#34;&gt;select photo.primaryKey, photo.uid, datetime(photo.photoDate + julianday(&amp;#39;2000-01-01 00:00:00&amp;#39;)) as photoDate,&lt;/span&gt;
+&lt;span class=&#34;s&#34;&gt;       photo.cameraModel, photo.archiveFilename,&lt;/span&gt;
+&lt;span class=&#34;s&#34;&gt;       fi.imageWidth, fi.imageHeight, fi.fileSize, fi.imageType, fi.version,&lt;/span&gt;
+&lt;span class=&#34;s&#34;&gt;       fl.relativePath, fl.aliasPath&lt;/span&gt;
+&lt;span class=&#34;s&#34;&gt;       -- TODO: decode fl.format&lt;/span&gt;
+&lt;span class=&#34;s&#34;&gt;from SqPhotoInfo photo&lt;/span&gt;
+&lt;span class=&#34;s&#34;&gt;join SqFileImage fi on fi.photoKey = photo.primaryKey&lt;/span&gt;
+&lt;span class=&#34;s&#34;&gt;join SqFileInfo fl on fi.sqFileInfo = fl.primaryKey&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;s&#34;&gt;where fileSize &amp;gt; 0&lt;/span&gt;
+&lt;span class=&#34;s&#34;&gt;order by photo.photoDate desc&lt;/span&gt;
+&lt;span class=&#34;s&#34;&gt;&amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;pdb&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;pd&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;read_sql&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;q&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;db1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;pdb&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;head&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/p&gt;
+&lt;div class=&#34;output_wrapper&#34;&gt;
+&lt;div class=&#34;output&#34;&gt;
+
+&lt;div class=&#34;output_area&#34;&gt;&lt;div class=&#34;prompt output_prompt&#34;&gt;Out[139]:&lt;/div&gt;
+
+&lt;div class=&#34;output_html rendered_html output_subarea output_execute_result&#34;&gt;
+&lt;div style=&#34;max-height:1000px;max-width:1500px;overflow:auto;&#34;&gt;
+&lt;table border=&#34;1&#34; class=&#34;dataframe&#34;&gt;
+  &lt;thead&gt;
+    &lt;tr style=&#34;text-align: right;&#34;&gt;
+      &lt;th&gt;&lt;/th&gt;
+      &lt;th&gt;primaryKey&lt;/th&gt;
+      &lt;th&gt;uid&lt;/th&gt;
+      &lt;th&gt;photoDate&lt;/th&gt;
+      &lt;th&gt;cameraModel&lt;/th&gt;
+      &lt;th&gt;archiveFilename&lt;/th&gt;
+      &lt;th&gt;imageWidth&lt;/th&gt;
+      &lt;th&gt;imageHeight&lt;/th&gt;
+      &lt;th&gt;fileSize&lt;/th&gt;
+      &lt;th&gt;imageType&lt;/th&gt;
+      &lt;th&gt;version&lt;/th&gt;
+      &lt;th&gt;relativePath&lt;/th&gt;
+      &lt;th&gt;aliasPath&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;th&gt;0&lt;/th&gt;
+      &lt;td&gt; 9272&lt;/td&gt;
+      &lt;td&gt; 4BC69B9E-3AEF-4FA6-BFCC-5476CC6CAC0D&lt;/td&gt;
+      &lt;td&gt; 2015-05-23 09:47:31&lt;/td&gt;
+      &lt;td&gt; None&lt;/td&gt;
+      &lt;td&gt;                     Dining_Room_Turned_Office.jpg&lt;/td&gt;
+      &lt;td&gt; 550&lt;/td&gt;
+      &lt;td&gt; 400&lt;/td&gt;
+      &lt;td&gt;  34651&lt;/td&gt;
+      &lt;td&gt; 6&lt;/td&gt;
+      &lt;td&gt; 100&lt;/td&gt;
+      &lt;td&gt; Originals/2015/May 23, 2015/Dining_Room_Turned...&lt;/td&gt;
+      &lt;td&gt; None&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;1&lt;/th&gt;
+      &lt;td&gt; 9272&lt;/td&gt;
+      &lt;td&gt; 4BC69B9E-3AEF-4FA6-BFCC-5476CC6CAC0D&lt;/td&gt;
+      &lt;td&gt; 2015-05-23 09:47:31&lt;/td&gt;
+      &lt;td&gt; None&lt;/td&gt;
+      &lt;td&gt;                     Dining_Room_Turned_Office.jpg&lt;/td&gt;
+      &lt;td&gt; 360&lt;/td&gt;
+      &lt;td&gt; 262&lt;/td&gt;
+      &lt;td&gt;  52460&lt;/td&gt;
+      &lt;td&gt; 5&lt;/td&gt;
+      &lt;td&gt; 100&lt;/td&gt;
+      &lt;td&gt; Data/2015/May 23, 2015/Dining_Room_Turned_Offi...&lt;/td&gt;
+      &lt;td&gt; None&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;2&lt;/th&gt;
+      &lt;td&gt; 9282&lt;/td&gt;
+      &lt;td&gt; 11F6E0C9-90F8-43E3-8427-EFD1F98D5ECD&lt;/td&gt;
+      &lt;td&gt; 2015-05-20 09:24:50&lt;/td&gt;
+      &lt;td&gt; None&lt;/td&gt;
+      &lt;td&gt; 11223919_10103150053978467_4385673914430987089...&lt;/td&gt;
+      &lt;td&gt; 960&lt;/td&gt;
+      &lt;td&gt; 639&lt;/td&gt;
+      &lt;td&gt; 101115&lt;/td&gt;
+      &lt;td&gt; 6&lt;/td&gt;
+      &lt;td&gt; 100&lt;/td&gt;
+      &lt;td&gt; Originals/2015/May 20, 2015/11223919_101031500...&lt;/td&gt;
+      &lt;td&gt; None&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;3&lt;/th&gt;
+      &lt;td&gt; 9282&lt;/td&gt;
+      &lt;td&gt; 11F6E0C9-90F8-43E3-8427-EFD1F98D5ECD&lt;/td&gt;
+      &lt;td&gt; 2015-05-20 09:24:50&lt;/td&gt;
+      &lt;td&gt; None&lt;/td&gt;
+      &lt;td&gt; 11223919_10103150053978467_4385673914430987089...&lt;/td&gt;
+      &lt;td&gt; 360&lt;/td&gt;
+      &lt;td&gt; 240&lt;/td&gt;
+      &lt;td&gt;  67356&lt;/td&gt;
+      &lt;td&gt; 5&lt;/td&gt;
+      &lt;td&gt; 100&lt;/td&gt;
+      &lt;td&gt; Data/2015/May 20, 2015/11223919_10103150053978...&lt;/td&gt;
+      &lt;td&gt; None&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;4&lt;/th&gt;
+      &lt;td&gt; 9289&lt;/td&gt;
+      &lt;td&gt; 88DC7357-96A2-4C29-88CD-6DF9E39E4CBB&lt;/td&gt;
+      &lt;td&gt; 2015-05-20 09:24:41&lt;/td&gt;
+      &lt;td&gt; None&lt;/td&gt;
+      &lt;td&gt; 11261973_10103150053743937_5354724846552149885...&lt;/td&gt;
+      &lt;td&gt; 960&lt;/td&gt;
+      &lt;td&gt; 639&lt;/td&gt;
+      &lt;td&gt;  97108&lt;/td&gt;
+      &lt;td&gt; 6&lt;/td&gt;
+      &lt;td&gt; 100&lt;/td&gt;
+      &lt;td&gt; Originals/2015/May 20, 2015/11261973_101031500...&lt;/td&gt;
+      &lt;td&gt; None&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;div class=&#34;cell border-box-sizing text_cell rendered&#34;&gt;
+&lt;div class=&#34;prompt input_prompt&#34;&gt;
+&lt;/div&gt;
+&lt;div class=&#34;inner_cell&#34;&gt;
+&lt;div class=&#34;text_cell_render border-box-sizing rendered_html&#34;&gt;
+&lt;h2 id=&#34;Joining-sqlite-data-with-flickr-via-applescript-key-info&#34;&gt;Joining sqlite data with flickr via applescript key info&lt;a class=&#34;anchor-link&#34; href=&#34;#Joining-sqlite-data-with-flickr-via-applescript-key-info&#34;&gt;&amp;#182;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Ah... excellent... even though there are more image files than photos, we get an exact 1-1 match when we join with our photo keys (implicitly on &lt;code&gt;relativePath&lt;/code&gt;).&lt;/p&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&#34;cell border-box-sizing code_cell rendered&#34;&gt;
+&lt;div class=&#34;input&#34;&gt;
+&lt;div class=&#34;prompt input_prompt&#34;&gt;In&amp;nbsp;[109]:&lt;/div&gt;
+&lt;div class=&#34;inner_cell&#34;&gt;
+    &lt;div class=&#34;input_area&#34;&gt;
+&lt;div class=&#34; highlight hl-ipython2&#34;&gt;&lt;pre&gt;&lt;span class=&#34;nb&#34;&gt;len&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;pdb&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;),&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;len&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;pk&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;),&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;len&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;pdb&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;merge&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;pk&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;))&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/p&gt;
+&lt;div class=&#34;output_wrapper&#34;&gt;
+&lt;div class=&#34;output&#34;&gt;
+
+&lt;div class=&#34;output_area&#34;&gt;&lt;div class=&#34;prompt output_prompt&#34;&gt;Out[109]:&lt;/div&gt;
+
+&lt;div class=&#34;output_text output_subarea output_execute_result&#34;&gt;
+&lt;pre&gt;(19127, 8057, 8057)&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;div class=&#34;cell border-box-sizing code_cell rendered&#34;&gt;
+&lt;div class=&#34;input&#34;&gt;
+&lt;div class=&#34;prompt input_prompt&#34;&gt;In&amp;nbsp;[150]:&lt;/div&gt;
+&lt;div class=&#34;inner_cell&#34;&gt;
+    &lt;div class=&#34;input_area&#34;&gt;
+&lt;div class=&#34; highlight hl-ipython2&#34;&gt;&lt;pre&gt;&lt;span class=&#34;n&#34;&gt;pkdb&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;pk&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;reset_index&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;merge&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;pdb&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;set_index&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#39;id&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;pkdb&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;head&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/p&gt;
+&lt;div class=&#34;output_wrapper&#34;&gt;
+&lt;div class=&#34;output&#34;&gt;
+
+&lt;div class=&#34;output_area&#34;&gt;&lt;div class=&#34;prompt output_prompt&#34;&gt;Out[150]:&lt;/div&gt;
+
+&lt;div class=&#34;output_html rendered_html output_subarea output_execute_result&#34;&gt;
+&lt;div style=&#34;max-height:1000px;max-width:1500px;overflow:auto;&#34;&gt;
+&lt;table border=&#34;1&#34; class=&#34;dataframe&#34;&gt;
+  &lt;thead&gt;
+    &lt;tr style=&#34;text-align: right;&#34;&gt;
+      &lt;th&gt;&lt;/th&gt;
+      &lt;th&gt;date&lt;/th&gt;
+      &lt;th&gt;height&lt;/th&gt;
+      &lt;th&gt;imagePath&lt;/th&gt;
+      &lt;th&gt;originalPath&lt;/th&gt;
+      &lt;th&gt;width&lt;/th&gt;
+      &lt;th&gt;relativePath&lt;/th&gt;
+      &lt;th&gt;primaryKey&lt;/th&gt;
+      &lt;th&gt;uid&lt;/th&gt;
+      &lt;th&gt;photoDate&lt;/th&gt;
+      &lt;th&gt;cameraModel&lt;/th&gt;
+      &lt;th&gt;archiveFilename&lt;/th&gt;
+      &lt;th&gt;imageWidth&lt;/th&gt;
+      &lt;th&gt;imageHeight&lt;/th&gt;
+      &lt;th&gt;fileSize&lt;/th&gt;
+      &lt;th&gt;imageType&lt;/th&gt;
+      &lt;th&gt;version&lt;/th&gt;
+      &lt;th&gt;aliasPath&lt;/th&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;id&lt;/th&gt;
+      &lt;th&gt;&lt;/th&gt;
+      &lt;th&gt;&lt;/th&gt;
+      &lt;th&gt;&lt;/th&gt;
+      &lt;th&gt;&lt;/th&gt;
+      &lt;th&gt;&lt;/th&gt;
+      &lt;th&gt;&lt;/th&gt;
+      &lt;th&gt;&lt;/th&gt;
+      &lt;th&gt;&lt;/th&gt;
+      &lt;th&gt;&lt;/th&gt;
+      &lt;th&gt;&lt;/th&gt;
+      &lt;th&gt;&lt;/th&gt;
+      &lt;th&gt;&lt;/th&gt;
+      &lt;th&gt;&lt;/th&gt;
+      &lt;th&gt;&lt;/th&gt;
+      &lt;th&gt;&lt;/th&gt;
+      &lt;th&gt;&lt;/th&gt;
+      &lt;th&gt;&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;th&gt;4294967334&lt;/th&gt;
+      &lt;td&gt; 2002-09-25T15:14:23.000Z&lt;/td&gt;
+      &lt;td&gt;  600&lt;/td&gt;
+      &lt;td&gt; /Volumes/maryc/Pictures/iPhoto Library/Origina...&lt;/td&gt;
+      &lt;td&gt; /Volumes/maryc/Pictures/iPhoto Library/Origina...&lt;/td&gt;
+      &lt;td&gt;  800&lt;/td&gt;
+      &lt;td&gt; Originals/2002/Sep 25, 2002/Santa Cecelia gran...&lt;/td&gt;
+      &lt;td&gt;   38&lt;/td&gt;
+      &lt;td&gt; 7281F4D1-E140-4832-B759-60D5B9DF78B1&lt;/td&gt;
+      &lt;td&gt; 2002-09-25 10:14:23&lt;/td&gt;
+      &lt;td&gt;          PDR-3320&lt;/td&gt;
+      &lt;td&gt;                Santa Cecelia granite.jpg&lt;/td&gt;
+      &lt;td&gt;  800&lt;/td&gt;
+      &lt;td&gt;  600&lt;/td&gt;
+      &lt;td&gt;  63092&lt;/td&gt;
+      &lt;td&gt; 6&lt;/td&gt;
+      &lt;td&gt; 100&lt;/td&gt;
+      &lt;td&gt; None&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;4294976544&lt;/th&gt;
+      &lt;td&gt; 2003-07-21T03:52:05.000Z&lt;/td&gt;
+      &lt;td&gt; 1385&lt;/td&gt;
+      &lt;td&gt; /Volumes/maryc/Pictures/iPhoto Library/Origina...&lt;/td&gt;
+      &lt;td&gt; /Volumes/maryc/Pictures/iPhoto Library/Origina...&lt;/td&gt;
+      &lt;td&gt; 1332&lt;/td&gt;
+      &lt;td&gt;          Originals/2003/Jul 20, 2003/brothers.jpg&lt;/td&gt;
+      &lt;td&gt; 9248&lt;/td&gt;
+      &lt;td&gt; 7EFC6CF1-F3A5-42DD-ADBC-52561476CC50&lt;/td&gt;
+      &lt;td&gt; 2003-07-20 22:52:05&lt;/td&gt;
+      &lt;td&gt; hp photosmart 720&lt;/td&gt;
+      &lt;td&gt;                             brothers.jpg&lt;/td&gt;
+      &lt;td&gt; 1332&lt;/td&gt;
+      &lt;td&gt; 1385&lt;/td&gt;
+      &lt;td&gt; 615319&lt;/td&gt;
+      &lt;td&gt; 6&lt;/td&gt;
+      &lt;td&gt; 100&lt;/td&gt;
+      &lt;td&gt; None&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;4294976530&lt;/th&gt;
+      &lt;td&gt; 2003-08-08T20:09:51.000Z&lt;/td&gt;
+      &lt;td&gt; 1459&lt;/td&gt;
+      &lt;td&gt; /Volumes/maryc/Pictures/iPhoto Library/Modifie...&lt;/td&gt;
+      &lt;td&gt; /Volumes/maryc/Pictures/iPhoto Library/Origina...&lt;/td&gt;
+      &lt;td&gt; 1647&lt;/td&gt;
+      &lt;td&gt;          Modified/2003/Aug 8, 2003/justin car.jpg&lt;/td&gt;
+      &lt;td&gt; 9234&lt;/td&gt;
+      &lt;td&gt; E3D5AD74-7FC1-4916-A9DA-6C2CB47B5D16&lt;/td&gt;
+      &lt;td&gt; 2003-08-08 15:09:51&lt;/td&gt;
+      &lt;td&gt; hp photosmart 720&lt;/td&gt;
+      &lt;td&gt;                           justin car.jpg&lt;/td&gt;
+      &lt;td&gt; 1647&lt;/td&gt;
+      &lt;td&gt; 1459&lt;/td&gt;
+      &lt;td&gt; 828662&lt;/td&gt;
+      &lt;td&gt; 6&lt;/td&gt;
+      &lt;td&gt; 100&lt;/td&gt;
+      &lt;td&gt; None&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;4294976542&lt;/th&gt;
+      &lt;td&gt; 2003-08-08T20:09:51.000Z&lt;/td&gt;
+      &lt;td&gt; 1536&lt;/td&gt;
+      &lt;td&gt; /Volumes/maryc/Pictures/iPhoto Library/Origina...&lt;/td&gt;
+      &lt;td&gt; /Volumes/maryc/Pictures/iPhoto Library/Origina...&lt;/td&gt;
+      &lt;td&gt; 2048&lt;/td&gt;
+      &lt;td&gt;       Originals/2003/Aug 8, 2003_2/justin car.jpg&lt;/td&gt;
+      &lt;td&gt; 9246&lt;/td&gt;
+      &lt;td&gt; CCD2008C-4CB5-46BF-B99D-4BAE8999D8AD&lt;/td&gt;
+      &lt;td&gt; 2003-08-08 15:09:51&lt;/td&gt;
+      &lt;td&gt; hp photosmart 720&lt;/td&gt;
+      &lt;td&gt;                           justin car.jpg&lt;/td&gt;
+      &lt;td&gt; 2048&lt;/td&gt;
+      &lt;td&gt; 1536&lt;/td&gt;
+      &lt;td&gt; 738791&lt;/td&gt;
+      &lt;td&gt; 6&lt;/td&gt;
+      &lt;td&gt; 100&lt;/td&gt;
+      &lt;td&gt; None&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;4294971867&lt;/th&gt;
+      &lt;td&gt; 2006-02-01T17:05:22.000Z&lt;/td&gt;
+      &lt;td&gt;  377&lt;/td&gt;
+      &lt;td&gt; /Volumes/maryc/Pictures/iPhoto Library/Origina...&lt;/td&gt;
+      &lt;td&gt; /Volumes/maryc/Pictures/iPhoto Library/Origina...&lt;/td&gt;
+      &lt;td&gt;  495&lt;/td&gt;
+      &lt;td&gt; Originals/2006/Feb 1, 2006/NY-Skyline-new-york...&lt;/td&gt;
+      &lt;td&gt; 4571&lt;/td&gt;
+      &lt;td&gt; 5D1426FC-5F86-457D-9EB7-6F761607C8FA&lt;/td&gt;
+      &lt;td&gt; 2006-02-01 11:05:22&lt;/td&gt;
+      &lt;td&gt;              None&lt;/td&gt;
+      &lt;td&gt; NY-Skyline-new-york-1138029_495_377.jpeg&lt;/td&gt;
+      &lt;td&gt;  495&lt;/td&gt;
+      &lt;td&gt;  377&lt;/td&gt;
+      &lt;td&gt; 159106&lt;/td&gt;
+      &lt;td&gt; 6&lt;/td&gt;
+      &lt;td&gt; 100&lt;/td&gt;
+      &lt;td&gt; None&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;div class=&#34;cell border-box-sizing text_cell rendered&#34;&gt;
+&lt;div class=&#34;prompt input_prompt&#34;&gt;
+&lt;/div&gt;
+&lt;div class=&#34;inner_cell&#34;&gt;
+&lt;div class=&#34;text_cell_render border-box-sizing rendered_html&#34;&gt;
+&lt;p&gt;Merging with the &lt;code&gt;upload_map&lt;/code&gt; gives us a clear correspondence between iPhoto applescript ids and flickr ids.&lt;/p&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&#34;cell border-box-sizing code_cell rendered&#34;&gt;
+&lt;div class=&#34;input&#34;&gt;
+&lt;div class=&#34;prompt input_prompt&#34;&gt;In&amp;nbsp;[151]:&lt;/div&gt;
+&lt;div class=&#34;inner_cell&#34;&gt;
+    &lt;div class=&#34;input_area&#34;&gt;
+&lt;div class=&#34; highlight hl-ipython2&#34;&gt;&lt;pre&gt;&lt;span class=&#34;n&#34;&gt;upkdb&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;upload_map&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;merge&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;pkdb&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;left_on&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#39;apple&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;right_index&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;bp&#34;&gt;True&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;nb&#34;&gt;len&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;upkdb&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/p&gt;
+&lt;div class=&#34;output_wrapper&#34;&gt;
+&lt;div class=&#34;output&#34;&gt;
+
+&lt;div class=&#34;output_area&#34;&gt;&lt;div class=&#34;prompt output_prompt&#34;&gt;Out[151]:&lt;/div&gt;
+
+&lt;div class=&#34;output_text output_subarea output_execute_result&#34;&gt;
+&lt;pre&gt;8057&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;div class=&#34;cell border-box-sizing code_cell rendered&#34;&gt;
+&lt;div class=&#34;input&#34;&gt;
+&lt;div class=&#34;prompt input_prompt&#34;&gt;In&amp;nbsp;[152]:&lt;/div&gt;
+&lt;div class=&#34;inner_cell&#34;&gt;
+    &lt;div class=&#34;input_area&#34;&gt;
+&lt;div class=&#34; highlight hl-ipython2&#34;&gt;&lt;pre&gt;&lt;span class=&#34;n&#34;&gt;upkdb&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;head&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/p&gt;
+&lt;div class=&#34;output_wrapper&#34;&gt;
+&lt;div class=&#34;output&#34;&gt;
+
+&lt;div class=&#34;output_area&#34;&gt;&lt;div class=&#34;prompt output_prompt&#34;&gt;Out[152]:&lt;/div&gt;
+
+&lt;div class=&#34;output_html rendered_html output_subarea output_execute_result&#34;&gt;
+&lt;div style=&#34;max-height:1000px;max-width:1500px;overflow:auto;&#34;&gt;
+&lt;table border=&#34;1&#34; class=&#34;dataframe&#34;&gt;
+  &lt;thead&gt;
+    &lt;tr style=&#34;text-align: right;&#34;&gt;
+      &lt;th&gt;&lt;/th&gt;
+      &lt;th&gt;apple&lt;/th&gt;
+      &lt;th&gt;flickr&lt;/th&gt;
+      &lt;th&gt;date&lt;/th&gt;
+      &lt;th&gt;height&lt;/th&gt;
+      &lt;th&gt;imagePath&lt;/th&gt;
+      &lt;th&gt;originalPath&lt;/th&gt;
+      &lt;th&gt;width&lt;/th&gt;
+      &lt;th&gt;relativePath&lt;/th&gt;
+      &lt;th&gt;primaryKey&lt;/th&gt;
+      &lt;th&gt;uid&lt;/th&gt;
+      &lt;th&gt;photoDate&lt;/th&gt;
+      &lt;th&gt;cameraModel&lt;/th&gt;
+      &lt;th&gt;archiveFilename&lt;/th&gt;
+      &lt;th&gt;imageWidth&lt;/th&gt;
+      &lt;th&gt;imageHeight&lt;/th&gt;
+      &lt;th&gt;fileSize&lt;/th&gt;
+      &lt;th&gt;imageType&lt;/th&gt;
+      &lt;th&gt;version&lt;/th&gt;
+      &lt;th&gt;aliasPath&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;th&gt;0&lt;/th&gt;
+      &lt;td&gt; 4294967334&lt;/td&gt;
+      &lt;td&gt; 19226418710&lt;/td&gt;
+      &lt;td&gt; 2002-09-25T15:14:23.000Z&lt;/td&gt;
+      &lt;td&gt;  600&lt;/td&gt;
+      &lt;td&gt; /Volumes/maryc/Pictures/iPhoto Library/Origina...&lt;/td&gt;
+      &lt;td&gt; /Volumes/maryc/Pictures/iPhoto Library/Origina...&lt;/td&gt;
+      &lt;td&gt;  800&lt;/td&gt;
+      &lt;td&gt; Originals/2002/Sep 25, 2002/Santa Cecelia gran...&lt;/td&gt;
+      &lt;td&gt;   38&lt;/td&gt;
+      &lt;td&gt; 7281F4D1-E140-4832-B759-60D5B9DF78B1&lt;/td&gt;
+      &lt;td&gt; 2002-09-25 10:14:23&lt;/td&gt;
+      &lt;td&gt;          PDR-3320&lt;/td&gt;
+      &lt;td&gt;                Santa Cecelia granite.jpg&lt;/td&gt;
+      &lt;td&gt;  800&lt;/td&gt;
+      &lt;td&gt;  600&lt;/td&gt;
+      &lt;td&gt;  63092&lt;/td&gt;
+      &lt;td&gt; 6&lt;/td&gt;
+      &lt;td&gt; 100&lt;/td&gt;
+      &lt;td&gt; None&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;1&lt;/th&gt;
+      &lt;td&gt; 4294976544&lt;/td&gt;
+      &lt;td&gt; 18793385783&lt;/td&gt;
+      &lt;td&gt; 2003-07-21T03:52:05.000Z&lt;/td&gt;
+      &lt;td&gt; 1385&lt;/td&gt;
+      &lt;td&gt; /Volumes/maryc/Pictures/iPhoto Library/Origina...&lt;/td&gt;
+      &lt;td&gt; /Volumes/maryc/Pictures/iPhoto Library/Origina...&lt;/td&gt;
+      &lt;td&gt; 1332&lt;/td&gt;
+      &lt;td&gt;          Originals/2003/Jul 20, 2003/brothers.jpg&lt;/td&gt;
+      &lt;td&gt; 9248&lt;/td&gt;
+      &lt;td&gt; 7EFC6CF1-F3A5-42DD-ADBC-52561476CC50&lt;/td&gt;
+      &lt;td&gt; 2003-07-20 22:52:05&lt;/td&gt;
+      &lt;td&gt; hp photosmart 720&lt;/td&gt;
+      &lt;td&gt;                             brothers.jpg&lt;/td&gt;
+      &lt;td&gt; 1332&lt;/td&gt;
+      &lt;td&gt; 1385&lt;/td&gt;
+      &lt;td&gt; 615319&lt;/td&gt;
+      &lt;td&gt; 6&lt;/td&gt;
+      &lt;td&gt; 100&lt;/td&gt;
+      &lt;td&gt; None&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;2&lt;/th&gt;
+      &lt;td&gt; 4294976530&lt;/td&gt;
+      &lt;td&gt; 18793388523&lt;/td&gt;
+      &lt;td&gt; 2003-08-08T20:09:51.000Z&lt;/td&gt;
+      &lt;td&gt; 1459&lt;/td&gt;
+      &lt;td&gt; /Volumes/maryc/Pictures/iPhoto Library/Modifie...&lt;/td&gt;
+      &lt;td&gt; /Volumes/maryc/Pictures/iPhoto Library/Origina...&lt;/td&gt;
+      &lt;td&gt; 1647&lt;/td&gt;
+      &lt;td&gt;          Modified/2003/Aug 8, 2003/justin car.jpg&lt;/td&gt;
+      &lt;td&gt; 9234&lt;/td&gt;
+      &lt;td&gt; E3D5AD74-7FC1-4916-A9DA-6C2CB47B5D16&lt;/td&gt;
+      &lt;td&gt; 2003-08-08 15:09:51&lt;/td&gt;
+      &lt;td&gt; hp photosmart 720&lt;/td&gt;
+      &lt;td&gt;                           justin car.jpg&lt;/td&gt;
+      &lt;td&gt; 1647&lt;/td&gt;
+      &lt;td&gt; 1459&lt;/td&gt;
+      &lt;td&gt; 828662&lt;/td&gt;
+      &lt;td&gt; 6&lt;/td&gt;
+      &lt;td&gt; 100&lt;/td&gt;
+      &lt;td&gt; None&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;3&lt;/th&gt;
+      &lt;td&gt; 4294976542&lt;/td&gt;
+      &lt;td&gt; 18791506174&lt;/td&gt;
+      &lt;td&gt; 2003-08-08T20:09:51.000Z&lt;/td&gt;
+      &lt;td&gt; 1536&lt;/td&gt;
+      &lt;td&gt; /Volumes/maryc/Pictures/iPhoto Library/Origina...&lt;/td&gt;
+      &lt;td&gt; /Volumes/maryc/Pictures/iPhoto Library/Origina...&lt;/td&gt;
+      &lt;td&gt; 2048&lt;/td&gt;
+      &lt;td&gt;       Originals/2003/Aug 8, 2003_2/justin car.jpg&lt;/td&gt;
+      &lt;td&gt; 9246&lt;/td&gt;
+      &lt;td&gt; CCD2008C-4CB5-46BF-B99D-4BAE8999D8AD&lt;/td&gt;
+      &lt;td&gt; 2003-08-08 15:09:51&lt;/td&gt;
+      &lt;td&gt; hp photosmart 720&lt;/td&gt;
+      &lt;td&gt;                           justin car.jpg&lt;/td&gt;
+      &lt;td&gt; 2048&lt;/td&gt;
+      &lt;td&gt; 1536&lt;/td&gt;
+      &lt;td&gt; 738791&lt;/td&gt;
+      &lt;td&gt; 6&lt;/td&gt;
+      &lt;td&gt; 100&lt;/td&gt;
+      &lt;td&gt; None&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;4&lt;/th&gt;
+      &lt;td&gt; 4294971867&lt;/td&gt;
+      &lt;td&gt; 19414016905&lt;/td&gt;
+      &lt;td&gt; 2006-02-01T17:05:22.000Z&lt;/td&gt;
+      &lt;td&gt;  377&lt;/td&gt;
+      &lt;td&gt; /Volumes/maryc/Pictures/iPhoto Library/Origina...&lt;/td&gt;
+      &lt;td&gt; /Volumes/maryc/Pictures/iPhoto Library/Origina...&lt;/td&gt;
+      &lt;td&gt;  495&lt;/td&gt;
+      &lt;td&gt; Originals/2006/Feb 1, 2006/NY-Skyline-new-york...&lt;/td&gt;
+      &lt;td&gt; 4571&lt;/td&gt;
+      &lt;td&gt; 5D1426FC-5F86-457D-9EB7-6F761607C8FA&lt;/td&gt;
+      &lt;td&gt; 2006-02-01 11:05:22&lt;/td&gt;
+      &lt;td&gt;              None&lt;/td&gt;
+      &lt;td&gt; NY-Skyline-new-york-1138029_495_377.jpeg&lt;/td&gt;
+      &lt;td&gt;  495&lt;/td&gt;
+      &lt;td&gt;  377&lt;/td&gt;
+      &lt;td&gt; 159106&lt;/td&gt;
+      &lt;td&gt; 6&lt;/td&gt;
+      &lt;td&gt; 100&lt;/td&gt;
+      &lt;td&gt; None&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;div class=&#34;cell border-box-sizing text_cell rendered&#34;&gt;
+&lt;div class=&#34;prompt input_prompt&#34;&gt;
+&lt;/div&gt;
+&lt;div class=&#34;inner_cell&#34;&gt;
+&lt;div class=&#34;text_cell_render border-box-sizing rendered_html&#34;&gt;
+&lt;h2 id=&#34;Fixing-Dates&#34;&gt;Fixing Dates&lt;a class=&#34;anchor-link&#34; href=&#34;#Fixing-Dates&#34;&gt;&amp;#182;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Let&#39;s grab flickr photos with unkonwn date taken (with upload date, title, and original size).&lt;/p&gt;
+&lt;p&gt;Then merge with the date information from the sqlite3 db.&lt;/p&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&#34;cell border-box-sizing code_cell rendered&#34;&gt;
+&lt;div class=&#34;input&#34;&gt;
+&lt;div class=&#34;prompt input_prompt&#34;&gt;In&amp;nbsp;[178]:&lt;/div&gt;
+&lt;div class=&#34;inner_cell&#34;&gt;
+    &lt;div class=&#34;input_area&#34;&gt;
+&lt;div class=&#34; highlight hl-ipython2&#34;&gt;&lt;pre&gt;&lt;span class=&#34;n&#34;&gt;tofix&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;photo&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;photo&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;datetakenunknown&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;==&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;1&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;][[&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#39;datetaken&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;upload_date&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;title&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;width_o&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;height_o&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]]&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;fixed&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;tofix&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;merge&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;upkdb&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;left_index&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;bp&#34;&gt;True&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;right_on&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#39;flickr&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)[&lt;/span&gt;
+    &lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#39;date&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;photoDate&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;upload_date&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;title&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;archiveFilename&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+     &lt;span class=&#34;s&#34;&gt;&amp;#39;width_o&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;imageWidth&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;height_o&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;imageHeight&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+    &lt;span class=&#34;s&#34;&gt;&amp;#39;flickr&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;uid&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]]&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;set_index&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#39;flickr&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;span class=&#34;k&#34;&gt;print&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;len&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;tofix&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;),&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;len&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;fixed&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;fixed&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;head&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/p&gt;
+&lt;div class=&#34;output_wrapper&#34;&gt;
+&lt;div class=&#34;output&#34;&gt;
+
+&lt;div class=&#34;output_area&#34;&gt;&lt;div class=&#34;prompt&#34;&gt;&lt;/div&gt;
+&lt;div class=&#34;output_subarea output_stream output_stdout output_text&#34;&gt;
+&lt;pre&gt;74 74
+&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;div class=&#34;output_area&#34;&gt;&lt;div class=&#34;prompt output_prompt&#34;&gt;Out[178]:&lt;/div&gt;
+
+&lt;div class=&#34;output_html rendered_html output_subarea output_execute_result&#34;&gt;
+&lt;div style=&#34;max-height:1000px;max-width:1500px;overflow:auto;&#34;&gt;
+&lt;table border=&#34;1&#34; class=&#34;dataframe&#34;&gt;
+  &lt;thead&gt;
+    &lt;tr style=&#34;text-align: right;&#34;&gt;
+      &lt;th&gt;&lt;/th&gt;
+      &lt;th&gt;date&lt;/th&gt;
+      &lt;th&gt;photoDate&lt;/th&gt;
+      &lt;th&gt;upload_date&lt;/th&gt;
+      &lt;th&gt;title&lt;/th&gt;
+      &lt;th&gt;archiveFilename&lt;/th&gt;
+      &lt;th&gt;width_o&lt;/th&gt;
+      &lt;th&gt;imageWidth&lt;/th&gt;
+      &lt;th&gt;height_o&lt;/th&gt;
+      &lt;th&gt;imageHeight&lt;/th&gt;
+      &lt;th&gt;uid&lt;/th&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;flickr&lt;/th&gt;
+      &lt;th&gt;&lt;/th&gt;
+      &lt;th&gt;&lt;/th&gt;
+      &lt;th&gt;&lt;/th&gt;
+      &lt;th&gt;&lt;/th&gt;
+      &lt;th&gt;&lt;/th&gt;
+      &lt;th&gt;&lt;/th&gt;
+      &lt;th&gt;&lt;/th&gt;
+      &lt;th&gt;&lt;/th&gt;
+      &lt;th&gt;&lt;/th&gt;
+      &lt;th&gt;&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;th&gt;19426161436&lt;/th&gt;
+      &lt;td&gt; 2014-10-20T18:47:27.000Z&lt;/td&gt;
+      &lt;td&gt; 2014-10-20 13:47:27&lt;/td&gt;
+      &lt;td&gt;2015-07-05 20:23:04&lt;/td&gt;
+      &lt;td&gt;  segway tour - 4&lt;/td&gt;
+      &lt;td&gt;  segway tour - 4.jpg&lt;/td&gt;
+      &lt;td&gt;  466&lt;/td&gt;
+      &lt;td&gt;  466&lt;/td&gt;
+      &lt;td&gt;  630&lt;/td&gt;
+      &lt;td&gt;  630&lt;/td&gt;
+      &lt;td&gt; 93061866-7680-43EA-9D58-8DE25E554B43&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;19456508621&lt;/th&gt;
+      &lt;td&gt; 2014-10-20T18:48:03.000Z&lt;/td&gt;
+      &lt;td&gt; 2014-10-20 13:48:03&lt;/td&gt;
+      &lt;td&gt;2015-07-05 20:23:10&lt;/td&gt;
+      &lt;td&gt; segway tour - 28&lt;/td&gt;
+      &lt;td&gt; segway tour - 28.jpg&lt;/td&gt;
+      &lt;td&gt;  851&lt;/td&gt;
+      &lt;td&gt;  851&lt;/td&gt;
+      &lt;td&gt;  630&lt;/td&gt;
+      &lt;td&gt;  630&lt;/td&gt;
+      &lt;td&gt; BFCD692A-52C7-4059-8A9F-F6264133C155&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;19266094319&lt;/th&gt;
+      &lt;td&gt; 2014-10-20T18:52:50.000Z&lt;/td&gt;
+      &lt;td&gt; 2014-10-20 13:52:50&lt;/td&gt;
+      &lt;td&gt;2015-07-05 20:23:12&lt;/td&gt;
+      &lt;td&gt;  segway tour - 2&lt;/td&gt;
+      &lt;td&gt;  segway tour - 2.jpg&lt;/td&gt;
+      &lt;td&gt;  466&lt;/td&gt;
+      &lt;td&gt;  291&lt;/td&gt;
+      &lt;td&gt;  630&lt;/td&gt;
+      &lt;td&gt;  438&lt;/td&gt;
+      &lt;td&gt; B854FE26-841E-4968-BDF2-975C18AB3B05&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;19264673498&lt;/th&gt;
+      &lt;td&gt; 2014-10-20T18:48:22.000Z&lt;/td&gt;
+      &lt;td&gt; 2014-10-20 13:48:22&lt;/td&gt;
+      &lt;td&gt;2015-07-05 20:23:16&lt;/td&gt;
+      &lt;td&gt; segway tour - 33&lt;/td&gt;
+      &lt;td&gt; segway tour - 33.jpg&lt;/td&gt;
+      &lt;td&gt;  466&lt;/td&gt;
+      &lt;td&gt;  338&lt;/td&gt;
+      &lt;td&gt;  630&lt;/td&gt;
+      &lt;td&gt;  519&lt;/td&gt;
+      &lt;td&gt; 8976E385-2BE0-46AB-8E9E-2FA573574ED4&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;19445946592&lt;/th&gt;
+      &lt;td&gt; 2014-10-31T13:45:47.000Z&lt;/td&gt;
+      &lt;td&gt; 2014-10-31 08:45:47&lt;/td&gt;
+      &lt;td&gt;2015-07-05 20:23:47&lt;/td&gt;
+      &lt;td&gt; Brennan baby tub&lt;/td&gt;
+      &lt;td&gt; Brennan baby tub.jpg&lt;/td&gt;
+      &lt;td&gt; 2351&lt;/td&gt;
+      &lt;td&gt; 2351&lt;/td&gt;
+      &lt;td&gt; 2945&lt;/td&gt;
+      &lt;td&gt; 2945&lt;/td&gt;
+      &lt;td&gt; BA448463-3932-40C2-811C-B30017C68087&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;div class=&#34;cell border-box-sizing text_cell rendered&#34;&gt;
+&lt;div class=&#34;prompt input_prompt&#34;&gt;
+&lt;/div&gt;
+&lt;div class=&#34;inner_cell&#34;&gt;
+&lt;div class=&#34;text_cell_render border-box-sizing rendered_html&#34;&gt;
+&lt;p&gt;For this, we need write access.&lt;/p&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&#34;cell border-box-sizing code_cell rendered&#34;&gt;
+&lt;div class=&#34;input&#34;&gt;
+&lt;div class=&#34;prompt input_prompt&#34;&gt;In&amp;nbsp;[169]:&lt;/div&gt;
+&lt;div class=&#34;inner_cell&#34;&gt;
+    &lt;div class=&#34;input_area&#34;&gt;
+&lt;div class=&#34; highlight hl-ipython2&#34;&gt;&lt;pre&gt;&lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;myFlickrEdit&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;user_id&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#39;14874637@N00&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
+    &lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;pathlib&lt;/span&gt;
+    &lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;flickrapi&lt;/span&gt;
+    &lt;span class=&#34;n&#34;&gt;api_secret&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;pathlib&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Path&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#39;flickr_api_secret&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;open&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;read&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;strip&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;flickdata&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Write&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;make&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;flickrapi&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;api_secret&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;user_id&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span class=&#34;n&#34;&gt;edit&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;myFlickrEdit&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/p&gt;
+&lt;div class=&#34;output_wrapper&#34;&gt;
+&lt;div class=&#34;output&#34;&gt;
+
+&lt;div class=&#34;output_area&#34;&gt;&lt;div class=&#34;prompt&#34;&gt;&lt;/div&gt;
+&lt;div class=&#34;output_subarea output_stream output_stderr output_text&#34;&gt;
+&lt;pre&gt;INFO:flickdata:authenticating...
+INFO:flickrapi.core:Calling {&amp;apos;nojsoncallback&amp;apos;: 1, &amp;apos;method&amp;apos;: &amp;apos;flickr.auth.oauth.checkToken&amp;apos;, &amp;apos;format&amp;apos;: &amp;apos;parsed-json&amp;apos;}
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTPS connection (1): api.flickr.com
+INFO:flickrapi.core:REST Parser: using xml.etree.cElementTree
+&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
+&lt;/div&gt;
+
+&lt;p&gt;&lt;/div&gt;
+&lt;div class=&#34;cell border-box-sizing text_cell rendered&#34;&gt;
+&lt;div class=&#34;prompt input_prompt&#34;&gt;
+&lt;/div&gt;
+&lt;div class=&#34;inner_cell&#34;&gt;
+&lt;div class=&#34;text_cell_render border-box-sizing rendered_html&#34;&gt;
+&lt;p&gt;Let&#39;s work with one photo at first, verifying with the flickr web UI as we go.&lt;/p&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&#34;cell border-box-sizing code_cell rendered&#34;&gt;
+&lt;div class=&#34;input&#34;&gt;
+&lt;div class=&#34;prompt input_prompt&#34;&gt;In&amp;nbsp;[179]:&lt;/div&gt;
+&lt;div class=&#34;inner_cell&#34;&gt;
+    &lt;div class=&#34;input_area&#34;&gt;
+&lt;div class=&#34; highlight hl-ipython2&#34;&gt;&lt;pre&gt;&lt;span class=&#34;n&#34;&gt;Image&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;url&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;photo&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;loc&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;19426161436&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;url_t&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/p&gt;
+&lt;div class=&#34;output_wrapper&#34;&gt;
+&lt;div class=&#34;output&#34;&gt;
+
+&lt;div class=&#34;output_area&#34;&gt;&lt;div class=&#34;prompt output_prompt&#34;&gt;Out[179]:&lt;/div&gt;
+
+&lt;div class=&#34;output_html rendered_html output_subarea output_execute_result&#34;&gt;
+&lt;img src=&#34;https://farm1.staticflickr.com/308/19426161436_28c40cd67d_t.jpg&#34;/&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;div class=&#34;cell border-box-sizing code_cell rendered&#34;&gt;
+&lt;div class=&#34;input&#34;&gt;
+&lt;div class=&#34;prompt input_prompt&#34;&gt;In&amp;nbsp;[180]:&lt;/div&gt;
+&lt;div class=&#34;inner_cell&#34;&gt;
+    &lt;div class=&#34;input_area&#34;&gt;
+&lt;div class=&#34; highlight hl-ipython2&#34;&gt;&lt;pre&gt;&lt;span class=&#34;n&#34;&gt;fixed&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;loc&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;19426161436&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;photoDate&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/p&gt;
+&lt;div class=&#34;output_wrapper&#34;&gt;
+&lt;div class=&#34;output&#34;&gt;
+
+&lt;div class=&#34;output_area&#34;&gt;&lt;div class=&#34;prompt output_prompt&#34;&gt;Out[180]:&lt;/div&gt;
+
+&lt;div class=&#34;output_text output_subarea output_execute_result&#34;&gt;
+&lt;pre&gt;u&amp;apos;2014-10-20 13:47:27&amp;apos;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;div class=&#34;cell border-box-sizing code_cell rendered&#34;&gt;
+&lt;div class=&#34;input&#34;&gt;
+&lt;div class=&#34;prompt input_prompt&#34;&gt;In&amp;nbsp;[181]:&lt;/div&gt;
+&lt;div class=&#34;inner_cell&#34;&gt;
+    &lt;div class=&#34;input_area&#34;&gt;
+&lt;div class=&#34; highlight hl-ipython2&#34;&gt;&lt;pre&gt;&lt;span class=&#34;n&#34;&gt;edit&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;setDates&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;19426161436&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;date_taken&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;fixed&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;loc&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;19426161436&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;photoDate&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/p&gt;
+&lt;div class=&#34;output_wrapper&#34;&gt;
+&lt;div class=&#34;output&#34;&gt;
+
+&lt;div class=&#34;output_area&#34;&gt;&lt;div class=&#34;prompt&#34;&gt;&lt;/div&gt;
+&lt;div class=&#34;output_subarea output_stream output_stderr output_text&#34;&gt;
+&lt;pre&gt;INFO:flickdata:setDates: {&amp;apos;date_taken&amp;apos;: u&amp;apos;2014-10-20 13:47:27&amp;apos;}...
+INFO:flickrapi.core:Calling {&amp;apos;nojsoncallback&amp;apos;: 1, &amp;apos;method&amp;apos;: &amp;apos;flickr.photos.setDates&amp;apos;, &amp;apos;format&amp;apos;: &amp;apos;parsed-json&amp;apos;}
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTPS connection (1): api.flickr.com
+&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;div class=&#34;output_area&#34;&gt;&lt;div class=&#34;prompt output_prompt&#34;&gt;Out[181]:&lt;/div&gt;
+
+&lt;div class=&#34;output_text output_subarea output_execute_result&#34;&gt;
+&lt;pre&gt;{u&amp;apos;stat&amp;apos;: u&amp;apos;ok&amp;apos;}&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;div class=&#34;cell border-box-sizing text_cell rendered&#34;&gt;
+&lt;div class=&#34;prompt input_prompt&#34;&gt;
+&lt;/div&gt;
+&lt;div class=&#34;inner_cell&#34;&gt;
+&lt;div class=&#34;text_cell_render border-box-sizing rendered_html&#34;&gt;
+&lt;p&gt;Now we can iterate over all the fixes.&lt;/p&gt;
+&lt;p&gt;Incremental updates came in handy here. At first, I forgot to rate-limit my requests and flickr noticed after a few hundred. I went back and fetched metadata for recent photos in my photostream again and finished off the rest.&lt;/p&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&#34;cell border-box-sizing code_cell rendered&#34;&gt;
+&lt;div class=&#34;input&#34;&gt;
+&lt;div class=&#34;prompt input_prompt&#34;&gt;In&amp;nbsp;[182]:&lt;/div&gt;
+&lt;div class=&#34;inner_cell&#34;&gt;
+    &lt;div class=&#34;input_area&#34;&gt;
+&lt;div class=&#34; highlight hl-ipython2&#34;&gt;&lt;pre&gt;&lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;time&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;div class=&#34;cell border-box-sizing code_cell rendered&#34;&gt;
+&lt;div class=&#34;input&#34;&gt;
+&lt;div class=&#34;prompt input_prompt&#34;&gt;In&amp;nbsp;[185]:&lt;/div&gt;
+&lt;div class=&#34;inner_cell&#34;&gt;
+    &lt;div class=&#34;input_area&#34;&gt;
+&lt;div class=&#34; highlight hl-ipython2&#34;&gt;&lt;pre&gt;&lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;do_fixes&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;():&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;for&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;pid&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;photo&lt;/span&gt; &lt;span class=&#34;ow&#34;&gt;in&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;fixed&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;iterrows&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;():&lt;/span&gt;
+        &lt;span class=&#34;n&#34;&gt;edit&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;setDates&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;pid&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;date_taken&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;photo&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;photoDate&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+        &lt;span class=&#34;n&#34;&gt;time&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;sleep&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;mf&#34;&gt;0.5&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;span class=&#34;n&#34;&gt;do_fixes&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/p&gt;
+&lt;div class=&#34;output_wrapper&#34;&gt;
+&lt;div class=&#34;output&#34;&gt;
+
+&lt;div class=&#34;output_area&#34;&gt;&lt;div class=&#34;prompt&#34;&gt;&lt;/div&gt;
+&lt;div class=&#34;output_subarea output_stream output_stderr output_text&#34;&gt;
+&lt;pre&gt;INFO:flickdata:setDates: {&amp;apos;date_taken&amp;apos;: u&amp;apos;2014-10-20 13:47:27&amp;apos;}...
+INFO:flickrapi.core:Calling {&amp;apos;nojsoncallback&amp;apos;: 1, &amp;apos;method&amp;apos;: &amp;apos;flickr.photos.setDates&amp;apos;, &amp;apos;format&amp;apos;: &amp;apos;parsed-json&amp;apos;}
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTPS connection (1): api.flickr.com
+INFO:flickdata:setDates: {&amp;apos;date_taken&amp;apos;: u&amp;apos;2014-10-20 13:48:03&amp;apos;}...
+INFO:flickrapi.core:Calling {&amp;apos;nojsoncallback&amp;apos;: 1, &amp;apos;method&amp;apos;: &amp;apos;flickr.photos.setDates&amp;apos;, &amp;apos;format&amp;apos;: &amp;apos;parsed-json&amp;apos;}
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTPS connection (1): api.flickr.com
+INFO:flickdata:setDates: {&amp;apos;date_taken&amp;apos;: u&amp;apos;2014-10-20 13:52:50&amp;apos;}...
+INFO:flickrapi.core:Calling {&amp;apos;nojsoncallback&amp;apos;: 1, &amp;apos;method&amp;apos;: &amp;apos;flickr.photos.setDates&amp;apos;, &amp;apos;format&amp;apos;: &amp;apos;parsed-json&amp;apos;}
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTPS connection (1): api.flickr.com
+INFO:flickdata:setDates: {&amp;apos;date_taken&amp;apos;: u&amp;apos;2014-10-20 13:48:22&amp;apos;}...
+INFO:flickrapi.core:Calling {&amp;apos;nojsoncallback&amp;apos;: 1, &amp;apos;method&amp;apos;: &amp;apos;flickr.photos.setDates&amp;apos;, &amp;apos;format&amp;apos;: &amp;apos;parsed-json&amp;apos;}
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTPS connection (1): api.flickr.com
+INFO:flickdata:setDates: {&amp;apos;date_taken&amp;apos;: u&amp;apos;2014-10-31 08:45:47&amp;apos;}...
+INFO:flickrapi.core:Calling {&amp;apos;nojsoncallback&amp;apos;: 1, &amp;apos;method&amp;apos;: &amp;apos;flickr.photos.setDates&amp;apos;, &amp;apos;format&amp;apos;: &amp;apos;parsed-json&amp;apos;}
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTPS connection (1): api.flickr.com
+INFO:flickdata:setDates: {&amp;apos;date_taken&amp;apos;: u&amp;apos;2014-10-31 09:07:10&amp;apos;}...
+INFO:flickrapi.core:Calling {&amp;apos;nojsoncallback&amp;apos;: 1, &amp;apos;method&amp;apos;: &amp;apos;flickr.photos.setDates&amp;apos;, &amp;apos;format&amp;apos;: &amp;apos;parsed-json&amp;apos;}
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTPS connection (1): api.flickr.com
+INFO:flickdata:setDates: {&amp;apos;date_taken&amp;apos;: u&amp;apos;2014-10-31 08:59:05&amp;apos;}...
+INFO:flickrapi.core:Calling {&amp;apos;nojsoncallback&amp;apos;: 1, &amp;apos;method&amp;apos;: &amp;apos;flickr.photos.setDates&amp;apos;, &amp;apos;format&amp;apos;: &amp;apos;parsed-json&amp;apos;}
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTPS connection (1): api.flickr.com
+INFO:flickdata:setDates: {&amp;apos;date_taken&amp;apos;: u&amp;apos;2014-10-31 09:07:30&amp;apos;}...
+INFO:flickrapi.core:Calling {&amp;apos;nojsoncallback&amp;apos;: 1, &amp;apos;method&amp;apos;: &amp;apos;flickr.photos.setDates&amp;apos;, &amp;apos;format&amp;apos;: &amp;apos;parsed-json&amp;apos;}
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTPS connection (1): api.flickr.com
+INFO:flickdata:setDates: {&amp;apos;date_taken&amp;apos;: u&amp;apos;2014-11-01 07:06:54&amp;apos;}...
+INFO:flickrapi.core:Calling {&amp;apos;nojsoncallback&amp;apos;: 1, &amp;apos;method&amp;apos;: &amp;apos;flickr.photos.setDates&amp;apos;, &amp;apos;format&amp;apos;: &amp;apos;parsed-json&amp;apos;}
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTPS connection (1): api.flickr.com
+INFO:flickdata:setDates: {&amp;apos;date_taken&amp;apos;: u&amp;apos;2014-11-08 18:27:35&amp;apos;}...
+INFO:flickrapi.core:Calling {&amp;apos;nojsoncallback&amp;apos;: 1, &amp;apos;method&amp;apos;: &amp;apos;flickr.photos.setDates&amp;apos;, &amp;apos;format&amp;apos;: &amp;apos;parsed-json&amp;apos;}
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTPS connection (1): api.flickr.com
+INFO:flickdata:setDates: {&amp;apos;date_taken&amp;apos;: u&amp;apos;2014-11-08 18:28:06&amp;apos;}...
+INFO:flickrapi.core:Calling {&amp;apos;nojsoncallback&amp;apos;: 1, &amp;apos;method&amp;apos;: &amp;apos;flickr.photos.setDates&amp;apos;, &amp;apos;format&amp;apos;: &amp;apos;parsed-json&amp;apos;}
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTPS connection (1): api.flickr.com
+INFO:flickdata:setDates: {&amp;apos;date_taken&amp;apos;: u&amp;apos;2014-11-08 18:27:35&amp;apos;}...
+INFO:flickrapi.core:Calling {&amp;apos;nojsoncallback&amp;apos;: 1, &amp;apos;method&amp;apos;: &amp;apos;flickr.photos.setDates&amp;apos;, &amp;apos;format&amp;apos;: &amp;apos;parsed-json&amp;apos;}
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTPS connection (1): api.flickr.com
+INFO:flickdata:setDates: {&amp;apos;date_taken&amp;apos;: u&amp;apos;2014-11-08 18:28:40&amp;apos;}...
+INFO:flickrapi.core:Calling {&amp;apos;nojsoncallback&amp;apos;: 1, &amp;apos;method&amp;apos;: &amp;apos;flickr.photos.setDates&amp;apos;, &amp;apos;format&amp;apos;: &amp;apos;parsed-json&amp;apos;}
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTPS connection (1): api.flickr.com
+INFO:flickdata:setDates: {&amp;apos;date_taken&amp;apos;: u&amp;apos;2014-11-08 18:28:16&amp;apos;}...
+INFO:flickrapi.core:Calling {&amp;apos;nojsoncallback&amp;apos;: 1, &amp;apos;method&amp;apos;: &amp;apos;flickr.photos.setDates&amp;apos;, &amp;apos;format&amp;apos;: &amp;apos;parsed-json&amp;apos;}
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTPS connection (1): api.flickr.com
+INFO:flickdata:setDates: {&amp;apos;date_taken&amp;apos;: u&amp;apos;2014-11-08 18:29:05&amp;apos;}...
+INFO:flickrapi.core:Calling {&amp;apos;nojsoncallback&amp;apos;: 1, &amp;apos;method&amp;apos;: &amp;apos;flickr.photos.setDates&amp;apos;, &amp;apos;format&amp;apos;: &amp;apos;parsed-json&amp;apos;}
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTPS connection (1): api.flickr.com
+INFO:flickdata:setDates: {&amp;apos;date_taken&amp;apos;: u&amp;apos;2014-11-08 18:30:01&amp;apos;}...
+INFO:flickrapi.core:Calling {&amp;apos;nojsoncallback&amp;apos;: 1, &amp;apos;method&amp;apos;: &amp;apos;flickr.photos.setDates&amp;apos;, &amp;apos;format&amp;apos;: &amp;apos;parsed-json&amp;apos;}
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTPS connection (1): api.flickr.com
+INFO:flickdata:setDates: {&amp;apos;date_taken&amp;apos;: u&amp;apos;2014-11-08 18:36:10&amp;apos;}...
+INFO:flickrapi.core:Calling {&amp;apos;nojsoncallback&amp;apos;: 1, &amp;apos;method&amp;apos;: &amp;apos;flickr.photos.setDates&amp;apos;, &amp;apos;format&amp;apos;: &amp;apos;parsed-json&amp;apos;}
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTPS connection (1): api.flickr.com
+INFO:flickdata:setDates: {&amp;apos;date_taken&amp;apos;: u&amp;apos;2014-11-08 18:31:59&amp;apos;}...
+INFO:flickrapi.core:Calling {&amp;apos;nojsoncallback&amp;apos;: 1, &amp;apos;method&amp;apos;: &amp;apos;flickr.photos.setDates&amp;apos;, &amp;apos;format&amp;apos;: &amp;apos;parsed-json&amp;apos;}
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTPS connection (1): api.flickr.com
+INFO:flickdata:setDates: {&amp;apos;date_taken&amp;apos;: u&amp;apos;2014-11-08 18:35:29&amp;apos;}...
+INFO:flickrapi.core:Calling {&amp;apos;nojsoncallback&amp;apos;: 1, &amp;apos;method&amp;apos;: &amp;apos;flickr.photos.setDates&amp;apos;, &amp;apos;format&amp;apos;: &amp;apos;parsed-json&amp;apos;}
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTPS connection (1): api.flickr.com
+INFO:flickdata:setDates: {&amp;apos;date_taken&amp;apos;: u&amp;apos;2014-11-08 18:35:15&amp;apos;}...
+INFO:flickrapi.core:Calling {&amp;apos;nojsoncallback&amp;apos;: 1, &amp;apos;method&amp;apos;: &amp;apos;flickr.photos.setDates&amp;apos;, &amp;apos;format&amp;apos;: &amp;apos;parsed-json&amp;apos;}
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTPS connection (1): api.flickr.com
+INFO:flickdata:setDates: {&amp;apos;date_taken&amp;apos;: u&amp;apos;2014-11-08 18:39:51&amp;apos;}...
+INFO:flickrapi.core:Calling {&amp;apos;nojsoncallback&amp;apos;: 1, &amp;apos;method&amp;apos;: &amp;apos;flickr.photos.setDates&amp;apos;, &amp;apos;format&amp;apos;: &amp;apos;parsed-json&amp;apos;}
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTPS connection (1): api.flickr.com
+INFO:flickdata:setDates: {&amp;apos;date_taken&amp;apos;: u&amp;apos;2014-11-08 19:26:15&amp;apos;}...
+INFO:flickrapi.core:Calling {&amp;apos;nojsoncallback&amp;apos;: 1, &amp;apos;method&amp;apos;: &amp;apos;flickr.photos.setDates&amp;apos;, &amp;apos;format&amp;apos;: &amp;apos;parsed-json&amp;apos;}
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTPS connection (1): api.flickr.com
+INFO:flickdata:setDates: {&amp;apos;date_taken&amp;apos;: u&amp;apos;2014-11-08 19:26:30&amp;apos;}...
+INFO:flickrapi.core:Calling {&amp;apos;nojsoncallback&amp;apos;: 1, &amp;apos;method&amp;apos;: &amp;apos;flickr.photos.setDates&amp;apos;, &amp;apos;format&amp;apos;: &amp;apos;parsed-json&amp;apos;}
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTPS connection (1): api.flickr.com
+INFO:flickdata:setDates: {&amp;apos;date_taken&amp;apos;: u&amp;apos;2014-11-08 19:26:42&amp;apos;}...
+INFO:flickrapi.core:Calling {&amp;apos;nojsoncallback&amp;apos;: 1, &amp;apos;method&amp;apos;: &amp;apos;flickr.photos.setDates&amp;apos;, &amp;apos;format&amp;apos;: &amp;apos;parsed-json&amp;apos;}
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTPS connection (1): api.flickr.com
+INFO:flickdata:setDates: {&amp;apos;date_taken&amp;apos;: u&amp;apos;2014-11-08 19:27:04&amp;apos;}...
+INFO:flickrapi.core:Calling {&amp;apos;nojsoncallback&amp;apos;: 1, &amp;apos;method&amp;apos;: &amp;apos;flickr.photos.setDates&amp;apos;, &amp;apos;format&amp;apos;: &amp;apos;parsed-json&amp;apos;}
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTPS connection (1): api.flickr.com
+INFO:flickdata:setDates: {&amp;apos;date_taken&amp;apos;: u&amp;apos;2014-11-08 19:28:15&amp;apos;}...
+INFO:flickrapi.core:Calling {&amp;apos;nojsoncallback&amp;apos;: 1, &amp;apos;method&amp;apos;: &amp;apos;flickr.photos.setDates&amp;apos;, &amp;apos;format&amp;apos;: &amp;apos;parsed-json&amp;apos;}
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTPS connection (1): api.flickr.com
+INFO:flickdata:setDates: {&amp;apos;date_taken&amp;apos;: u&amp;apos;2014-11-08 19:28:56&amp;apos;}...
+INFO:flickrapi.core:Calling {&amp;apos;nojsoncallback&amp;apos;: 1, &amp;apos;method&amp;apos;: &amp;apos;flickr.photos.setDates&amp;apos;, &amp;apos;format&amp;apos;: &amp;apos;parsed-json&amp;apos;}
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTPS connection (1): api.flickr.com
+INFO:flickdata:setDates: {&amp;apos;date_taken&amp;apos;: u&amp;apos;2014-11-08 19:28:36&amp;apos;}...
+INFO:flickrapi.core:Calling {&amp;apos;nojsoncallback&amp;apos;: 1, &amp;apos;method&amp;apos;: &amp;apos;flickr.photos.setDates&amp;apos;, &amp;apos;format&amp;apos;: &amp;apos;parsed-json&amp;apos;}
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTPS connection (1): api.flickr.com
+INFO:flickdata:setDates: {&amp;apos;date_taken&amp;apos;: u&amp;apos;2014-11-08 19:29:09&amp;apos;}...
+INFO:flickrapi.core:Calling {&amp;apos;nojsoncallback&amp;apos;: 1, &amp;apos;method&amp;apos;: &amp;apos;flickr.photos.setDates&amp;apos;, &amp;apos;format&amp;apos;: &amp;apos;parsed-json&amp;apos;}
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTPS connection (1): api.flickr.com
+INFO:flickdata:setDates: {&amp;apos;date_taken&amp;apos;: u&amp;apos;2014-11-08 19:30:34&amp;apos;}...
+INFO:flickrapi.core:Calling {&amp;apos;nojsoncallback&amp;apos;: 1, &amp;apos;method&amp;apos;: &amp;apos;flickr.photos.setDates&amp;apos;, &amp;apos;format&amp;apos;: &amp;apos;parsed-json&amp;apos;}
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTPS connection (1): api.flickr.com
+INFO:flickdata:setDates: {&amp;apos;date_taken&amp;apos;: u&amp;apos;2014-11-08 19:30:45&amp;apos;}...
+INFO:flickrapi.core:Calling {&amp;apos;nojsoncallback&amp;apos;: 1, &amp;apos;method&amp;apos;: &amp;apos;flickr.photos.setDates&amp;apos;, &amp;apos;format&amp;apos;: &amp;apos;parsed-json&amp;apos;}
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTPS connection (1): api.flickr.com
+INFO:flickdata:setDates: {&amp;apos;date_taken&amp;apos;: u&amp;apos;2014-11-08 19:30:56&amp;apos;}...
+INFO:flickrapi.core:Calling {&amp;apos;nojsoncallback&amp;apos;: 1, &amp;apos;method&amp;apos;: &amp;apos;flickr.photos.setDates&amp;apos;, &amp;apos;format&amp;apos;: &amp;apos;parsed-json&amp;apos;}
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTPS connection (1): api.flickr.com
+INFO:flickdata:setDates: {&amp;apos;date_taken&amp;apos;: u&amp;apos;2014-11-08 19:31:13&amp;apos;}...
+INFO:flickrapi.core:Calling {&amp;apos;nojsoncallback&amp;apos;: 1, &amp;apos;method&amp;apos;: &amp;apos;flickr.photos.setDates&amp;apos;, &amp;apos;format&amp;apos;: &amp;apos;parsed-json&amp;apos;}
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTPS connection (1): api.flickr.com
+INFO:flickdata:setDates: {&amp;apos;date_taken&amp;apos;: u&amp;apos;2014-11-08 19:32:18&amp;apos;}...
+INFO:flickrapi.core:Calling {&amp;apos;nojsoncallback&amp;apos;: 1, &amp;apos;method&amp;apos;: &amp;apos;flickr.photos.setDates&amp;apos;, &amp;apos;format&amp;apos;: &amp;apos;parsed-json&amp;apos;}
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTPS connection (1): api.flickr.com
+INFO:flickdata:setDates: {&amp;apos;date_taken&amp;apos;: u&amp;apos;2014-11-08 19:32:18&amp;apos;}...
+INFO:flickrapi.core:Calling {&amp;apos;nojsoncallback&amp;apos;: 1, &amp;apos;method&amp;apos;: &amp;apos;flickr.photos.setDates&amp;apos;, &amp;apos;format&amp;apos;: &amp;apos;parsed-json&amp;apos;}
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTPS connection (1): api.flickr.com
+INFO:flickdata:setDates: {&amp;apos;date_taken&amp;apos;: u&amp;apos;2014-11-08 19:32:41&amp;apos;}...
+INFO:flickrapi.core:Calling {&amp;apos;nojsoncallback&amp;apos;: 1, &amp;apos;method&amp;apos;: &amp;apos;flickr.photos.setDates&amp;apos;, &amp;apos;format&amp;apos;: &amp;apos;parsed-json&amp;apos;}
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTPS connection (1): api.flickr.com
+INFO:flickdata:setDates: {&amp;apos;date_taken&amp;apos;: u&amp;apos;2014-11-08 19:32:30&amp;apos;}...
+INFO:flickrapi.core:Calling {&amp;apos;nojsoncallback&amp;apos;: 1, &amp;apos;method&amp;apos;: &amp;apos;flickr.photos.setDates&amp;apos;, &amp;apos;format&amp;apos;: &amp;apos;parsed-json&amp;apos;}
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTPS connection (1): api.flickr.com
+INFO:flickdata:setDates: {&amp;apos;date_taken&amp;apos;: u&amp;apos;2014-11-08 19:32:52&amp;apos;}...
+INFO:flickrapi.core:Calling {&amp;apos;nojsoncallback&amp;apos;: 1, &amp;apos;method&amp;apos;: &amp;apos;flickr.photos.setDates&amp;apos;, &amp;apos;format&amp;apos;: &amp;apos;parsed-json&amp;apos;}
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTPS connection (1): api.flickr.com
+INFO:flickdata:setDates: {&amp;apos;date_taken&amp;apos;: u&amp;apos;2014-11-08 19:33:23&amp;apos;}...
+INFO:flickrapi.core:Calling {&amp;apos;nojsoncallback&amp;apos;: 1, &amp;apos;method&amp;apos;: &amp;apos;flickr.photos.setDates&amp;apos;, &amp;apos;format&amp;apos;: &amp;apos;parsed-json&amp;apos;}
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTPS connection (1): api.flickr.com
+INFO:flickdata:setDates: {&amp;apos;date_taken&amp;apos;: u&amp;apos;2014-11-08 19:35:17&amp;apos;}...
+INFO:flickrapi.core:Calling {&amp;apos;nojsoncallback&amp;apos;: 1, &amp;apos;method&amp;apos;: &amp;apos;flickr.photos.setDates&amp;apos;, &amp;apos;format&amp;apos;: &amp;apos;parsed-json&amp;apos;}
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTPS connection (1): api.flickr.com
+INFO:flickdata:setDates: {&amp;apos;date_taken&amp;apos;: u&amp;apos;2014-11-08 19:34:47&amp;apos;}...
+INFO:flickrapi.core:Calling {&amp;apos;nojsoncallback&amp;apos;: 1, &amp;apos;method&amp;apos;: &amp;apos;flickr.photos.setDates&amp;apos;, &amp;apos;format&amp;apos;: &amp;apos;parsed-json&amp;apos;}
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTPS connection (1): api.flickr.com
+INFO:flickdata:setDates: {&amp;apos;date_taken&amp;apos;: u&amp;apos;2014-11-08 19:34:56&amp;apos;}...
+INFO:flickrapi.core:Calling {&amp;apos;nojsoncallback&amp;apos;: 1, &amp;apos;method&amp;apos;: &amp;apos;flickr.photos.setDates&amp;apos;, &amp;apos;format&amp;apos;: &amp;apos;parsed-json&amp;apos;}
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTPS connection (1): api.flickr.com
+INFO:flickdata:setDates: {&amp;apos;date_taken&amp;apos;: u&amp;apos;2014-11-08 19:35:08&amp;apos;}...
+INFO:flickrapi.core:Calling {&amp;apos;nojsoncallback&amp;apos;: 1, &amp;apos;method&amp;apos;: &amp;apos;flickr.photos.setDates&amp;apos;, &amp;apos;format&amp;apos;: &amp;apos;parsed-json&amp;apos;}
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTPS connection (1): api.flickr.com
+INFO:flickdata:setDates: {&amp;apos;date_taken&amp;apos;: u&amp;apos;2014-11-08 19:36:40&amp;apos;}...
+INFO:flickrapi.core:Calling {&amp;apos;nojsoncallback&amp;apos;: 1, &amp;apos;method&amp;apos;: &amp;apos;flickr.photos.setDates&amp;apos;, &amp;apos;format&amp;apos;: &amp;apos;parsed-json&amp;apos;}
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTPS connection (1): api.flickr.com
+INFO:flickdata:setDates: {&amp;apos;date_taken&amp;apos;: u&amp;apos;2014-11-08 19:35:38&amp;apos;}...
+INFO:flickrapi.core:Calling {&amp;apos;nojsoncallback&amp;apos;: 1, &amp;apos;method&amp;apos;: &amp;apos;flickr.photos.setDates&amp;apos;, &amp;apos;format&amp;apos;: &amp;apos;parsed-json&amp;apos;}
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTPS connection (1): api.flickr.com
+INFO:flickdata:setDates: {&amp;apos;date_taken&amp;apos;: u&amp;apos;2014-11-08 19:36:51&amp;apos;}...
+INFO:flickrapi.core:Calling {&amp;apos;nojsoncallback&amp;apos;: 1, &amp;apos;method&amp;apos;: &amp;apos;flickr.photos.setDates&amp;apos;, &amp;apos;format&amp;apos;: &amp;apos;parsed-json&amp;apos;}
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTPS connection (1): api.flickr.com
+INFO:flickdata:setDates: {&amp;apos;date_taken&amp;apos;: u&amp;apos;2014-11-08 20:04:18&amp;apos;}...
+INFO:flickrapi.core:Calling {&amp;apos;nojsoncallback&amp;apos;: 1, &amp;apos;method&amp;apos;: &amp;apos;flickr.photos.setDates&amp;apos;, &amp;apos;format&amp;apos;: &amp;apos;parsed-json&amp;apos;}
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTPS connection (1): api.flickr.com
+INFO:flickdata:setDates: {&amp;apos;date_taken&amp;apos;: u&amp;apos;2014-11-08 20:07:33&amp;apos;}...
+INFO:flickrapi.core:Calling {&amp;apos;nojsoncallback&amp;apos;: 1, &amp;apos;method&amp;apos;: &amp;apos;flickr.photos.setDates&amp;apos;, &amp;apos;format&amp;apos;: &amp;apos;parsed-json&amp;apos;}
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTPS connection (1): api.flickr.com
+INFO:flickdata:setDates: {&amp;apos;date_taken&amp;apos;: u&amp;apos;2014-11-08 20:07:44&amp;apos;}...
+INFO:flickrapi.core:Calling {&amp;apos;nojsoncallback&amp;apos;: 1, &amp;apos;method&amp;apos;: &amp;apos;flickr.photos.setDates&amp;apos;, &amp;apos;format&amp;apos;: &amp;apos;parsed-json&amp;apos;}
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTPS connection (1): api.flickr.com
+INFO:flickdata:setDates: {&amp;apos;date_taken&amp;apos;: u&amp;apos;2014-11-08 20:08:11&amp;apos;}...
+INFO:flickrapi.core:Calling {&amp;apos;nojsoncallback&amp;apos;: 1, &amp;apos;method&amp;apos;: &amp;apos;flickr.photos.setDates&amp;apos;, &amp;apos;format&amp;apos;: &amp;apos;parsed-json&amp;apos;}
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTPS connection (1): api.flickr.com
+INFO:flickdata:setDates: {&amp;apos;date_taken&amp;apos;: u&amp;apos;2014-12-27 14:51:54&amp;apos;}...
+INFO:flickrapi.core:Calling {&amp;apos;nojsoncallback&amp;apos;: 1, &amp;apos;method&amp;apos;: &amp;apos;flickr.photos.setDates&amp;apos;, &amp;apos;format&amp;apos;: &amp;apos;parsed-json&amp;apos;}
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTPS connection (1): api.flickr.com
+INFO:flickdata:setDates: {&amp;apos;date_taken&amp;apos;: u&amp;apos;2014-12-27 14:52:04&amp;apos;}...
+INFO:flickrapi.core:Calling {&amp;apos;nojsoncallback&amp;apos;: 1, &amp;apos;method&amp;apos;: &amp;apos;flickr.photos.setDates&amp;apos;, &amp;apos;format&amp;apos;: &amp;apos;parsed-json&amp;apos;}
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTPS connection (1): api.flickr.com
+INFO:flickdata:setDates: {&amp;apos;date_taken&amp;apos;: u&amp;apos;2014-12-27 14:52:16&amp;apos;}...
+INFO:flickrapi.core:Calling {&amp;apos;nojsoncallback&amp;apos;: 1, &amp;apos;method&amp;apos;: &amp;apos;flickr.photos.setDates&amp;apos;, &amp;apos;format&amp;apos;: &amp;apos;parsed-json&amp;apos;}
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTPS connection (1): api.flickr.com
+INFO:flickdata:setDates: {&amp;apos;date_taken&amp;apos;: u&amp;apos;2014-12-27 14:52:34&amp;apos;}...
+INFO:flickrapi.core:Calling {&amp;apos;nojsoncallback&amp;apos;: 1, &amp;apos;method&amp;apos;: &amp;apos;flickr.photos.setDates&amp;apos;, &amp;apos;format&amp;apos;: &amp;apos;parsed-json&amp;apos;}
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTPS connection (1): api.flickr.com
+INFO:flickdata:setDates: {&amp;apos;date_taken&amp;apos;: u&amp;apos;2014-12-27 14:52:48&amp;apos;}...
+INFO:flickrapi.core:Calling {&amp;apos;nojsoncallback&amp;apos;: 1, &amp;apos;method&amp;apos;: &amp;apos;flickr.photos.setDates&amp;apos;, &amp;apos;format&amp;apos;: &amp;apos;parsed-json&amp;apos;}
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTPS connection (1): api.flickr.com
+INFO:flickdata:setDates: {&amp;apos;date_taken&amp;apos;: u&amp;apos;2015-01-09 14:22:41&amp;apos;}...
+INFO:flickrapi.core:Calling {&amp;apos;nojsoncallback&amp;apos;: 1, &amp;apos;method&amp;apos;: &amp;apos;flickr.photos.setDates&amp;apos;, &amp;apos;format&amp;apos;: &amp;apos;parsed-json&amp;apos;}
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTPS connection (1): api.flickr.com
+INFO:flickdata:setDates: {&amp;apos;date_taken&amp;apos;: u&amp;apos;2015-03-03 17:19:17&amp;apos;}...
+INFO:flickrapi.core:Calling {&amp;apos;nojsoncallback&amp;apos;: 1, &amp;apos;method&amp;apos;: &amp;apos;flickr.photos.setDates&amp;apos;, &amp;apos;format&amp;apos;: &amp;apos;parsed-json&amp;apos;}
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTPS connection (1): api.flickr.com
+INFO:flickdata:setDates: {&amp;apos;date_taken&amp;apos;: u&amp;apos;2015-04-09 19:53:29&amp;apos;}...
+INFO:flickrapi.core:Calling {&amp;apos;nojsoncallback&amp;apos;: 1, &amp;apos;method&amp;apos;: &amp;apos;flickr.photos.setDates&amp;apos;, &amp;apos;format&amp;apos;: &amp;apos;parsed-json&amp;apos;}
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTPS connection (1): api.flickr.com
+INFO:flickdata:setDates: {&amp;apos;date_taken&amp;apos;: u&amp;apos;2015-04-09 19:47:33&amp;apos;}...
+INFO:flickrapi.core:Calling {&amp;apos;nojsoncallback&amp;apos;: 1, &amp;apos;method&amp;apos;: &amp;apos;flickr.photos.setDates&amp;apos;, &amp;apos;format&amp;apos;: &amp;apos;parsed-json&amp;apos;}
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTPS connection (1): api.flickr.com
+INFO:flickdata:setDates: {&amp;apos;date_taken&amp;apos;: u&amp;apos;2015-04-09 19:49:17&amp;apos;}...
+INFO:flickrapi.core:Calling {&amp;apos;nojsoncallback&amp;apos;: 1, &amp;apos;method&amp;apos;: &amp;apos;flickr.photos.setDates&amp;apos;, &amp;apos;format&amp;apos;: &amp;apos;parsed-json&amp;apos;}
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTPS connection (1): api.flickr.com
+INFO:flickdata:setDates: {&amp;apos;date_taken&amp;apos;: u&amp;apos;2015-04-09 19:55:26&amp;apos;}...
+INFO:flickrapi.core:Calling {&amp;apos;nojsoncallback&amp;apos;: 1, &amp;apos;method&amp;apos;: &amp;apos;flickr.photos.setDates&amp;apos;, &amp;apos;format&amp;apos;: &amp;apos;parsed-json&amp;apos;}
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTPS connection (1): api.flickr.com
+INFO:flickdata:setDates: {&amp;apos;date_taken&amp;apos;: u&amp;apos;2015-04-11 09:03:06&amp;apos;}...
+INFO:flickrapi.core:Calling {&amp;apos;nojsoncallback&amp;apos;: 1, &amp;apos;method&amp;apos;: &amp;apos;flickr.photos.setDates&amp;apos;, &amp;apos;format&amp;apos;: &amp;apos;parsed-json&amp;apos;}
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTPS connection (1): api.flickr.com
+INFO:flickdata:setDates: {&amp;apos;date_taken&amp;apos;: u&amp;apos;2015-04-09 20:09:42&amp;apos;}...
+INFO:flickrapi.core:Calling {&amp;apos;nojsoncallback&amp;apos;: 1, &amp;apos;method&amp;apos;: &amp;apos;flickr.photos.setDates&amp;apos;, &amp;apos;format&amp;apos;: &amp;apos;parsed-json&amp;apos;}
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTPS connection (1): api.flickr.com
+INFO:flickdata:setDates: {&amp;apos;date_taken&amp;apos;: u&amp;apos;2015-04-11 09:11:11&amp;apos;}...
+INFO:flickrapi.core:Calling {&amp;apos;nojsoncallback&amp;apos;: 1, &amp;apos;method&amp;apos;: &amp;apos;flickr.photos.setDates&amp;apos;, &amp;apos;format&amp;apos;: &amp;apos;parsed-json&amp;apos;}
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTPS connection (1): api.flickr.com
+INFO:flickdata:setDates: {&amp;apos;date_taken&amp;apos;: u&amp;apos;2015-04-18 21:51:53&amp;apos;}...
+INFO:flickrapi.core:Calling {&amp;apos;nojsoncallback&amp;apos;: 1, &amp;apos;method&amp;apos;: &amp;apos;flickr.photos.setDates&amp;apos;, &amp;apos;format&amp;apos;: &amp;apos;parsed-json&amp;apos;}
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTPS connection (1): api.flickr.com
+INFO:flickdata:setDates: {&amp;apos;date_taken&amp;apos;: u&amp;apos;2015-05-20 09:23:33&amp;apos;}...
+INFO:flickrapi.core:Calling {&amp;apos;nojsoncallback&amp;apos;: 1, &amp;apos;method&amp;apos;: &amp;apos;flickr.photos.setDates&amp;apos;, &amp;apos;format&amp;apos;: &amp;apos;parsed-json&amp;apos;}
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTPS connection (1): api.flickr.com
+INFO:flickdata:setDates: {&amp;apos;date_taken&amp;apos;: u&amp;apos;2015-05-20 09:23:42&amp;apos;}...
+INFO:flickrapi.core:Calling {&amp;apos;nojsoncallback&amp;apos;: 1, &amp;apos;method&amp;apos;: &amp;apos;flickr.photos.setDates&amp;apos;, &amp;apos;format&amp;apos;: &amp;apos;parsed-json&amp;apos;}
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTPS connection (1): api.flickr.com
+INFO:flickdata:setDates: {&amp;apos;date_taken&amp;apos;: u&amp;apos;2015-05-20 09:24:28&amp;apos;}...
+INFO:flickrapi.core:Calling {&amp;apos;nojsoncallback&amp;apos;: 1, &amp;apos;method&amp;apos;: &amp;apos;flickr.photos.setDates&amp;apos;, &amp;apos;format&amp;apos;: &amp;apos;parsed-json&amp;apos;}
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTPS connection (1): api.flickr.com
+INFO:flickdata:setDates: {&amp;apos;date_taken&amp;apos;: u&amp;apos;2015-05-20 09:23:52&amp;apos;}...
+INFO:flickrapi.core:Calling {&amp;apos;nojsoncallback&amp;apos;: 1, &amp;apos;method&amp;apos;: &amp;apos;flickr.photos.setDates&amp;apos;, &amp;apos;format&amp;apos;: &amp;apos;parsed-json&amp;apos;}
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTPS connection (1): api.flickr.com
+INFO:flickdata:setDates: {&amp;apos;date_taken&amp;apos;: u&amp;apos;2015-05-20 09:24:08&amp;apos;}...
+INFO:flickrapi.core:Calling {&amp;apos;nojsoncallback&amp;apos;: 1, &amp;apos;method&amp;apos;: &amp;apos;flickr.photos.setDates&amp;apos;, &amp;apos;format&amp;apos;: &amp;apos;parsed-json&amp;apos;}
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTPS connection (1): api.flickr.com
+INFO:flickdata:setDates: {&amp;apos;date_taken&amp;apos;: u&amp;apos;2015-05-20 09:24:17&amp;apos;}...
+INFO:flickrapi.core:Calling {&amp;apos;nojsoncallback&amp;apos;: 1, &amp;apos;method&amp;apos;: &amp;apos;flickr.photos.setDates&amp;apos;, &amp;apos;format&amp;apos;: &amp;apos;parsed-json&amp;apos;}
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTPS connection (1): api.flickr.com
+INFO:flickdata:setDates: {&amp;apos;date_taken&amp;apos;: u&amp;apos;2015-05-20 09:24:41&amp;apos;}...
+INFO:flickrapi.core:Calling {&amp;apos;nojsoncallback&amp;apos;: 1, &amp;apos;method&amp;apos;: &amp;apos;flickr.photos.setDates&amp;apos;, &amp;apos;format&amp;apos;: &amp;apos;parsed-json&amp;apos;}
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTPS connection (1): api.flickr.com
+INFO:flickdata:setDates: {&amp;apos;date_taken&amp;apos;: u&amp;apos;2015-05-23 09:47:31&amp;apos;}...
+INFO:flickrapi.core:Calling {&amp;apos;nojsoncallback&amp;apos;: 1, &amp;apos;method&amp;apos;: &amp;apos;flickr.photos.setDates&amp;apos;, &amp;apos;format&amp;apos;: &amp;apos;parsed-json&amp;apos;}
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTPS connection (1): api.flickr.com
+INFO:flickdata:setDates: {&amp;apos;date_taken&amp;apos;: u&amp;apos;2015-05-20 09:24:50&amp;apos;}...
+INFO:flickrapi.core:Calling {&amp;apos;nojsoncallback&amp;apos;: 1, &amp;apos;method&amp;apos;: &amp;apos;flickr.photos.setDates&amp;apos;, &amp;apos;format&amp;apos;: &amp;apos;parsed-json&amp;apos;}
+INFO:requests.packages.urllib3.connectionpool:Starting new HTTPS connection (1): api.flickr.com
+&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
+&lt;/div&gt;
+
+&lt;p&gt;&lt;/div&gt;
+&lt;div class=&#34;cell border-box-sizing text_cell rendered&#34;&gt;
+&lt;div class=&#34;prompt input_prompt&#34;&gt;
+&lt;/div&gt;
+&lt;div class=&#34;inner_cell&#34;&gt;
+&lt;div class=&#34;text_cell_render border-box-sizing rendered_html&#34;&gt;
+&lt;h2 id=&#34;Future-Work&#34;&gt;Future Work&lt;a class=&#34;anchor-link&#34; href=&#34;#Future-Work&#34;&gt;&amp;#182;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;make an album of all the photos uploaded in this process?&lt;/li&gt;
+&lt;li&gt;tag flickr photos with uids&lt;ul&gt;
+&lt;li&gt;don&#39;t lose &#34;untagged&#34; state, though! capture untagged-ness in an album or something.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;sync events... using photosets?&lt;/li&gt;
+&lt;li&gt;sync faces&lt;/li&gt;
+&lt;/ul&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class=&#34;cell border-box-sizing text_cell rendered&#34;&gt;
+&lt;div class=&#34;prompt input_prompt&#34;&gt;
+&lt;/div&gt;
+&lt;div class=&#34;inner_cell&#34;&gt;
+&lt;div class=&#34;text_cell_render border-box-sizing rendered_html&#34;&gt;
+&lt;p&gt;Additional notes bookmarked under: &lt;a href=&#34;https://www.diigo.com/user/dckc-madmode/mac%20photos&#34;&gt;mac photos&lt;/a&gt;, &lt;a href=&#34;https://www.diigo.com/user/dckc-madmode/mac%20sysadmin&#34;&gt;mac sysadmin&lt;/a&gt;&lt;/p&gt;&lt;/p&gt;
+&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;&lt;/p&gt;</description>
+            <pubDate>Tue, 07 Jul 2015 00:00:00 +0000</pubDate>
+            <guid>http://www.madmode.com//2015/photo-flickr-explore/</guid>
+        </item>
         <item>
             <title>studying Knuth&#39;s Mastermind Solver with rust</title>
             <link>http://www.madmode.com//2015/rust1/</link>
@@ -3651,43 +6251,6 @@ Though I never got into the habit of reading the morning paper, my wife reads it
 &lt;br /&gt;&lt;/p&gt;</description>
             <pubDate>Fri, 30 Nov 2012 00:00:00 +0000</pubDate>
             <guid>http://www.madmode.com//2012/11/kc-star-to-to-limit-free-web-browsing/</guid>
-        </item>
-        <item>
-            <title>Nokia Lumia 710 with Windows Phone 7 is an eye-opener</title>
-            <link>http://www.madmode.com//2012/07/nokia-lumia-710-with-windows-phone-7-is/</link>
-            <description>&lt;p&gt;At first, the conversation was about a new iPod touch vs. a mobile phone. The battery in my youngest son&#39;s aging iPod touch lasts about half an hour now, and his birthday is coming up. He was leaning toward a new iPod touch, but the reason we get mobile phones for our boys is so that mom&#39;s taxi service can reach them, and the lack of a phone for him has caused some issues in that area recently.&lt;br /&gt;
-&lt;br /&gt;
-So we took him to the T-Mobile store to shop for a phone. We&#39;re OK to pay a few more dollars a month to add him to our family plan (especially since we can drop the land line) but we&#39;re not getting him a data plan.&lt;br /&gt;
-&lt;br /&gt;
-We had just about decided on some Samsung talk-and-text model when the clerk said &#34;I can show you a touchscreen phone that doesn&#39;t require a data plan.&#34; It was the Nokia Lumia 710 with Windows Phone 7.&amp;nbsp;&lt;b&gt;The price? Just $50&lt;em&gt;&lt;/b&gt;&amp;nbsp;(with the usual 2 year contract).&lt;br /&gt;
-&lt;br /&gt;
-I have spent a couple decades avoiding the influence of Microsoft in my life, and especially in the Web, but Microsoft is motivated to be more open and interoperable in the mobile space, since they don&#39;t dominate it. &amp;nbsp;Plus, a good friend of mine gushes about his new Windows Mobile phone, a complete turn-around compared to his endless gripes and frustrations with his original Windows Mobile phone. So I was open to it. But even $50 is&amp;nbsp;$40 more than the other phone, so I asked my son if he was sufficiently interested to contribute a certain chunk of the price. Yes, he said, without hesitation, and we went for it.&lt;br /&gt;
-&lt;br /&gt;
-This thing has all the &#34;wow! it can do &lt;i&gt;that&lt;/i&gt; too?!&#34; of my Samsung Vibrant with Android 2.2 and none of the &#34;oops... hey! what? grrr...&#34; surprise and frustration and waiting. The back button is as quick as it used to be on the sidekick/hiptop. I don&#39;t know why Android can&#39;t cache web pages worth a lick; didn&#39;t&amp;nbsp;Andy Rubin design both platforms?&lt;br /&gt;
-&lt;br /&gt;
-The one bit of frustration is by design: until his birthday actually arrives, windowsmobile.com won&#39;t let him install any apps.&lt;br /&gt;
-&lt;br /&gt;
-So migrating his contacts was a bit of an adventure. We ended up &lt;a href=&#34;http://follow.ourbunny.com/post/2148582357/download-iphone-contacts-to-linux&#34;&gt;using python-idevicesync&lt;/a&gt; on my linux box to get them in a vCard file for uploading into his google account (I set up &lt;a href=&#34;http://lifehacker.com/5708219/why-you-should-use-google-apps-with-your-personal-domain-for-your-google-life&#34;&gt;google apps for domains for our family&lt;/a&gt; a few years back). Then the phone knew how to get the contacts from there.&lt;br /&gt;
-&lt;br /&gt;
-I didn&#39;t discover the shortest path to loading music right away. It has a micro-USB connector, but doesn&#39;t act like a flash drive. Evidently it speaks &lt;a href=&#34;http://en.wikipedia.org/wiki/Media_Transfer_Protocol&#34;&gt;music transfer protocol (MTP)&lt;/a&gt;. The up-side is that it doesn&#39;t need to re-scan the entire flash filesystem every time you connect it to a computer (or turn it on). MTP is supported by rhythmbox and lots of other open source music managers, but evidently not quite the dialect of MTP that Windows Phone 7 uses. When I tried to drag a bunch of tracks over, Rhythmbox would copy one track and then stop. And it wouldn&#39;t set the artist/album/track metadata right. Evidently it was silently discarding an error (grrr!). &lt;a href=&#34;http://gmtp.sourceforge.net/&#34;&gt;gMTP&lt;/a&gt; did better: it would report an error after each track, but when I acknowledged the error dialog, it would continue to the next track. It still didn&#39;t get the metadata right.&lt;br /&gt;
-&lt;br /&gt;
-This exercise prompted me to resume the &lt;a href=&#34;http://www.madmode.com/2011/04/closing-music-sharing-loops-with-amazon.html&#34;&gt;quest of cleaning up my music archive&lt;/a&gt;, including convincing Ubuntu to share files with Mac OS X again (netatalk seems to be dying; ugh... samba config! caramba!).&lt;br /&gt;
-&lt;br /&gt;
-&lt;b&gt;&lt;a href=&#34;http://www.hardcoded.net/dupeguru_me/&#34;&gt;dupeguru Music Edition&lt;/a&gt;, where have you been all my life?!&lt;/b&gt;&lt;br /&gt;
-&lt;br /&gt;
-It cleaned up thousands of duplicate tracks in my filesystem and even cleaned up dead tracks in my iTunes database. &lt;i&gt;(Of course, I expected iTunes Home Sharing&#39;s ability to detect tracks that I already have to extend to the case of dragging and dropping the contents of a playlist, and I was wrong, so I have another batch of dups to clean up...)&lt;/i&gt;&lt;br /&gt;
-&lt;br /&gt;
-I expected&amp;nbsp;&amp;nbsp;to run into the same age restriction with&amp;nbsp;Windows Phone 7 Connector for Mac as my son ran into with Zune on his netbook, but not so. I was able to use it to install a Windows Phone update, though it gave me a scare when it quit during the &#34;do not disconnect&#34; part of the update; I was mentally preparing to take the bricked phone back to the T-Mobile store when the phone rebooted and announced that the update was complete. Whew!&lt;br /&gt;
-&lt;br /&gt;
-Syncing music worked with Windows Phone 7 Connector. It got the metadata right, but I think it excluded some songs due to DRM that were actually not DRM-encumbered.&lt;br /&gt;
-&lt;br /&gt;
-I have had my eye on the Galaxy Nexus with Jellybean. $350 unlocked seemed like such a good deal, but now I wonder... do I really want to choose a phone based on my ability to tinker with it? With my Samsung Vibrant running Android 2.2, I&#39;m constantly dreaming of ways to improve it. But that&#39;s because I&#39;m constantly interrupted from what I was actually trying to do with the phone by some bug or performance issue.&lt;br /&gt;
-&lt;br /&gt;
-Wasn&#39;t it Ed Dumbill who said &#34;I don&#39;t want to sysadmin my phone.&#34; Maybe I&#39;d be happier with the no-user-serviceable-parts-inside product that Nokia, Microsoft, and T-Mobile are offering for hundreds less.&lt;br /&gt;
-&lt;br /&gt;
-&lt;i&gt;&lt;/em&gt;EDIT: It looks like the $50 price we got at a local T-Mobile store is not widely available.&amp;nbsp;&lt;a href=&#34;http://wireless.amazon.com/Nokia-Lumia-710-Windows-T-Mobile/dp/B006U0X7UY/&#34;&gt;Amazon wants $300&lt;/a&gt;&amp;nbsp;and gives a list price of $500.&lt;/i&gt;&lt;/p&gt;</description>
-            <pubDate>Sun, 08 Jul 2012 00:00:00 +0000</pubDate>
-            <guid>http://www.madmode.com//2012/07/nokia-lumia-710-with-windows-phone-7-is/</guid>
         </item>
         
     </channel>
