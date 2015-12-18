@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
-    <title>MadMode: Rust-Sqlite3 -- Rustic bindings for sqlite3 | Code</title>
+    <title>MadMode: Code</title>
     <meta name="description" content="MadMode by Dan Connolly"/>
     <meta name="viewport" content="width=device-width"/>
 
@@ -28,74 +28,54 @@
         </header>
         <div class="contents">
             
+<h2>Code | 2015</h2>
 
-    <article lang="en" class="" itemscope="itemscope" itemtype="http://schema.org/BlogPosting">
-    <link itemprop="url" href="/2014/08-rust-sqlite3.html" />
-    <header>
-        <h2><a itemprop="name" href="/2014/08-rust-sqlite3.html">Rust-Sqlite3 -- Rustic bindings for sqlite3</a></h2></header>
-    
-    <section>
-        <p>I was looking into <a href="https://sandstorm.io/">sandstorm</a>, a personal cloud platform with an
-architecture based on the wonderful <a href="http://www.erights.org/elib/capability/ode/ode-capabilities.html">capability security</a>
-paradigm, and I found a rust application, <a href="https://github.com/dwrensha/acronymy">acronymy</a>, that uses the
-native API rather than the traditional POSIX environment.</p>
-<p>I started poring over the code and followed the dependency link to
-linuxfood's <a href="https://github.com/linuxfood/rustsqlite">rustsqlite</a>. I started working on a <a href="https://github.com/linuxfood/rustsqlite/issues/92">memory safety
-issue</a> etc. but soon found a number of large-scale API design
-issues that I wasn't sure how to approach with the upstream
-developers. I was also inspired by <code>FromSql</code>, <code>ToSql</code> and such
-from sfackler's <a href="https://github.com/sfackler/rust-postgres">rust-postgres</a> API.</p>
-<p>So I started from scratch, using <a href="https://github.com/crabtw/rust-bindgen">bindgen</a>, <code>Result</code> (sum types) etc.</p>
-<p>Thanks to <strong>apoelstra</strong> and others in the <a href="http://www.rust-lang.org/">rust community</a> IRC
-channel, I'm making pretty good progress.  The API isn't stable yet;
-testing continues to turn up issues at a pretty high rate. But it's
-getting there.</p>
-<p>Open source collaboration and QA tools are great these days. Not only do
-we have <a href="https://github.com/dckc/rust-sqlite3">rust-sqlite3 on github</a>, but every time I push there:</p>
-<ul>
-<li><a href="http://www.rust-ci.org/dckc/rust-sqlite3">rust-sqlite3 on travis-ci</a> runs all the tests and builds the
-    docs an pushes them to</li>
-<li><a href="http://www.rust-ci.org/dckc/rust-sqlite3/doc/sqlite3/">rust-sqlite3 on rust-ci</a>, where docs are published.</li>
-</ul>
-    </section>
-    <aside>
-        <p>
-            <span class="article-author" itemprop="author" itemscope="itemscope" itemtype="http://schema.org/Person">
-                <span itemprop="name">Dan Connolly</span> —
-            </span>
-            <time datetime="2014-08-13" itemprop="datePublished">2014-08-13</time>
-            
-            — <a href="/2014/08-rust-sqlite3.html">Permalink</a>
-            — <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/">License</a>.
-	    <br />
+<p>All posts published during 2015.</p>
+
+<ul class="item-list" itemprop="blogPosts">
+    <li>
+        <h3>
+            <a itemprop="url" href="/2015/tedx-kc.html"><span itemprop="name">A Look Back at TEDxKC 2015</span></a>
+            | <time datetime="2015-12-17">2015-12-17</time>
 	    
 	    | <a class='tag' rel='tag'
-		 href="/search/label/programming/">programming</a>
+		 href="/search/label/KC/">KC</a>
    	    
 	    | <a class='tag' rel='tag'
-		 href="/search/label/rust/">rust</a>
+		 href="/search/label/world/">world</a>
    	    
 	    | <a class='tag' rel='tag'
-		 href="/search/label/data/">data</a>
+		 href="/search/label/health/">health</a>
    	    
 	    | <a class='tag' rel='tag'
-		 href="/search/label/quality/">quality</a>
+		 href="/search/label/music/">music</a>
    	    
-	    | <a class='tag' rel='tag'
-		 href="/search/label/collaboration/">collaboration</a>
-   	    
-	    | <a class='tag' rel='tag'
-		 href="/search/label/capabilities/">capabilities</a>
-   	    
-        </p>
-    </aside>
-    <hr />
-    <nav>
-        <a class="prev" href="/2014/12-watch1.html">Pebble beats out Garmin Vivofit for my wrist</a>
-        |
-        <a class="next" href="/2014/08-ocap-here-and-there.html">Capability Security Advances: seL4, sandstorm, Rserve</a>
-    </nav>
-</article>
+        </h3>
+        <p><q itemprop="description"><em>Looking back over the year, one of the highlights was TEDxKC. In its seventh year, Kansas City&#39;s TEDx is the largest in the country. ...</em></q></p>
+        <hr>
+    </li>
+</ul>
+
+
+    <p>
+        &laquo; Back to <a href="/">MadMode</a>
+        | Browse the archives
+                | <a href="/2014/">2014</a>
+                | <a href="/2013/">2013</a>
+                | <a href="/2012/">2012</a>
+                | <a href="/2011/">2011</a>
+                | <a href="/2010/">2010</a>
+                | <a href="/2009/">2009</a>
+                | <a href="/2008/">2008</a>
+                | <a href="/2007/">2007</a>
+                | <a href="/2006/">2006</a>
+                | <a href="/2005/">2005</a>
+                | <a href="/2004/">2004</a>
+                | <a href="/2003/">2003</a>
+                | <a href="/2002/">2002</a>
+                | <a href="/2001/">2001</a>
+                | <a href="/2000/">2000</a></p>
+
 
 
         </div>
@@ -104,6 +84,54 @@ we have <a href="https://github.com/dckc/rust-sqlite3">rust-sqlite3 on github</a
                 <li class="home"><a href="/" hreflang="en">Home</a></li>
 <!-- @@                <li class="code"><a href="@@ url_for("section", section="code") }}" hreflang="en">Blog</a></li> -->
                <li>Archives
+		 
+		 | <a href="/2015/"
+		      >2015</a>
+		 
+		 | <a href="/2014/"
+		      >2014</a>
+		 
+		 | <a href="/2013/"
+		      >2013</a>
+		 
+		 | <a href="/2012/"
+		      >2012</a>
+		 
+		 | <a href="/2011/"
+		      >2011</a>
+		 
+		 | <a href="/2010/"
+		      >2010</a>
+		 
+		 | <a href="/2009/"
+		      >2009</a>
+		 
+		 | <a href="/2008/"
+		      >2008</a>
+		 
+		 | <a href="/2007/"
+		      >2007</a>
+		 
+		 | <a href="/2006/"
+		      >2006</a>
+		 
+		 | <a href="/2005/"
+		      >2005</a>
+		 
+		 | <a href="/2004/"
+		      >2004</a>
+		 
+		 | <a href="/2003/"
+		      >2003</a>
+		 
+		 | <a href="/2002/"
+		      >2002</a>
+		 
+		 | <a href="/2001/"
+		      >2001</a>
+		 
+		 | <a href="/2000/"
+		      >2000</a>
 		 
                </li>
 
