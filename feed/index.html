@@ -5,9 +5,92 @@
         <link>http://www.madmode.com/</link>
         <description>Dan Connolly's tinkering notebook</description>
         <language>en-us</language>
-        <pubDate>Thu, 17 Dec 2015 21:46:22 +0000</pubDate>
-        <lastBuildDate>Thu, 17 Dec 2015 21:46:22 +0000</lastBuildDate>
+        <pubDate>Wed, 18 May 2016 00:48:01 +0000</pubDate>
+        <lastBuildDate>Wed, 18 May 2016 00:48:01 +0000</lastBuildDate>
         
+        <item>
+            <title>Etherium and DAO tokens: an experience report</title>
+            <link>http://www.madmode.com//2016/eth-dao/</link>
+            <description>&lt;p&gt;&lt;strong&gt;Tada! I own 227.27 &lt;a href=&#34;https://daohub.org/&#34;&gt;DAO&lt;/a&gt; tokens.&lt;/strong&gt; Why? As a student of capability security and
+computer-supported collaboration in general, I&#39;m naturally interested in
+smart contracts. When an autonomous smart-contract platform raises &lt;a href=&#34;https://bitcoinmagazine.com/articles/the-dao-raises-more-than-million-in-world-s-largest-crowdfunding-to-date-1463422191&#34;&gt;$100M+ in a week&lt;/a&gt;,
+I figure I should know how it works.&lt;/p&gt;
+&lt;p&gt;The buzzwords run thick and fast:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;The DAO is &lt;strong&gt;Code&lt;/strong&gt;.&lt;/li&gt;
+&lt;li&gt;The DAO is &lt;strong&gt;Autonomous&lt;/strong&gt;.&lt;/li&gt;
+&lt;li&gt;The DAO is &lt;strong&gt;Revolutionary&lt;/strong&gt;.&lt;/li&gt;
+&lt;li&gt;The DAO is &lt;strong&gt;Rewarding&lt;/strong&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Which of these do I believe?&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Code&lt;/strong&gt;: Check. The evidence is clear and compelling. The bytes are &lt;code&gt;0x60606040523615...&lt;/code&gt; and a &lt;a href=&#34;https://github.com/slockit/DAO/wiki/The-DAO-v1.0-Code#verifying-the-dao-code.&#34;&gt;straightforward verification process&lt;/a&gt; establishes that the &lt;a href=&#34;https://github.com/slockit/DAO&#34;&gt;source code&lt;/a&gt; compiles to this output.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Autonomous&lt;/strong&gt;: It autonomously does &lt;em&gt;something&lt;/em&gt; (inasmuch as miners keep the Etherium distributed VM going). An &lt;a href=&#34;https://blog.slock.it/deja-vu-dao-smart-contracts-audit-results-d26bc088e32e#.6wtj3lwqg&#34;&gt;audit&lt;/a&gt; has vouched that the contract is &#34;secure&#34; and, I gather, faithful to the &lt;a href=&#34;https://download.slock.it/public/DAO/WhitePaper.pdf&#34;&gt;DAO whitepaper&lt;/a&gt;. I haven&#39;t digested the argument that what it does is fair and not controlled by any one or few actors. I&#39;m still digesting basics such as &lt;a href=&#34;https://github.com/ethereum/wiki/wiki/Patricia-Tree&#34;&gt;patricia trees&lt;/a&gt;, actually.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Revolutionary&lt;/strong&gt;: Perhaps $100M in a week constitutes a revolution. But whether there will be any lasting
+  effect is unclear to me. The argument from &lt;a href=&#34;https://www.reddit.com/r/ethereum/comments/4jnem4/is_the_dao_going_to_be_doa_by_dan_larimer_of/&#34;&gt;BitShares experience&lt;/a&gt; that voter apathy and mis-aligned incentives will result in failure is more substantive than any argument I found in favor of the DAO.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Rewarding&lt;/strong&gt;: Finding &lt;em&gt;any&lt;/em&gt; substance behind this claim was quite a challenge. I looked for a simple 3-point argument that there&#39;s some ROI in here... Is that too much to ask? Apparently so. The whitepaper didn&#39;t
+  elucidate much for me; it started with a bit of history of smart contracts (citing Szabo 1997 and Miller 1997 was
+  good to see) and then immediately dove into details of the values of various constants in the contract algorithm.
+  Buried several layers into the web site, I found that proposal 1 includes for a sort of &lt;a href=&#34;https://forum.daohub.org/t/slock-it-proposal-1-discussion-thread/539&#34;&gt;generalized, automated airbnb&lt;/a&gt;. Ok, that&#39;s at least somewhat plausible. Follow-the-money seems to lead to slock.it. I&#39;m sure it&#39;s rewarding for &lt;em&gt;them&lt;/em&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;I get anxious reading the code: too many of the security properties seem to rely on programmer dilligence:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;function transfer(address _to, uint256 _amount) noEther returns (bool success) {
+    if (balances[msg.sender] &amp;gt;= _amount &amp;amp;&amp;amp; _amount &amp;gt; 0) {
+        balances[msg.sender] -= _amount;
+        balances[_to] += _amount;
+        Transfer(msg.sender, _to, _amount);
+        return true;
+    }
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Compare the above from &lt;a href=&#34;https://github.com/slockit/DAO/blob/master/Token.sol&#34;&gt;Token.sol&lt;/a&gt; to the elegant simplicity of &lt;a href=&#34;http://erights.org/elib/capability/ode/ode-capabilities.html&#34;&gt;simple money in E&lt;/a&gt;:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;            to deposit(amount :int, src) :void {
+                unsealer.unseal(src.getDecr())(amount)
+                balance += amount
+            }
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;OK... so how do I do it?&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;To obtain DAO tokens, ... send ETH from your Ethereum Wallet ... to The DAO’s address below.
+&lt;code&gt;0xbb9bc244d798123fde783fcc1c72d3bb8c189413&lt;/code&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;... and there&#39;s a wizard... it recommends paying eith ETH. But I don&#39;t have any. So I choose USD,
+at which point they refer me to bity.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;The register button wouldn&#39;t light up when I used a password manager to enter a password&lt;ul&gt;
+&lt;li&gt;I eventually found a work-around: manually type a character and then delete it.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;After filling in all the info to order some ETH, they gave me international bank transfer instructions.
+    I have no idea how to execute such a transfer, but I&#39;m quite sure it&#39;s not something I can do now, when
+    my bank is closed.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;So I back-track and try the recommended wallet. Mist is an node+webkit style app. When I start it up, it says it has to sync with the blockchain and stays like that for longer than my attention span. &lt;em&gt;How about some advanced notice that this is going to take hours and GB of disk space?&lt;/em&gt; I guess one should not expect good road signs in the wild west.&lt;/p&gt;
+&lt;p&gt;Back-track again... Searching turned up a &lt;a href=&#34;http://ethereum.stackexchange.com/a/1916&#34;&gt;How do I buy Ethereum with USD? answer&lt;/a&gt; Mar 8 at 5:38 by niksmac:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Buy BTC with a debit card at coinbase.&lt;ul&gt;
+&lt;li&gt;The experience is much more what I expected. I did the SMS callback verification dance and exchanged $30 for BTC using a debit card within 10 or 15 minutes. I switched the 2FA on my account from SMS to TOTP (google authenticator) in the process.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Exchange BTC for ETH using shapeshift.&lt;ul&gt;
+&lt;li&gt;This presumes I have an ETH address. &lt;a href=&#34;https://ethereumwallet.com/index.html&#34;&gt;EtheriumWallet by Krypokit&lt;/a&gt; lets you make one right in your browser in a minute or so. While I&#39;m sure a full blockchain sync is more secure, I&#39;m only risking a few dollars here and &#34;more&#34; is probably a difference between getting struck by lighting once and getting struck twice. Do I really care?&lt;/li&gt;
+&lt;li&gt;shapeshift result: &lt;a href=&#34;https://etherscan.io/tx/0x77fef130c7b576e188018602206141723bd11ff47cb8baadaab370fc29892618&#34;&gt;receipt for 2.55384881 Ether&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Send ETH to the DAO contract address.&lt;ul&gt;
+&lt;li&gt;I got plenty of confirmations on &lt;a href=&#34;https://etherscan.io/tx/0x1be4715b9fc0e3b6c6793f6d27ba1ca00d4a47d9b4ab1fe51fa456a33adde355&#34;&gt;transaction 0x1be4715b...&lt;/a&gt;, so I thought I was all set. But the last step of the DAO wizard was to confirm on &lt;a href=&#34;https://daohub.org/creation.html&#34;&gt;the creation page&lt;/a&gt;, but I kept getting 0 tokens for my address there.&lt;/li&gt;
+&lt;li&gt;Eventually I learned the &lt;a href=&#34;https://forum.daohub.org/t/out-of-gas-could-not-get-doa/2148&#34;&gt;out of gas&lt;/a&gt; warning really matters. That Krypokit wallet worked fine for sending ETH around, but it didn&#39;t add any gas, so non-trivial contracts didn&#39;t work.&lt;/li&gt;
+&lt;li&gt;I back-tracked to &lt;a href=&#34;https://www.myetherwallet.com/#the-dao&#34;&gt;MyEtherWallet&lt;/a&gt;, which added sufficient gas to run the contract. Bingo! I did a smaller transaction to be sure I had enough for gas and then another for the rest:&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://etherscan.io/tx/0x06bee04bc3f3286557e0aa9e12313a169184f074a41b3c650b0fa13c69daa9f6&#34;&gt;1 ETH&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://etherscan.io/tx/0x7340c3f8b91cb64c811b9079b0c716d86fd7568cd23f390b0333d467d337c858&#34;&gt;1.5 ETH&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;I eventually did a full blockchain sync. I kept starting over thinking I was doing something wrong. But no, it really iterates through all 1.5M blocks on the blockchain &lt;em&gt;twice&lt;/em&gt;, which takes a few hours and uses about 2GB using &lt;code&gt;geth --fast&lt;/code&gt;.&lt;/p&gt;</description>
+            <pubDate>Wed, 18 May 2016 00:00:00 +0000</pubDate>
+            <guid>http://www.madmode.com//2016/eth-dao/</guid>
+        </item>
         <item>
             <title>A Look Back at TEDxKC 2015</title>
             <link>http://www.madmode.com//2015/tedx-kc/</link>
@@ -6130,120 +6213,6 @@ print(head(d5[, c(&amp;quot;closed_at&amp;quot;, &amp;quot;title&amp;quot;)], 10
 &lt;/div&gt;</description>
             <pubDate>Sun, 23 Dec 2012 00:00:00 +0000</pubDate>
             <guid>http://www.madmode.com//2012/rust-issues-rate/</guid>
-        </item>
-        <item>
-            <title>MadMode goes from fried to baked with Frozen-Flask</title>
-            <link>http://www.madmode.com//2012/bake-fry-frozen-flask/</link>
-            <description>&lt;p&gt;A couple years ago, I &lt;a href=&#34;../2010/05/getting-over-blogging-tool-analysis.html&#34;&gt;started using blogger&lt;/a&gt; because I wanted
-immersive hypermedia editing, and I wanted it for free. Well, you get
-what you pay for.&lt;/p&gt;
-&lt;p&gt;Using a database-backed, through-the-web blogging tool was a big
-change for me, after over a decade of using version-controlled static
-files at W3C. Aaron Swartz put it in bumper-sticker form: &lt;a href=&#34;http://www.aaronsw.com/weblog/000404&#34;&gt;Bake, Don&#39;t
-Fry&lt;/a&gt;.&lt;/p&gt;
-&lt;p&gt;The promise of immersive hypermedia editing didn&#39;t quite pan out. Yes,
-blogger lets you drop in images and videos. But I&#39;m still all knotted
-up about media management. I tried to ignore the fact that paragraphs
-are separated by &lt;code&gt;&amp;lt;br/&amp;gt;&lt;/code&gt; tags, but not all the problems are
-invisible. It lets you copy-and-paste chunks of hypertext; but it
-tries to preserve not just the structure but the formatting too, and
-the result is a mess.&lt;/p&gt;
-&lt;p&gt;Writing on mobile gizmos isn&#39;t quite there yet either.  I wrote a six
-page letter with two thumbs on my sidekick years ago, but since going
-to a touchscreen, that&#39;s not happeneing. Voice recognition is getting
-really close, but it still requires a little manual clean-up, and with
-no cursor keys, editing is maddening.  Besides, when I want to post
-&#34;look what my dog just coughed up!&#34; ephemera, I use twit-face-plus,
-not my own imprint.&lt;/p&gt;
-&lt;p&gt;Static site generators are making a comeback, riding the distributed
-version control wave. I bookmarked &lt;a href=&#34;http://octopress.org/&#34;&gt;Octopress&lt;/a&gt;
-under &lt;a href=&#34;http://www.diigo.com/user/dckc-madmode/publishing&#34;&gt;publishing&lt;/a&gt; in Oct 2011:&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;ooh... interesting. nice style/fonts, bake-don&#39;t-fry, lots of goodies.&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;I&#39;m reluctant to add ruby to my toolset. Nothing against it; it&#39;s just
-too close to python for comfort... like when my mom studied both
-Spanish and French and got the vocabulary mixed up. It took me years
-to &lt;a href=&#34;http://www.advogato.org/person/connolly/diary/71.html&#34;&gt;flush perl out of my system&lt;/a&gt;; I&#39;m not going back.&lt;/p&gt;
-&lt;p&gt;But Octopress was so far ahead of the python-based offerings that I
-did try it one afternoon. I got as far as &#34;2. Install Ruby 1.9.3 ...&#34;
-but that version wasn&#39;t in my apt sources and I wasn&#39;t in the mood to
-build from source, so I punted.&lt;/p&gt;
-&lt;p&gt;Finally I found a &lt;a href=&#34;https://nicolas.perriault.net/code/2012/dead-easy-yet-powerful-static-website-generator-with-flask/&#34;&gt;flask-based static blog generator&lt;/a&gt; by
-&lt;a href=&#34;https://github.com/n1k0/nicolas.perriault.net&#34;&gt;Nicolas Perriault&lt;/a&gt;. For building web apps at work, I picked
-&lt;a href=&#34;http://pypi.python.org/pypi/pyramid&#34;&gt;pyramid&lt;/a&gt; over flask because flask seemed to rely on globals,
-but for a front-side-of-one-page tool, I&#39;m fine with it.&lt;/p&gt;
-&lt;p&gt;His site is organized around sections; I was able to rip those out and
-replaced them with tags without much trouble:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;def tag_counts(pages):
-    all_tags = [tag for pg in pages
-                for tag in pg.meta.get(&#39;tags&#39;, ())]
-    count_tags = [(tag, len(list(tag_group)))
-                   for tag, tag_group in groupby(sorted(all_tags))]
-    return sorted(count_tags, key=lambda x: x[0].lower())
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;...&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;@app.route(&#39;/search/label/&amp;lt;string:tag&amp;gt;.html&#39;)
-def search_tag(tag):
-    template = &#39;archives.html&#39;
-    articles = get_pages(pages, tag=tag)
-    return render_template(template, pages=articles, tag=tag)
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;I&#39;m still working out the details of publishing the source, but here&#39;s
-the change log, lightly edited:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;migrated published madmode items from blogger&lt;br /&gt;
-&lt;code&gt;990356e3476f 42: +1291/-0&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;Merge flask work&lt;br /&gt;
-&lt;code&gt;bc689b10191e 108: +8711/-0&lt;/code&gt;&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;snapshot of madmode sitemap for migration from blogger&lt;br /&gt;
-&lt;code&gt;a6223bc11053 2: +28815/-0&lt;/code&gt;
-  &lt;em&gt;see also &lt;a href=&#34;https://bitbucket.org/DanC/palmagent/src/56501d8a2347754ff0240bcac8a6d41b9d7a9d0a/sitemap.py?at=default&#34;&gt;sitemap.py&lt;/a&gt;&lt;/em&gt;&lt;/li&gt;
-&lt;li&gt;blogger snapshot for Flask migration&lt;br /&gt;
-&lt;code&gt;a3a43c581955 1: +1789/-520&lt;/code&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;use .html for /search/label/tag pages, for now&lt;br /&gt;
-&lt;code&gt;a1d40734bc0b 1: +1/-1&lt;/code&gt;&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;scrub remaining occurrences of Nicolas, esp. contact.html&lt;br /&gt;
-&lt;code&gt;56b91790e57a 8: +24/-46&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;show tags in article listings and on articles&lt;br /&gt;
-&lt;code&gt;1b24ba141732 4: +16/-3&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;polish up madmode homepage: copy, title, acks; archive links&lt;br /&gt;
-&lt;code&gt;598ef5591769 5: +71/-33&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;browse archives by year or by year-month &lt;em&gt;to match blogger urls&lt;/em&gt;&lt;br /&gt;
-&lt;code&gt;89069d50ddf0 3: +45/-9&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;add tag cloud&lt;br /&gt;
-&lt;code&gt;e65884962fa8 4: +53/-2&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;toward section-less site: home page renders&lt;br /&gt;
-&lt;code&gt;536f1692c20c 4: +16/-67&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;migrate_blogger.py seems to mostly work&lt;br /&gt;
-&lt;code&gt;5a65ceeb9661 1: +76/-2&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;migrate_blogger.py can iterate through posts&lt;br /&gt;
-&lt;code&gt;7c075b5ffefc 1: +22/-0&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;re-brand for MadMode, 1st draft&lt;br /&gt;
-&lt;code&gt;874bc9b83067 6: +16/-48&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;prune pages by Nicolas&lt;br /&gt;
-&lt;code&gt;4380ba01e181 80: +0/-2243&lt;/code&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;I&#39;m releasing it now before analysis paralysis sets in again, but
-there are still a few things to clean up and there are, of course, a
-number of features on my wish list:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;side-by-side preview editing, a la trac wysiwyg or AaronSw&#39;s &lt;a href=&#34;https://www.jottit.com/&#34;&gt;jottit&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;comments? twitter track-back, disquss comments&lt;/li&gt;
-&lt;li&gt;recent diigo bookmarks, highlights&lt;/li&gt;
-&lt;li&gt;recent commits from github/bitbucket&lt;/li&gt;
-&lt;li&gt;collect my tweets etc. into weekly items, a la Tim Bray and Norm Walsh&lt;/li&gt;
-&lt;li&gt;jsmath&lt;/li&gt;
-&lt;li&gt;goodies from &lt;a href=&#34;http://docs.getpelican.com/en/3.1.1/&#34;&gt;pelican&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</description>
-            <pubDate>Fri, 21 Dec 2012 00:00:00 +0000</pubDate>
-            <guid>http://www.madmode.com//2012/bake-fry-frozen-flask/</guid>
         </item>
         
     </channel>

@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+    <meta charset="utf-8" />
+    
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <title>MadMode: Etherium and DAO tokens: an experience report | Code</title>
+    <meta name="description" content="MadMode by Dan Connolly"/>
+    <meta name="viewport" content="width=device-width"/>
+
+    <!-- https://dev.twitter.com/docs/cards -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:creator" content="dckc">
+    <link rel="stylesheet" type="text/css" href="/static/packed.css?1403980370"/>
+    <link rel="alternate" type="application/rss+xml" href="/feed/" title="Everything (RSS)"/>
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+</head>
+<body class="">
+    <!--[if lt IE 7]>
+    <p class="chromeframe">Your browser is <em>ancient!</em> Please <a href="http://www.quirksmode.org/upgrade.html">upgrade</a>.</p>
+    <![endif]-->
+    <div class="container">
+        <header class="main-title">
+            <h1><a href="/">MadMode</a></h1>
+            <small>Dan Connolly's tinkering lab notebook</small>
+        </header>
+        <div class="contents">
+            
+
+    <article lang="en" class="" itemscope="itemscope" itemtype="http://schema.org/BlogPosting">
+    <link itemprop="url" href="/2016/eth-dao.html" />
+    <header>
+        <h2><a itemprop="name" href="/2016/eth-dao.html">Etherium and DAO tokens: an experience report</a></h2></header>
+    
+    <section>
+        <p><strong>Tada! I own 227.27 <a href="https://daohub.org/">DAO</a> tokens.</strong> Why? As a student of capability security and
+computer-supported collaboration in general, I'm naturally interested in
+smart contracts. When an autonomous smart-contract platform raises <a href="https://bitcoinmagazine.com/articles/the-dao-raises-more-than-million-in-world-s-largest-crowdfunding-to-date-1463422191">$100M+ in a week</a>,
+I figure I should know how it works.</p>
+<p>The buzzwords run thick and fast:</p>
+<ul>
+<li>The DAO is <strong>Code</strong>.</li>
+<li>The DAO is <strong>Autonomous</strong>.</li>
+<li>The DAO is <strong>Revolutionary</strong>.</li>
+<li>The DAO is <strong>Rewarding</strong>.</li>
+</ul>
+<p>Which of these do I believe?</p>
+<ul>
+<li><strong>Code</strong>: Check. The evidence is clear and compelling. The bytes are <code>0x60606040523615...</code> and a <a href="https://github.com/slockit/DAO/wiki/The-DAO-v1.0-Code#verifying-the-dao-code.">straightforward verification process</a> establishes that the <a href="https://github.com/slockit/DAO">source code</a> compiles to this output.</li>
+<li><strong>Autonomous</strong>: It autonomously does <em>something</em> (inasmuch as miners keep the Etherium distributed VM going). An <a href="https://blog.slock.it/deja-vu-dao-smart-contracts-audit-results-d26bc088e32e#.6wtj3lwqg">audit</a> has vouched that the contract is "secure" and, I gather, faithful to the <a href="https://download.slock.it/public/DAO/WhitePaper.pdf">DAO whitepaper</a>. I haven't digested the argument that what it does is fair and not controlled by any one or few actors. I'm still digesting basics such as <a href="https://github.com/ethereum/wiki/wiki/Patricia-Tree">patricia trees</a>, actually.</li>
+<li><strong>Revolutionary</strong>: Perhaps $100M in a week constitutes a revolution. But whether there will be any lasting
+  effect is unclear to me. The argument from <a href="https://www.reddit.com/r/ethereum/comments/4jnem4/is_the_dao_going_to_be_doa_by_dan_larimer_of/">BitShares experience</a> that voter apathy and mis-aligned incentives will result in failure is more substantive than any argument I found in favor of the DAO.</li>
+<li><strong>Rewarding</strong>: Finding <em>any</em> substance behind this claim was quite a challenge. I looked for a simple 3-point argument that there's some ROI in here... Is that too much to ask? Apparently so. The whitepaper didn't
+  elucidate much for me; it started with a bit of history of smart contracts (citing Szabo 1997 and Miller 1997 was
+  good to see) and then immediately dove into details of the values of various constants in the contract algorithm.
+  Buried several layers into the web site, I found that proposal 1 includes for a sort of <a href="https://forum.daohub.org/t/slock-it-proposal-1-discussion-thread/539">generalized, automated airbnb</a>. Ok, that's at least somewhat plausible. Follow-the-money seems to lead to slock.it. I'm sure it's rewarding for <em>them</em>.</li>
+</ul>
+<p>I get anxious reading the code: too many of the security properties seem to rely on programmer dilligence:</p>
+<pre><code>function transfer(address _to, uint256 _amount) noEther returns (bool success) {
+    if (balances[msg.sender] &gt;= _amount &amp;&amp; _amount &gt; 0) {
+        balances[msg.sender] -= _amount;
+        balances[_to] += _amount;
+        Transfer(msg.sender, _to, _amount);
+        return true;
+    }
+</code></pre>
+<p>Compare the above from <a href="https://github.com/slockit/DAO/blob/master/Token.sol">Token.sol</a> to the elegant simplicity of <a href="http://erights.org/elib/capability/ode/ode-capabilities.html">simple money in E</a>:</p>
+<pre><code>            to deposit(amount :int, src) :void {
+                unsealer.unseal(src.getDecr())(amount)
+                balance += amount
+            }
+</code></pre>
+<p>OK... so how do I do it?</p>
+<blockquote>
+<p>To obtain DAO tokens, ... send ETH from your Ethereum Wallet ... to The DAO’s address below.
+<code>0xbb9bc244d798123fde783fcc1c72d3bb8c189413</code></p>
+</blockquote>
+<p>... and there's a wizard... it recommends paying eith ETH. But I don't have any. So I choose USD,
+at which point they refer me to bity.</p>
+<ul>
+<li>The register button wouldn't light up when I used a password manager to enter a password<ul>
+<li>I eventually found a work-around: manually type a character and then delete it.</li>
+</ul>
+</li>
+<li>After filling in all the info to order some ETH, they gave me international bank transfer instructions.
+    I have no idea how to execute such a transfer, but I'm quite sure it's not something I can do now, when
+    my bank is closed.</li>
+</ul>
+<p>So I back-track and try the recommended wallet. Mist is an node+webkit style app. When I start it up, it says it has to sync with the blockchain and stays like that for longer than my attention span. <em>How about some advanced notice that this is going to take hours and GB of disk space?</em> I guess one should not expect good road signs in the wild west.</p>
+<p>Back-track again... Searching turned up a <a href="http://ethereum.stackexchange.com/a/1916">How do I buy Ethereum with USD? answer</a> Mar 8 at 5:38 by niksmac:</p>
+<ol>
+<li>Buy BTC with a debit card at coinbase.<ul>
+<li>The experience is much more what I expected. I did the SMS callback verification dance and exchanged $30 for BTC using a debit card within 10 or 15 minutes. I switched the 2FA on my account from SMS to TOTP (google authenticator) in the process.</li>
+</ul>
+</li>
+<li>Exchange BTC for ETH using shapeshift.<ul>
+<li>This presumes I have an ETH address. <a href="https://ethereumwallet.com/index.html">EtheriumWallet by Krypokit</a> lets you make one right in your browser in a minute or so. While I'm sure a full blockchain sync is more secure, I'm only risking a few dollars here and "more" is probably a difference between getting struck by lighting once and getting struck twice. Do I really care?</li>
+<li>shapeshift result: <a href="https://etherscan.io/tx/0x77fef130c7b576e188018602206141723bd11ff47cb8baadaab370fc29892618">receipt for 2.55384881 Ether</a></li>
+</ul>
+</li>
+<li>Send ETH to the DAO contract address.<ul>
+<li>I got plenty of confirmations on <a href="https://etherscan.io/tx/0x1be4715b9fc0e3b6c6793f6d27ba1ca00d4a47d9b4ab1fe51fa456a33adde355">transaction 0x1be4715b...</a>, so I thought I was all set. But the last step of the DAO wizard was to confirm on <a href="https://daohub.org/creation.html">the creation page</a>, but I kept getting 0 tokens for my address there.</li>
+<li>Eventually I learned the <a href="https://forum.daohub.org/t/out-of-gas-could-not-get-doa/2148">out of gas</a> warning really matters. That Krypokit wallet worked fine for sending ETH around, but it didn't add any gas, so non-trivial contracts didn't work.</li>
+<li>I back-tracked to <a href="https://www.myetherwallet.com/#the-dao">MyEtherWallet</a>, which added sufficient gas to run the contract. Bingo! I did a smaller transaction to be sure I had enough for gas and then another for the rest:<ul>
+<li><a href="https://etherscan.io/tx/0x06bee04bc3f3286557e0aa9e12313a169184f074a41b3c650b0fa13c69daa9f6">1 ETH</a></li>
+<li><a href="https://etherscan.io/tx/0x7340c3f8b91cb64c811b9079b0c716d86fd7568cd23f390b0333d467d337c858">1.5 ETH</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<p>I eventually did a full blockchain sync. I kept starting over thinking I was doing something wrong. But no, it really iterates through all 1.5M blocks on the blockchain <em>twice</em>, which takes a few hours and uses about 2GB using <code>geth --fast</code>.</p>
+    </section>
+    <aside>
+        <p>
+            <span class="article-author" itemprop="author" itemscope="itemscope" itemtype="http://schema.org/Person">
+                <span itemprop="name">Dan Connolly</span> —
+            </span>
+            <time datetime="2016-05-18" itemprop="datePublished">2016-05-18</time>
+            
+            — <a href="/2016/eth-dao.html">Permalink</a>
+            — <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/">License</a>.
+	    <br />
+	    
+	    | <a class='tag' rel='tag'
+		 href="/search/label/economics/">economics</a>
+   	    
+	    | <a class='tag' rel='tag'
+		 href="/search/label/smart-contracts/">smart-contracts</a>
+   	    
+	    | <a class='tag' rel='tag'
+		 href="/search/label/collaboration/">collaboration</a>
+   	    
+        </p>
+    </aside>
+    <hr />
+    <nav>
+        
+        
+        <a class="next" href="/2015/tedx-kc.html">A Look Back at TEDxKC 2015</a>
+    </nav>
+</article>
+
+
+        </div>
+        <nav class="sidebar">
+            <ul>
+                <li class="home"><a href="/" hreflang="en">Home</a></li>
+<!-- @@                <li class="code"><a href="@@ url_for("section", section="code") }}" hreflang="en">Blog</a></li> -->
+               <li>Archives
+		 
+               </li>
+
+                <li class="contact"><a href="/contact/" hreflang="en">Contact</a></li>
+            </ul>
+        </nav>
+        <footer class="site-footer">
+            <address>
+                &#169; 1994-2014 Dan Connolly
+		&nbsp;&nbsp;&nbsp;
+                <a href="https://twitter.com/dckc" rel="me">
+		<img src="/static/img/twitter_icon.png"
+		     width="40px" height="40px" class="social-icon"
+		     alt="@dckc" /></a>
+		&nbsp;&nbsp;&nbsp;
+                <a href="http://bitbucket.org/DanC" rel="me">
+		<img src="/static/img/bitbucket_icon.png"
+		     width="40px" height="40px" class="social-icon"
+		     alt="bitbucket/DanC code" /></a>
+		&nbsp;&nbsp;&nbsp;
+                <a href="https://github.com/dckc" rel="me">
+		<img src="/static/img/GitHub-Mark/PNG/GitHub-Mark-64px.png"
+		     width="40px" height="40px" class="social-icon"
+		     alt="dckc on github" /></a>
+		</a>
+		&nbsp;&nbsp;&nbsp;
+                <a href="/contact/">Contact me</a>
+            </address>
+        </footer>
+    </div>
+    <!-- /container -->
+
+    <!-- TODO: add this only to ipython articles -->
+    <!-- cribbed from ipython's html_full.tpl -->
+<!-- updated w.r.t. http://docs.mathjax.org/en/latest/start.html -->
+<script type="text/javascript"
+  src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+<script type="text/javascript">
+init_mathjax = function() {
+    if (window.MathJax) {
+        // MathJax loaded
+        MathJax.Hub.Config({
+            tex2jax: {
+                inlineMath: [ ["\\(","\\)"] ],
+                displayMath: [ ["\\[","\\]"] ]
+            },
+            displayAlign: 'left', // Change this to 'center' to center equations.
+            "HTML-CSS": {
+                styles: {'.MathJax_Display': {"margin": 0}}
+            }
+        });
+        MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+    }
+}
+init_mathjax();
+</script>
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script><![CDATA[window.jQuery || document.write('<script src="js/libs/jquery-1.7.1.min.js"><\/script>')]]></script>
+    <script type="text/javascript" src="/static/packed.js?1403980370"></script>
+    <script src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+</body>
+</html>
