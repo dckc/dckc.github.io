@@ -1,0 +1,5 @@
+*~
+*.pyc
+.hg
+.ipynb_checkpoints
+.hgignore
