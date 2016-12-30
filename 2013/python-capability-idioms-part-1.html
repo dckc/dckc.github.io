@@ -61,7 +61,7 @@ if __name__ == '__main__':
         print &gt;&gt;stdout, qty, filename
 
 if __name__ == '__main__':
-    def _initial_caps():
+    def _script():
         from sys import argv, stdout
 
         def open_arg(arg):
@@ -70,9 +70,9 @@ if __name__ == '__main__':
                     'only paths given as arguments can be opened')
             return open(arg)
 
-        return dict(argv=argv[:], stdout=stdout, open_arg=open_arg)
+        main(argv=argv[:], stdout=stdout, open_arg=open_arg)
 
-    main(**_initial_caps())
+    _script()
 </code></pre>
 <p>Now <code>main()</code> communicates with the outside world only through
 <a href="http://erights.org/elib/capability/ode/ode-capabilities.html">capabilities</a>
