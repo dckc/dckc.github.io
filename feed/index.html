@@ -5,9 +5,104 @@
         <link>http://www.madmode.com/</link>
         <description>Dan Connolly's tinkering notebook</description>
         <language>en-us</language>
-        <pubDate>Fri, 30 Dec 2016 11:23:39 +0000</pubDate>
-        <lastBuildDate>Fri, 30 Dec 2016 11:23:39 +0000</lastBuildDate>
+        <pubDate>Mon, 02 Jan 2017 23:10:57 +0000</pubDate>
+        <lastBuildDate>Mon, 02 Jan 2017 23:10:57 +0000</lastBuildDate>
         
+        <item>
+            <title>My Capability Security 2017 Wish-List</title>
+            <link>http://www.madmode.com//2017/ocap-wish-list/</link>
+            <description>&lt;p&gt;Computers are getting faster, smaller, more connected, and more
+capable, but when it comes to security,
+&lt;a href=&#34;https://medium.com/message/everything-is-broken-81e5f33a24e1&#34;&gt;everything is broken&lt;/a&gt;. Along with correct-by-construction
+software (e.g. &lt;a href=&#34;http://adam.chlipala.net/cpdt/&#34;&gt;Certified Programming with Dependent Types&lt;/a&gt;),
+the best weapon I see is &lt;strong&gt;object capability discipline&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;Before I get into my wish list of projects and issues, I&#39;d like to
+point out &lt;a href=&#34;https://github.com/dckc/awesome-ocap&#34;&gt;dckc/awesome-ocap&lt;/a&gt;,
+my list of capability security technology that is ready to use today,
+including everything from &lt;a href=&#34;https://sel4.systems/&#34;&gt;seL4&lt;/a&gt;, an open
+source operating-system kernel with an end-to-end proof of
+implementation correctness and security enforcement to
+&lt;a href=&#34;https://sandstorm.io/&#34;&gt;Sandstorm&lt;/a&gt;, a self-hostable SAAS platform.&lt;/p&gt;
+&lt;h2&gt;Secure module loading for node.js&lt;/h2&gt;
+&lt;p&gt;The good parts of JavaScript line up well with object capability
+discipline, but support in node.js for some of the best parts is
+lacking and hence there&#39;s no guarantee that calling and enhanced
+&lt;code&gt;sqrt()&lt;/code&gt; from some npm module will not send an HTTP request to launch
+missiles.&lt;/p&gt;
+&lt;p&gt;Mark Miller demonstrated the feasibility of secure loading as far back
+as 2011 with &lt;a href=&#34;https://github.com/google/caja/blob/master/src/com/google/caja/ses/makeSimpleAMDLoader.js&#34;&gt;makeSimpleAMDLoader.js&lt;/a&gt;. I&#39;m trying to fully
+understand node&#39;s incomplete support for &lt;code&gt;Object.defineProperty&lt;/code&gt; in
+&lt;a href=&#34;https://github.com/drses/ses/issues/6&#34;&gt;ses/issues/6&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Meanwhile, I&#39;m having fun with Capper; see
+&lt;a href=&#34;https://bitbucket.org/DanC/finquick&#34;&gt;finquick&lt;/a&gt;.&lt;/p&gt;
+&lt;h2&gt;Sandstorm dev tools on Ubuntu 16.04&lt;/h2&gt;
+&lt;p&gt;Ubuntu&#39;s 16.04 kernels handle pid namespaces in a way that interferes
+with the sandstorm dev tools. Tracking issue:
+&lt;a href=&#34;https://github.com/sandstorm-io/sandstorm/issues/2526&#34;&gt;2526&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;I figured out
+&lt;a href=&#34;https://gist.github.com/dckc/2e6b5c8029246ab38c16e254fc3d3f4d&#34;&gt;how to build sandstorm apps with nix&lt;/a&gt;,
+but without the dev tools, the edit/test/debug cycle time is too long.&lt;/p&gt;
+&lt;h2&gt;Capability security for mainstream linux with CloudABI,  capsicum&lt;/h2&gt;
+&lt;p&gt;While considering alternative kernels, I ran into
+&lt;a href=&#34;https://github.com/dckc/madmode-blog/issues/20&#34;&gt;a linking issue&lt;/a&gt; when
+trying to build a linux kernel that supports capsicum and
+CloudABI. (There was a PPA for capsicum for a while...)&lt;/p&gt;
+&lt;p&gt;CloudABI or capsicum at work would be &lt;em&gt;so great&lt;/em&gt;. But it&#39;s a long way
+off... we&#39;re struggling to migrate to SuSE 12 so we can try out
+Docker.&lt;/p&gt;
+&lt;p&gt;For example, a research workflow app I maintain needs to be able to
+send mail, but
+  - only from one address
+  - only using templated bodies
+  - only to users who have in some way asked for it&lt;/p&gt;
+&lt;p&gt;Design sketch: at at investigator request time, user grants
+&#34;capability to send app-template mail to addresses X, Y, Z&#34;.&lt;/p&gt;
+&lt;p&gt;As a demonstration, I&#39;m &lt;a href=&#34;https://github.com/dckc/ZeroVault/tree/cloudabi_wsgi&#34;&gt;porting ZeroVault to CloudABI&lt;/a&gt; using
+a &lt;a href=&#34;https://atlas.hashicorp.com/freebsd/boxes/FreeBSD-11.0-STABLE&#34;&gt;FreeBSD vagrant box VM&lt;/a&gt;. It&#39;s pretty fun since Ed fixes
+&lt;a href=&#34;https://github.com/NuxiNL/cloudabi-ports/issues?utf8=%E2%9C%93&amp;amp;q=%20is%3Aissue%20author%3Adckc%20&#34;&gt;my issues&lt;/a&gt; within a few hours of when I report them.&lt;/p&gt;
+&lt;h3&gt;bus1, Capability-based IPC for Linux&lt;/h3&gt;
+&lt;p&gt;I&#39;m heartened by &lt;a href=&#34;https://lwn.net/Articles/697191/&#34;&gt;momentum around bus1&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;On top of the lack of composability in the chmod/chgroup, there&#39;s a
+mounting kludge tower of stuff like SELinux and (to a lesser extent?)
+AppArmour. I was doing a storage audit and learning how &lt;code&gt;lsblk&lt;/code&gt; gets
+the serial number of my drives. I had heard of udev and systemd, but I
+had no idea it uses &lt;a href=&#34;https://en.wikipedia.org/wiki/Netlink&#34;&gt;netlink&lt;/a&gt;
+(&#34;a more flexible alternative to ioctl&#34;) to communicate with the
+kernel.&lt;/p&gt;
+&lt;h2&gt;Object capability discipline for Docker&lt;/h2&gt;
+&lt;p&gt;Is this even possible? I can&#39;t get my head around the Docker security story.&lt;/p&gt;
+&lt;h2&gt;Uniform, composable FFI and stdlib for pony&lt;/h2&gt;
+&lt;p&gt;Pony aims to be a high-performance capability-secure language. I would
+love to see it make some inroads on golang: while go addresses (many
+of) the memory-safety issues of C/C++, its standard library is full of
+ambient authority and its type system dooms developers to lots of
+boilerplate maintenance.&lt;/p&gt;
+&lt;p&gt;I&#39;m struggling (mostly for time) to convince the pony community that a
+reasonably simple &lt;a href=&#34;https://github.com/dckc/rfcs/blob/ffi-taming/text/0000-ffi-taming.md&#34;&gt;policy&lt;/a&gt; can eradicate ambient authority from the
+standard library.&lt;/p&gt;
+&lt;p&gt;In discussion of my &lt;a href=&#34;https://github.com/ponylang/ponyc/pull/301&#34;&gt;network API PR&lt;/a&gt;, I learned that the pony
+designers don&#39;t (yet) see interposition as a key component of robust
+composition.&lt;/p&gt;
+&lt;h2&gt;Safe systems programming on seL4 and genode&lt;/h2&gt;
+&lt;p&gt;The &lt;a href=&#34;https://genode.org/documentation/release-notes/16.05&#34;&gt;genode May 2016 release&lt;/a&gt; included initial support for
+rust. I haven&#39;t managed to try it out. Support for pony on genode has
+only gotten as far as a &lt;a href=&#34;https://twitter.com/ponylang/status/671971997753212928&#34;&gt;Dec 2015 twitter exchange&lt;/a&gt; as far as I
+know.&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://robigalia.org/&#34;&gt;Robigalia&lt;/a&gt; aims to be a persistent capability
+OS built on seL4 and rust.&lt;/p&gt;
+&lt;p&gt;Rust on seL4 is pretty bleeding-edge:
+&lt;a href=&#34;https://github.com/SEL4PROJ/rust-camkes-samples/issues/1&#34;&gt;SEL4PROJ/rust-camkes-samples/issues/1&lt;/a&gt; documents my trials
+and tribulations. https://github.com/seL4/refos looks interesting.&lt;/p&gt;
+&lt;h2&gt;Object capability discipline support in rust&lt;/h2&gt;
+&lt;p&gt;We supporters of the
+&lt;a href=&#34;https://github.com/rust-lang/rust/issues/3094#issuecomment-9589749&#34;&gt;2012 proposals to isolate ambient authority in the rust stdlib&lt;/a&gt;
+didn&#39;t make our case well enough for the 1.0 cut-off, but there is
+renewed interst in
+&lt;a href=&#34;https://internals.rust-lang.org/t/refactoring-std-for-ultimate-portability/4301&#34;&gt;refactoring std for ultimate portability&lt;/a&gt;. One result of this
+could be a std alternative with no ambient authority.&lt;/p&gt;</description>
+            <pubDate>Mon, 02 Jan 2017 00:00:00 +0000</pubDate>
+            <guid>http://www.madmode.com//2017/ocap-wish-list/</guid>
+        </item>
         <item>
             <title>Can Google and Facebook robots help the Web promote the truth?</title>
             <link>http://www.madmode.com//2016/deep-learning-promote-truth/</link>
@@ -4728,47 +4823,6 @@ REST style apps with AngularJS, like &lt;a
 href=&#34;https://bitbucket.org/DanC/finquick&#34;&gt;finquick&lt;/a&gt;.&lt;/p&gt;</description>
             <pubDate>Sat, 04 May 2013 00:00:00 +0000</pubDate>
             <guid>http://www.madmode.com//2013/haxe-and-nme-a-modern-language-approach-to-the-android-ndk/</guid>
-        </item>
-        <item>
-            <title>Managing GTD projects with a Google calendar</title>
-            <link>http://www.madmode.com//2013/03/gtd-google-cal/</link>
-            <description>&lt;p&gt;&lt;em&gt;The GTD book says to use your calendar only for things you have to get
-done at a specific time. But modern calendaring tools manage several
-calendars. I have one or two Google calendars that I use for real
-appointments, but after trying lots of alternatives, I ended up using
-another Google calendar as my projects list.&lt;/em&gt;&lt;/p&gt;
-&lt;p&gt;My calendar has been electronic at least as far back as the mid &#39;90s
-when I started &lt;a href=&#34;http://www.w3.org/Tools/pypsion/&#34;&gt;using a
-psion&lt;/a&gt;. As much as I like managing data electronically, for
-reliability and availability, I find that paper is better than
-softcopy&amp;mdash;better than one softcopy, that is. Once you get to two
-softcopies on different machines, it&#39;s better than paper. &lt;a
-href=&#34;../../2003/advogato_entry0004.html&#34; &gt;Moving to a sidekick in
-2003&lt;/a&gt; met that bar with continuous sync with the cloud.&lt;/p&gt;
-&lt;p&gt;So that rules out the various todo list apps that don&#39;t sync between
-the cloud and mobile&amp;emdash;including the tasks in Google calendar!&lt;/p&gt;
-&lt;p&gt;I tried a desktop wiki, sync&#39;d to mobile manually each week. The
-manual work didn&#39;t get done. I tried a Google docs spreadsheet but
-somehow that didn&#39;t stick either.&lt;/p&gt;
-&lt;p&gt;But then the agenda view in Google calendar got me thinking: that&#39;s
-not bad for keeping a list. So I made a new calendar with an all-day
-event some time next week for each project. When a new project comes
-up, I quickly add an all day event today; in my weekly review, I
-figure out next actions and put them after this week (or the week
-after), out of mind, spreading them out Mon-Fri to give a rough sense
-of priority. The month view is hand for this: I can just slide each
-one down a week or two, changing day of week as priorities change.&lt;/p&gt;
-&lt;p&gt;If the projects start showing up my agenda widget or weekly view, I
-know I&#39;m behind on my weekly review.&lt;/p&gt;
-&lt;p&gt;One of the best features of this system is that I can include my
-projects list&amp;mdash;or not&amp;mdash;in calendar searches.&lt;/p&gt;
-&lt;p&gt;My biggest struggle with GTD is my tendency to go depth-first: I
-struggle to review something without actually getting down into it. I
-haven&#39;t found anything that works well for processing my inbox; but
-when it comes to reviewing projects, I&#39;m mostly winning the struggle
-since I started using a calendar for my projects list.&lt;/p&gt;</description>
-            <pubDate>Sat, 30 Mar 2013 00:00:00 +0000</pubDate>
-            <guid>http://www.madmode.com//2013/03/gtd-google-cal/</guid>
         </item>
         
     </channel>

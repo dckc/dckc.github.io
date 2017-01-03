@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+    <meta charset="utf-8" />
+    
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <title>MadMode: My Capability Security 2017 Wish-List | Code</title>
+    <meta name="description" content="MadMode by Dan Connolly"/>
+    <meta name="viewport" content="width=device-width"/>
+
+    <!-- https://dev.twitter.com/docs/cards -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:creator" content="dckc">
+    <link rel="stylesheet" type="text/css" href="/static/packed.css?98036b3b"/>
+    <link rel="alternate" type="application/rss+xml" href="/feed/" title="Everything (RSS)"/>
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+</head>
+<body class="">
+    <!--[if lt IE 7]>
+    <p class="chromeframe">Your browser is <em>ancient!</em> Please <a href="http://www.quirksmode.org/upgrade.html">upgrade</a>.</p>
+    <![endif]-->
+    <div class="container">
+        <header class="main-title">
+            <h1><a href="/">MadMode</a></h1>
+            <small>Dan Connolly's tinkering lab notebook</small>
+        </header>
+        <div class="contents">
+            
+
+    <article lang="en" class="" itemscope="itemscope" itemtype="http://schema.org/BlogPosting">
+    <link itemprop="url" href="/2017/ocap-wish-list.html" />
+    <header>
+        <h2><a itemprop="name" href="/2017/ocap-wish-list.html">My Capability Security 2017 Wish-List</a></h2></header>
+    
+    <section>
+        <p>Computers are getting faster, smaller, more connected, and more
+capable, but when it comes to security,
+<a href="https://medium.com/message/everything-is-broken-81e5f33a24e1">everything is broken</a>. Along with correct-by-construction
+software (e.g. <a href="http://adam.chlipala.net/cpdt/">Certified Programming with Dependent Types</a>),
+the best weapon I see is <strong>object capability discipline</strong>.</p>
+<p>Before I get into my wish list of projects and issues, I'd like to
+point out <a href="https://github.com/dckc/awesome-ocap">dckc/awesome-ocap</a>,
+my list of capability security technology that is ready to use today,
+including everything from <a href="https://sel4.systems/">seL4</a>, an open
+source operating-system kernel with an end-to-end proof of
+implementation correctness and security enforcement to
+<a href="https://sandstorm.io/">Sandstorm</a>, a self-hostable SAAS platform.</p>
+<h2>Secure module loading for node.js</h2>
+<p>The good parts of JavaScript line up well with object capability
+discipline, but support in node.js for some of the best parts is
+lacking and hence there's no guarantee that calling and enhanced
+<code>sqrt()</code> from some npm module will not send an HTTP request to launch
+missiles.</p>
+<p>Mark Miller demonstrated the feasibility of secure loading as far back
+as 2011 with <a href="https://github.com/google/caja/blob/master/src/com/google/caja/ses/makeSimpleAMDLoader.js">makeSimpleAMDLoader.js</a>. I'm trying to fully
+understand node's incomplete support for <code>Object.defineProperty</code> in
+<a href="https://github.com/drses/ses/issues/6">ses/issues/6</a>.</p>
+<p>Meanwhile, I'm having fun with Capper; see
+<a href="https://bitbucket.org/DanC/finquick">finquick</a>.</p>
+<h2>Sandstorm dev tools on Ubuntu 16.04</h2>
+<p>Ubuntu's 16.04 kernels handle pid namespaces in a way that interferes
+with the sandstorm dev tools. Tracking issue:
+<a href="https://github.com/sandstorm-io/sandstorm/issues/2526">2526</a>.</p>
+<p>I figured out
+<a href="https://gist.github.com/dckc/2e6b5c8029246ab38c16e254fc3d3f4d">how to build sandstorm apps with nix</a>,
+but without the dev tools, the edit/test/debug cycle time is too long.</p>
+<h2>Capability security for mainstream linux with CloudABI,  capsicum</h2>
+<p>While considering alternative kernels, I ran into
+<a href="https://github.com/dckc/madmode-blog/issues/20">a linking issue</a> when
+trying to build a linux kernel that supports capsicum and
+CloudABI. (There was a PPA for capsicum for a while...)</p>
+<p>CloudABI or capsicum at work would be <em>so great</em>. But it's a long way
+off... we're struggling to migrate to SuSE 12 so we can try out
+Docker.</p>
+<p>For example, a research workflow app I maintain needs to be able to
+send mail, but
+  - only from one address
+  - only using templated bodies
+  - only to users who have in some way asked for it</p>
+<p>Design sketch: at at investigator request time, user grants
+"capability to send app-template mail to addresses X, Y, Z".</p>
+<p>As a demonstration, I'm <a href="https://github.com/dckc/ZeroVault/tree/cloudabi_wsgi">porting ZeroVault to CloudABI</a> using
+a <a href="https://atlas.hashicorp.com/freebsd/boxes/FreeBSD-11.0-STABLE">FreeBSD vagrant box VM</a>. It's pretty fun since Ed fixes
+<a href="https://github.com/NuxiNL/cloudabi-ports/issues?utf8=%E2%9C%93&amp;q=%20is%3Aissue%20author%3Adckc%20">my issues</a> within a few hours of when I report them.</p>
+<h3>bus1, Capability-based IPC for Linux</h3>
+<p>I'm heartened by <a href="https://lwn.net/Articles/697191/">momentum around bus1</a>.</p>
+<p>On top of the lack of composability in the chmod/chgroup, there's a
+mounting kludge tower of stuff like SELinux and (to a lesser extent?)
+AppArmour. I was doing a storage audit and learning how <code>lsblk</code> gets
+the serial number of my drives. I had heard of udev and systemd, but I
+had no idea it uses <a href="https://en.wikipedia.org/wiki/Netlink">netlink</a>
+("a more flexible alternative to ioctl") to communicate with the
+kernel.</p>
+<h2>Object capability discipline for Docker</h2>
+<p>Is this even possible? I can't get my head around the Docker security story.</p>
+<h2>Uniform, composable FFI and stdlib for pony</h2>
+<p>Pony aims to be a high-performance capability-secure language. I would
+love to see it make some inroads on golang: while go addresses (many
+of) the memory-safety issues of C/C++, its standard library is full of
+ambient authority and its type system dooms developers to lots of
+boilerplate maintenance.</p>
+<p>I'm struggling (mostly for time) to convince the pony community that a
+reasonably simple <a href="https://github.com/dckc/rfcs/blob/ffi-taming/text/0000-ffi-taming.md">policy</a> can eradicate ambient authority from the
+standard library.</p>
+<p>In discussion of my <a href="https://github.com/ponylang/ponyc/pull/301">network API PR</a>, I learned that the pony
+designers don't (yet) see interposition as a key component of robust
+composition.</p>
+<h2>Safe systems programming on seL4 and genode</h2>
+<p>The <a href="https://genode.org/documentation/release-notes/16.05">genode May 2016 release</a> included initial support for
+rust. I haven't managed to try it out. Support for pony on genode has
+only gotten as far as a <a href="https://twitter.com/ponylang/status/671971997753212928">Dec 2015 twitter exchange</a> as far as I
+know.</p>
+<p><a href="https://robigalia.org/">Robigalia</a> aims to be a persistent capability
+OS built on seL4 and rust.</p>
+<p>Rust on seL4 is pretty bleeding-edge:
+<a href="https://github.com/SEL4PROJ/rust-camkes-samples/issues/1">SEL4PROJ/rust-camkes-samples/issues/1</a> documents my trials
+and tribulations. https://github.com/seL4/refos looks interesting.</p>
+<h2>Object capability discipline support in rust</h2>
+<p>We supporters of the
+<a href="https://github.com/rust-lang/rust/issues/3094#issuecomment-9589749">2012 proposals to isolate ambient authority in the rust stdlib</a>
+didn't make our case well enough for the 1.0 cut-off, but there is
+renewed interst in
+<a href="https://internals.rust-lang.org/t/refactoring-std-for-ultimate-portability/4301">refactoring std for ultimate portability</a>. One result of this
+could be a std alternative with no ambient authority.</p>
+    </section>
+    <aside>
+        <p>
+            <span class="article-author" itemprop="author" itemscope="itemscope" itemtype="http://schema.org/Person">
+                <span itemprop="name">Dan Connolly</span> —
+            </span>
+            <time datetime="2017-01-02" itemprop="datePublished">2017-01-02</time>
+            
+            — <a href="/2017/ocap-wish-list.html">Permalink</a>
+            — <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/">License</a>.
+	    <br />
+	    
+	    | <a class='tag' rel='tag'
+		 href="/search/label/security/">security</a>
+   	    
+	    | <a class='tag' rel='tag'
+		 href="/search/label/capabilities/">capabilities</a>
+   	    
+	    | <a class='tag' rel='tag'
+		 href="/search/label/programming/">programming</a>
+   	    
+	    | <a class='tag' rel='tag'
+		 href="/search/label/javascript/">javascript</a>
+   	    
+	    | <a class='tag' rel='tag'
+		 href="/search/label/rust/">rust</a>
+   	    
+        </p>
+    </aside>
+    <hr />
+    <nav>
+        
+        
+        <a class="next" href="/2016/deep-learning-promote-truth.html">Can Google and Facebook robots help the Web promote the truth?</a>
+    </nav>
+</article>
+
+
+        </div>
+        <nav class="sidebar">
+            <ul>
+                <li class="home"><a href="/" hreflang="en">Home</a></li>
+<!-- @@                <li class="code"><a href="@@ url_for("section", section="code") }}" hreflang="en">Blog</a></li> -->
+               <li>Archives
+		 
+               </li>
+
+                <li class="contact"><a href="/contact/" hreflang="en">Contact</a></li>
+            </ul>
+        </nav>
+        <footer class="site-footer">
+            <address>
+                &#169; 1994-2014 Dan Connolly
+		&nbsp;&nbsp;&nbsp;
+                <a href="https://twitter.com/dckc" rel="me">
+		<img src="/static/img/twitter_icon.png"
+		     width="40px" height="40px" class="social-icon"
+		     alt="@dckc" /></a>
+		&nbsp;&nbsp;&nbsp;
+                <a href="http://bitbucket.org/DanC" rel="me">
+		<img src="/static/img/bitbucket_icon.png"
+		     width="40px" height="40px" class="social-icon"
+		     alt="bitbucket/DanC code" /></a>
+		&nbsp;&nbsp;&nbsp;
+                <a href="https://github.com/dckc" rel="me">
+		<img src="/static/img/GitHub-Mark/PNG/GitHub-Mark-64px.png"
+		     width="40px" height="40px" class="social-icon"
+		     alt="dckc on github" /></a>
+		</a>
+		&nbsp;&nbsp;&nbsp;
+                <a href="/contact/">Contact me</a>
+            </address>
+        </footer>
+    </div>
+    <!-- /container -->
+
+    <!-- TODO: add this only to ipython articles -->
+    <!-- cribbed from ipython's html_full.tpl -->
+<!-- updated w.r.t. http://docs.mathjax.org/en/latest/start.html -->
+<script type="text/javascript"
+  src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+<script type="text/javascript">
+init_mathjax = function() {
+    if (window.MathJax) {
+        // MathJax loaded
+        MathJax.Hub.Config({
+            tex2jax: {
+                inlineMath: [ ["\\(","\\)"] ],
+                displayMath: [ ["\\[","\\]"] ]
+            },
+            displayAlign: 'left', // Change this to 'center' to center equations.
+            "HTML-CSS": {
+                styles: {'.MathJax_Display': {"margin": 0}}
+            }
+        });
+        MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+    }
+}
+init_mathjax();
+</script>
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script><![CDATA[window.jQuery || document.write('<script src="js/libs/jquery-1.7.1.min.js"><\/script>')]]></script>
+    <script type="text/javascript" src="/static/packed.js?98d60569"></script>
+    <script src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+</body>
+</html>
