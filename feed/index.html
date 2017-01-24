@@ -5,8 +5,8 @@
         <link>http://www.madmode.com/</link>
         <description>Dan Connolly's tinkering notebook</description>
         <language>en-us</language>
-        <pubDate>Mon, 02 Jan 2017 23:10:57 +0000</pubDate>
-        <lastBuildDate>Mon, 02 Jan 2017 23:10:57 +0000</lastBuildDate>
+        <pubDate>Mon, 23 Jan 2017 21:49:02 +0000</pubDate>
+        <lastBuildDate>Mon, 23 Jan 2017 21:49:02 +0000</lastBuildDate>
         
         <item>
             <title>My Capability Security 2017 Wish-List</title>
@@ -316,6 +316,142 @@ than just a few minutes of that!&lt;/p&gt;
 &lt;p&gt;&lt;a data-flickr-embed=&#34;true&#34;  href=&#34;https://www.flickr.com/photos/tedxkc/20414765554/in/photolist-x6Z1ys-xLpae1-oq9kDb-oq9kwN-xLo7yf-x786Az-y38hv5-y1FLHj-x788ic-y41aXX-oq9kTE-xLuMaF-y4FewD-oq9Fiv-y4FdWR-y41cMZ-y41d4v-y4FdEt-x786ec-oq9EUe-y1FLPG-y41b4i-xLo7VY-oq9kmC-oq99ZM-fBXWom-oGB1py-bAXLsp-y38fZ9-oGCH14-oq9awD-y1FMm3-oEATvj-y4Ffkx-oq9ajp-y1FLVo-oEATAQ-oq9kHQ-y4Ff9F-xLuM1n-bo3UBS-9noyVw-oq9asR-x787vF-oGAZMb-bAXLqc-8KPYXC-y38gzY-y4FdFR-xLpb1b&#34; title=&#34;TEDxKC 2015: REIMAGINE&#34;&gt;&lt;img src=&#34;https://farm1.staticflickr.com/686/20414765554_f01d95c742_n.jpg&#34; width=&#34;320&#34; height=&#34;213&#34; alt=&#34;TEDxKC 2015: REIMAGINE&#34;&gt;&lt;/a&gt;&lt;script async src=&#34;//embedr.flickr.com/assets/client-code.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;&lt;/p&gt;</description>
             <pubDate>Thu, 17 Dec 2015 00:00:00 +0000</pubDate>
             <guid>http://www.madmode.com//2015/tedx-kc/</guid>
+        </item>
+        <item>
+            <title>jukekb - Browse iTunes libraries and upload playlists to Google Music</title>
+            <link>http://www.madmode.com//2015/jukekb/</link>
+            <description>&lt;p&gt;&lt;em&gt;originally published as &lt;a href=&#34;https://bitbucket.org/DanC/palmagent/src/a2245686a4c19b43a3607a8265f2b1e43b7dd41a/jukekb/?at=default&#34;&gt;jukekb on bitbucket&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;My digital music collection has two parts:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;the audio files themselves, which are&lt;ul&gt;
+&lt;li&gt;somewhat large&lt;/li&gt;
+&lt;li&gt;readily, though not freely replaceable&lt;/li&gt;
+&lt;li&gt;only licensed copies, not mine to re-publish as I please&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;the playlists, ratings, play logs and counts, which are&lt;ul&gt;
+&lt;li&gt;irreplaceable&lt;/li&gt;
+&lt;li&gt;small&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;My family has mostly used iTunes over the years, but our libraries
+have become somewhat fragmented and redundant. Plus, we carry android
+devices. I should be able to get at my old playlists from my new
+phone.  But how? Then I discovered &lt;a href=&#34;http://beets.radbox.org/&#34;&gt;beets&lt;/a&gt;, the &#34;media library management
+system for obsessive-compulsive music geeks.&#34; I prefer the title
+Eric Miller gave me, &#34;closet librarian,&#34; but still, it struck a chord.&lt;/p&gt;
+&lt;p&gt;Apple, Google, and Amazon all offer cloud music services. Mostly I
+figure the audio files might as well live in the cloud while I just
+have cached copies, though there&#39;s no garage sale market in digital
+media -- the first sale doctrine is much more clear with physical CDs.&lt;/p&gt;
+&lt;p&gt;Apple doesn&#39;t interoperate with android. My wife sometimes buys new
+CDs from Amazon, which come with cloud storage copies. But they only
+let you upload 250 songs for free. I&#39;m a little leery about Google
+these days, but when I found a &lt;a href=&#34;https://unofficial-google-music-api.readthedocs.org/en/latest/reference/mobileclient.html&#34;&gt;python API for Google Music&lt;/a&gt;, I
+figured I could get my data back, so I decided to dive in.&lt;/p&gt;
+&lt;h2&gt;Design&lt;/h2&gt;
+&lt;p&gt;My &lt;a href=&#34;https://bitbucket.org/DanC/palmagent/src/f166e71cf023/jukekb/jukekb.py&#34;&gt;first step&lt;/a&gt; was a hello-world &lt;a href=&#34;http://www.tornadoweb.org/en/stable/web.html&#34;&gt;tornado&lt;/a&gt; service, (tweaked for
+&lt;a href=&#34;http://www.madmode.com/search/label/capabilities/&#34;&gt;object capapility discipline&lt;/a&gt;). While modern javascript looks
+pretty cool, I&#39;m not nearly as productive with it yet as I am with
+python. And tornado&#39;s turn-based architecture is pretty close to
+node.js.&lt;/p&gt;
+&lt;p&gt;Browsing iTunes metadata was straightforward. Sorting by by date added
+provided a fun trip down memory lane!&lt;/p&gt;
+&lt;p&gt;The main challenge was dealing with the evolution of iTunes&#39;s file
+organization approach.  &lt;code&gt;ituneslib.Library.path(track)&lt;/code&gt; resolves
+&lt;code&gt;Location&lt;/code&gt; data:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;def path(self, track,
+         fixes=[&#39;Music&#39;,
+                &#39;iTunes Media&#39;,
+                &#39;iTunes Media/Music&#39;,
+                &#39;iTunes Media/Movies&#39;,
+                &#39;iTunes Media/Podcasts&#39;,
+                &#39;iTunes Music&#39;,
+                &#39;iTunes Music/Music&#39;]):
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;BTW: yay &lt;a href=&#34;https://pypi.python.org/pypi/pathlib/&#34;&gt;pathlib&lt;/a&gt;!&lt;/p&gt;
+&lt;p&gt;I tried a couple approaches to finding duplicate iTunes tracks via
+musicbrainz IDs: first I let the beets tagger grind over my collection
+over night. But I was confused by the results. Then I incorporated
+the &lt;a href=&#34;http://python-musicbrainzngs.readthedocs.org/en/latest/api/#searching&#34;&gt;musicbrainz API&lt;/a&gt; to interactively match iTunes albums to
+musicbrainz releases. I was disappointed to learn that beets
+records release groups, not releases.&lt;/p&gt;
+&lt;p&gt;I also let the Google Music uploader do its thing overnight. But
+of course I was left with no record of which of my local copies
+matched which item in the cloud, so I&#39;m left with the duplicate
+problem all over again.&lt;/p&gt;
+&lt;p&gt;At this point I was juggling any number of metadata web services, but
+then switching to a local app to actually play the song to check that
+I had the right one (though beets has a web interface). Reviewing the
+state of the art in musicbrainz tools, I re-discovered &lt;a href=&#34;https://quodlibet.readthedocs.org/&#34;&gt;quodlibet&lt;/a&gt;,
+which has evidently gotten steadily more awesome since I originally
+found it. Using its fingerprinting and musicbrainz lookup plugins, I
+started to see all sorts of problems with my metadata.&lt;/p&gt;
+&lt;p&gt;When it came to &lt;em&gt;Graceland&lt;/em&gt;, one of my all-time favorites, I went and
+tracked down the CD jewel case itself to use the barcode to figure out
+which was the relevant release. I started a &lt;a href=&#34;http://www.discogs.com/user/dckc/collection&#34;&gt;dckc discogs collection&lt;/a&gt;
+in the process. Cool!&lt;/p&gt;
+&lt;p&gt;Quodlibet has &lt;a href=&#34;https://quodlibet.readthedocs.org/en/latest/guide/browse/playlists.html#playlists&#34;&gt;playlist support&lt;/a&gt;, but just .m3u and .pls, which
+leave me with the same problem: they&#39;re just lists of filenames, which
+don&#39;t have the UI benefits of HTML or even CSV let alone the ability
+to survive re-organzation of audio files.&lt;/p&gt;
+&lt;p&gt;I thought about robust filenames for use in such playlists. What
+would be the top of the hierarchy? i.e. the major sort key?&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;by artist?&lt;ul&gt;
+&lt;li&gt;That&#39;s how they&#39;re on the bookshelf.&lt;/li&gt;
+&lt;li&gt;what about &#34;Various Artists&#34;?&lt;/li&gt;
+&lt;li&gt;We can always re-created a view by artist.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;by release date?&lt;ul&gt;
+&lt;li&gt;more stable over time&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;And spaces in filenames are a pain. So omething like:
+&lt;code&gt;release-1986-billy+joel-52nd+street-mbrain3897293/01-movin+out-mbrain2098324&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;I still hope to get there. But meanwhile...&lt;/p&gt;
+&lt;p&gt;I built a quodlibet plug-in to &#34;reload&#34; my tags from iTunes metadata after
+using the edit tags feature to erase all tags in one go. Whee!&lt;/p&gt;
+&lt;p&gt;And I started my Google Music collection fresh and worked out (most
+of) the kinks of incremental upload with records of which Google Music
+server ids correspond to which iTunes Persistent IDs.&lt;/p&gt;
+&lt;p&gt;I&#39;m still thinking about workflows for new music. And I haven&#39;t
+actually solved the problem of duplicates across iTunes libraries
+yet. But when I do, my upload logs should let me clean up my Google
+Music collection too.&lt;/p&gt;
+&lt;h2&gt;Usage&lt;/h2&gt;
+&lt;p&gt;&lt;em&gt;See requirements.txt for prerequisites.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Get an OAuth token for uploading:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ gmbox oauth
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Provide password for metadata access:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ export GOOGLE_MUSIC_PASSWORD=...
+$ # I like to do:
+$ export GOOGLE_MUSIC_PASSWORD=`ssh-ask-password`
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Start the service:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ jukekb --db=DB --gmusic=EMAIL LIBRARY...
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;... where LIBRARY is an iTunes library directory and DB is for upload logs.&lt;/p&gt;
+&lt;p&gt;The service will report its web address. From there you can&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;browse libraries&lt;/li&gt;
+&lt;li&gt;browse albums and artistss within libraries&lt;/li&gt;
+&lt;li&gt;search&lt;/li&gt;
+&lt;li&gt;browse playlists&lt;/li&gt;
+&lt;li&gt;upload playlists (with the &#34;match&#34; button)&lt;ul&gt;
+&lt;li&gt;already-uploaded songs are added to the Google Music playlist
+  without uploading again&lt;/li&gt;
+&lt;li&gt;TODO: cross-library duplicate detection, e.g. using MusicBrains IDs&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The scripts have more usage details. Yay &lt;a href=&#34;https://pypi.python.org/pypi/docopt/&#34;&gt;docopt&lt;/a&gt;!&lt;/p&gt;</description>
+            <pubDate>Sat, 11 Jul 2015 00:00:00 +0000</pubDate>
+            <guid>http://www.madmode.com//2015/jukekb/</guid>
         </item>
         <item>
             <title>Syncing a 5 Year iPhoto Library with flickr</title>
@@ -4742,87 +4878,6 @@ error prone; I always get it wrong and then have to &lt;code&gt;hg help dates&lt
 &lt;p&gt;Note the &#34;&#34;s around the ``s. Ah, the joys of shell quoting.&lt;/p&gt;</description>
             <pubDate>Sat, 04 May 2013 00:00:00 +0000</pubDate>
             <guid>http://www.madmode.com//2013/05/hg-file-date/</guid>
-        </item>
-        <item>
-            <title>haxe and NME: a modern language approach to the android NDK</title>
-            <link>http://www.madmode.com//2013/haxe-and-nme-a-modern-language-approach-to-the-android-ndk/</link>
-            <description>&lt;p&gt;I vaguely recall discovering &lt;a href=&#34;http://haxe.org/&#34;&gt;haxe&lt;/a&gt; quite
-a while ago. While its site is very shiny, overblown claims like this
-made it look more like proprietary marketing glitz than maturity in
-an open source project:&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;If you could only learn one programming language, &lt;em&gt;Haxe&lt;/em&gt; would be it.
-It&#39;s universal. It&#39;s powerful. It&#39;s easy-to-use.&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;But I&#39;m doing some maintenance on a PHP customization and I&#39;d really
-like the computer to help me get it right. Brian McKenna is a
-developer I follow for &lt;a href=&#34;http://brianmckenna.org/blog/&#34;&gt;his
-work integrating functional programming with Javascript&lt;/a&gt;, so when I
-saw him tweeting about haxe, I wanted to take another look.&lt;/p&gt;
-&lt;p&gt;I&#39;ll leave the rest of the PHP story for another episode, but in
-short, haxe seems to have lots of the goodies from scala (type
-inference, sum and product types, pattern matching etc. on top of a
-Java-like OOP language) without the slow compiles and general Java
-bloat.&lt;/p&gt;
-&lt;p&gt;Haxe is &#34;a web language&#34; but its roots are in the flash game
-development world. &lt;a href=&#34;http://www.nme.io/&#34;&gt;NME&lt;/a&gt; is the current
-media engine library with support for deployment to &#34;Windows, Mac,
-Linux, iOS, Android, BlackBerry, Flash and even HTML5&#34;.  It was
-launched in 2007 and these days its functionality and performance
-compete with Adobe Air.&lt;/p&gt;
-&lt;p&gt;Out of curiosity, I tried the android target from the
-&lt;a href=&#34;http://www.nme.io/developer/documentation/getting-started/&#34;&gt;
-Getting Started&lt;/a&gt; docs:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;nme setup android
-nme create ActuateExample
-nme test android
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;I didn&#39;t win right away; I went to &lt;a
-href=&#34;http://www.nme.io/community/irc/&#34;&gt;#nme on freenode&lt;/a&gt; and
-reported:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;&amp;lt;DanC_&amp;gt; harrumph. downloaded gigabytes of android SDK stuff only to get:
- ActuateExample$ nme test android
- Uncaught exception - C Stack Overflow
- Error :
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;But a minute later, I was making progress:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;&amp;lt;DanC_&amp;gt; build works... wild... ndk...
- this looks easier than scala for android
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;And fifteen minutes later:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;&amp;lt;DanC_&amp;gt; ok... I&#39;m blown away. `ant debug install` and there it is, running on my phone.
- 1.77MB
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;The &lt;code&gt;setup&lt;/code&gt; step downloaded the whole android SDK and NDK. The &lt;code&gt;build&lt;/code&gt;
-step produces C++ code and an ant &lt;code&gt;build.xml&lt;/code&gt; file. Plug in the phone,
-run &lt;code&gt;ant&lt;/code&gt;, and there it is, on the phone, with animated balls bouncing
-around.&lt;/p&gt;
-&lt;p&gt;The other examples were hit-and-miss:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;&amp;lt;DanC_&amp;gt; gen/android/widget/Toast.hx:151: characters 6-24 : native.#JNI has no field callMember
- that was from 19-AndroidJNI
- NyanCat doesn&#39;t work in html5
- $ nme test neko
- Sys_error(&#34;null/temp_8224482.neko: No such file or directory&#34;)
- this works: SimpleOpenGLView$ nme test neko -64
- blank screen again, black this time: SimpleOpenGLView$ nme test linux -64
- works: SimpleOpenGLView$ nme test html5
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Then I got adventurous and tried to upgrade to haxe 3 and nme 4 to run
-&lt;a href=&#34;https://github.com/nitrobin/spinehx&#34; &gt;spinehx&lt;/a&gt; and got all
-out of whack:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;&amp;lt;DanC_&amp;gt; spinehx$ nme test html5
- Error: : unknown option `--js-modern&#39;.
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;So things are still rough around the edges, but it looks like there&#39;s
-plenty of mature functionality in the middle. This looks like the most
-promising approach I&#39;ve seen for game development for android and
-HTML5.&lt;/p&gt;
-&lt;p&gt;I&#39;m curious to know how well it supports the overall android API, with
-notifications and intents and such. I&#39;m also tempted to try it out for
-REST style apps with AngularJS, like &lt;a
-href=&#34;https://bitbucket.org/DanC/finquick&#34;&gt;finquick&lt;/a&gt;.&lt;/p&gt;</description>
-            <pubDate>Sat, 04 May 2013 00:00:00 +0000</pubDate>
-            <guid>http://www.madmode.com//2013/haxe-and-nme-a-modern-language-approach-to-the-android-ndk/</guid>
         </item>
         
     </channel>

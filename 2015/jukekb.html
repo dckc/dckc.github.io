@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+    <meta charset="utf-8" />
+    
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <title>MadMode: jukekb - Browse iTunes libraries and upload playlists to Google Music | Code</title>
+    <meta name="description" content="MadMode by Dan Connolly"/>
+    <meta name="viewport" content="width=device-width"/>
+
+    <!-- https://dev.twitter.com/docs/cards -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:creator" content="dckc">
+    <link rel="stylesheet" type="text/css" href="/static/packed.css?98036b3b"/>
+    <link rel="alternate" type="application/rss+xml" href="/feed/" title="Everything (RSS)"/>
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+</head>
+<body class="">
+    <!--[if lt IE 7]>
+    <p class="chromeframe">Your browser is <em>ancient!</em> Please <a href="http://www.quirksmode.org/upgrade.html">upgrade</a>.</p>
+    <![endif]-->
+    <div class="container">
+        <header class="main-title">
+            <h1><a href="/">MadMode</a></h1>
+            <small>Dan Connolly's tinkering lab notebook</small>
+        </header>
+        <div class="contents">
+            
+
+    <article lang="en" class="" itemscope="itemscope" itemtype="http://schema.org/BlogPosting">
+    <link itemprop="url" href="/2015/jukekb.html" />
+    <header>
+        <h2><a itemprop="name" href="/2015/jukekb.html">jukekb - Browse iTunes libraries and upload playlists to Google Music</a></h2></header>
+    
+    <section>
+        <p><em>originally published as <a href="https://bitbucket.org/DanC/palmagent/src/a2245686a4c19b43a3607a8265f2b1e43b7dd41a/jukekb/?at=default">jukekb on bitbucket</a></em></p>
+<p>My digital music collection has two parts:</p>
+<ul>
+<li>the audio files themselves, which are<ul>
+<li>somewhat large</li>
+<li>readily, though not freely replaceable</li>
+<li>only licensed copies, not mine to re-publish as I please</li>
+</ul>
+</li>
+<li>the playlists, ratings, play logs and counts, which are<ul>
+<li>irreplaceable</li>
+<li>small</li>
+</ul>
+</li>
+</ul>
+<p>My family has mostly used iTunes over the years, but our libraries
+have become somewhat fragmented and redundant. Plus, we carry android
+devices. I should be able to get at my old playlists from my new
+phone.  But how? Then I discovered <a href="http://beets.radbox.org/">beets</a>, the "media library management
+system for obsessive-compulsive music geeks." I prefer the title
+Eric Miller gave me, "closet librarian," but still, it struck a chord.</p>
+<p>Apple, Google, and Amazon all offer cloud music services. Mostly I
+figure the audio files might as well live in the cloud while I just
+have cached copies, though there's no garage sale market in digital
+media -- the first sale doctrine is much more clear with physical CDs.</p>
+<p>Apple doesn't interoperate with android. My wife sometimes buys new
+CDs from Amazon, which come with cloud storage copies. But they only
+let you upload 250 songs for free. I'm a little leery about Google
+these days, but when I found a <a href="https://unofficial-google-music-api.readthedocs.org/en/latest/reference/mobileclient.html">python API for Google Music</a>, I
+figured I could get my data back, so I decided to dive in.</p>
+<h2>Design</h2>
+<p>My <a href="https://bitbucket.org/DanC/palmagent/src/f166e71cf023/jukekb/jukekb.py">first step</a> was a hello-world <a href="http://www.tornadoweb.org/en/stable/web.html">tornado</a> service, (tweaked for
+<a href="http://www.madmode.com/search/label/capabilities/">object capapility discipline</a>). While modern javascript looks
+pretty cool, I'm not nearly as productive with it yet as I am with
+python. And tornado's turn-based architecture is pretty close to
+node.js.</p>
+<p>Browsing iTunes metadata was straightforward. Sorting by by date added
+provided a fun trip down memory lane!</p>
+<p>The main challenge was dealing with the evolution of iTunes's file
+organization approach.  <code>ituneslib.Library.path(track)</code> resolves
+<code>Location</code> data:</p>
+<pre><code>def path(self, track,
+         fixes=['Music',
+                'iTunes Media',
+                'iTunes Media/Music',
+                'iTunes Media/Movies',
+                'iTunes Media/Podcasts',
+                'iTunes Music',
+                'iTunes Music/Music']):
+</code></pre>
+<p>BTW: yay <a href="https://pypi.python.org/pypi/pathlib/">pathlib</a>!</p>
+<p>I tried a couple approaches to finding duplicate iTunes tracks via
+musicbrainz IDs: first I let the beets tagger grind over my collection
+over night. But I was confused by the results. Then I incorporated
+the <a href="http://python-musicbrainzngs.readthedocs.org/en/latest/api/#searching">musicbrainz API</a> to interactively match iTunes albums to
+musicbrainz releases. I was disappointed to learn that beets
+records release groups, not releases.</p>
+<p>I also let the Google Music uploader do its thing overnight. But
+of course I was left with no record of which of my local copies
+matched which item in the cloud, so I'm left with the duplicate
+problem all over again.</p>
+<p>At this point I was juggling any number of metadata web services, but
+then switching to a local app to actually play the song to check that
+I had the right one (though beets has a web interface). Reviewing the
+state of the art in musicbrainz tools, I re-discovered <a href="https://quodlibet.readthedocs.org/">quodlibet</a>,
+which has evidently gotten steadily more awesome since I originally
+found it. Using its fingerprinting and musicbrainz lookup plugins, I
+started to see all sorts of problems with my metadata.</p>
+<p>When it came to <em>Graceland</em>, one of my all-time favorites, I went and
+tracked down the CD jewel case itself to use the barcode to figure out
+which was the relevant release. I started a <a href="http://www.discogs.com/user/dckc/collection">dckc discogs collection</a>
+in the process. Cool!</p>
+<p>Quodlibet has <a href="https://quodlibet.readthedocs.org/en/latest/guide/browse/playlists.html#playlists">playlist support</a>, but just .m3u and .pls, which
+leave me with the same problem: they're just lists of filenames, which
+don't have the UI benefits of HTML or even CSV let alone the ability
+to survive re-organzation of audio files.</p>
+<p>I thought about robust filenames for use in such playlists. What
+would be the top of the hierarchy? i.e. the major sort key?</p>
+<ul>
+<li>by artist?<ul>
+<li>That's how they're on the bookshelf.</li>
+<li>what about "Various Artists"?</li>
+<li>We can always re-created a view by artist.</li>
+</ul>
+</li>
+<li>by release date?<ul>
+<li>more stable over time</li>
+</ul>
+</li>
+</ul>
+<p>And spaces in filenames are a pain. So omething like:
+<code>release-1986-billy+joel-52nd+street-mbrain3897293/01-movin+out-mbrain2098324</code>.</p>
+<p>I still hope to get there. But meanwhile...</p>
+<p>I built a quodlibet plug-in to "reload" my tags from iTunes metadata after
+using the edit tags feature to erase all tags in one go. Whee!</p>
+<p>And I started my Google Music collection fresh and worked out (most
+of) the kinks of incremental upload with records of which Google Music
+server ids correspond to which iTunes Persistent IDs.</p>
+<p>I'm still thinking about workflows for new music. And I haven't
+actually solved the problem of duplicates across iTunes libraries
+yet. But when I do, my upload logs should let me clean up my Google
+Music collection too.</p>
+<h2>Usage</h2>
+<p><em>See requirements.txt for prerequisites.</em></p>
+<p>Get an OAuth token for uploading:</p>
+<pre><code>$ gmbox oauth
+</code></pre>
+<p>Provide password for metadata access:</p>
+<pre><code>$ export GOOGLE_MUSIC_PASSWORD=...
+$ # I like to do:
+$ export GOOGLE_MUSIC_PASSWORD=`ssh-ask-password`
+</code></pre>
+<p>Start the service:</p>
+<pre><code>$ jukekb --db=DB --gmusic=EMAIL LIBRARY...
+</code></pre>
+<p>... where LIBRARY is an iTunes library directory and DB is for upload logs.</p>
+<p>The service will report its web address. From there you can</p>
+<ul>
+<li>browse libraries</li>
+<li>browse albums and artistss within libraries</li>
+<li>search</li>
+<li>browse playlists</li>
+<li>upload playlists (with the "match" button)<ul>
+<li>already-uploaded songs are added to the Google Music playlist
+  without uploading again</li>
+<li>TODO: cross-library duplicate detection, e.g. using MusicBrains IDs</li>
+</ul>
+</li>
+</ul>
+<p>The scripts have more usage details. Yay <a href="https://pypi.python.org/pypi/docopt/">docopt</a>!</p>
+    </section>
+    <aside>
+        <p>
+            <span class="article-author" itemprop="author" itemscope="itemscope" itemtype="http://schema.org/Person">
+                <span itemprop="name">Dan Connolly</span> —
+            </span>
+            <time datetime="2015-07-11" itemprop="datePublished">2015-07-11</time>
+            
+            — <a href="/2015/jukekb.html">Permalink</a>
+            — <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/">License</a>.
+	    <br />
+	    
+	    | <a class='tag' rel='tag'
+		 href="/search/label/music/">music</a>
+   	    
+	    | <a class='tag' rel='tag'
+		 href="/search/label/python/">python</a>
+   	    
+	    | <a class='tag' rel='tag'
+		 href="/search/label/programming/">programming</a>
+   	    
+	    | <a class='tag' rel='tag'
+		 href="/search/label/javascript/">javascript</a>
+   	    
+	    | <a class='tag' rel='tag'
+		 href="/search/label/cloud-services/">cloud-services</a>
+   	    
+	    | <a class='tag' rel='tag'
+		 href="/search/label/digital%20media/">digital media</a>
+   	    
+        </p>
+    </aside>
+    <hr />
+    <nav>
+        <a class="prev" href="/2015/tedx-kc.html">A Look Back at TEDxKC 2015</a>
+        |
+        <a class="next" href="/2015/photo-flickr-explore.html">Syncing a 5 Year iPhoto Library with flickr</a>
+    </nav>
+</article>
+
+
+        </div>
+        <nav class="sidebar">
+            <ul>
+                <li class="home"><a href="/" hreflang="en">Home</a></li>
+<!-- @@                <li class="code"><a href="@@ url_for("section", section="code") }}" hreflang="en">Blog</a></li> -->
+               <li>Archives
+		 
+               </li>
+
+                <li class="contact"><a href="/contact/" hreflang="en">Contact</a></li>
+            </ul>
+        </nav>
+        <footer class="site-footer">
+            <address>
+                &#169; 1994-2014 Dan Connolly
+		&nbsp;&nbsp;&nbsp;
+                <a href="https://twitter.com/dckc" rel="me">
+		<img src="/static/img/twitter_icon.png"
+		     width="40px" height="40px" class="social-icon"
+		     alt="@dckc" /></a>
+		&nbsp;&nbsp;&nbsp;
+                <a href="http://bitbucket.org/DanC" rel="me">
+		<img src="/static/img/bitbucket_icon.png"
+		     width="40px" height="40px" class="social-icon"
+		     alt="bitbucket/DanC code" /></a>
+		&nbsp;&nbsp;&nbsp;
+                <a href="https://github.com/dckc" rel="me">
+		<img src="/static/img/GitHub-Mark/PNG/GitHub-Mark-64px.png"
+		     width="40px" height="40px" class="social-icon"
+		     alt="dckc on github" /></a>
+		</a>
+		&nbsp;&nbsp;&nbsp;
+                <a href="/contact/">Contact me</a>
+            </address>
+        </footer>
+    </div>
+    <!-- /container -->
+
+    <!-- TODO: add this only to ipython articles -->
+    <!-- cribbed from ipython's html_full.tpl -->
+<!-- updated w.r.t. http://docs.mathjax.org/en/latest/start.html -->
+<script type="text/javascript"
+  src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+<script type="text/javascript">
+init_mathjax = function() {
+    if (window.MathJax) {
+        // MathJax loaded
+        MathJax.Hub.Config({
+            tex2jax: {
+                inlineMath: [ ["\\(","\\)"] ],
+                displayMath: [ ["\\[","\\]"] ]
+            },
+            displayAlign: 'left', // Change this to 'center' to center equations.
+            "HTML-CSS": {
+                styles: {'.MathJax_Display': {"margin": 0}}
+            }
+        });
+        MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+    }
+}
+init_mathjax();
+</script>
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script><![CDATA[window.jQuery || document.write('<script src="js/libs/jquery-1.7.1.min.js"><\/script>')]]></script>
+    <script type="text/javascript" src="/static/packed.js?98d60569"></script>
+    <script src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+</body>
+</html>
