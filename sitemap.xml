@@ -3,46 +3,52 @@
     <!-- homepage -->
     <url>
         <loc>http://www.madmode.com//</loc>
-        <lastmod>2017-09-16</lastmod>
+        <lastmod>2017-11-10</lastmod>
         <changefreq>hourly</changefreq>
         <priority>1</priority>
     </url>
     <!-- carnet -->
     <url>
         <loc>http://www.madmode.com//carnet/</loc>
-        <lastmod>2017-09-01</lastmod>
+        <lastmod>2017-11-01</lastmod>
         <changefreq>daily</changefreq>
         <priority>0.8</priority>
     </url>
     <!-- photography -->
     <url>
         <loc>http://www.madmode.com//photography/</loc>
-        <lastmod>2017-09-01</lastmod>
+        <lastmod>2017-11-01</lastmod>
         <changefreq>daily</changefreq>
         <priority>0.8</priority>
     </url>
     <!-- code -->
     <url>
         <loc>http://www.madmode.com//code/</loc>
-        <lastmod>2017-09-01</lastmod>
+        <lastmod>2017-11-01</lastmod>
         <changefreq>daily</changefreq>
         <priority>0.8</priority>
     </url>
     <!-- talks -->
     <url>
         <loc>http://www.madmode.com//talks/</loc>
-        <lastmod>2017-09-01</lastmod>
+        <lastmod>2017-11-01</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
     </url>
     <!-- contact -->
     <url>
         <loc>http://www.madmode.com//contact/</loc>
-        <lastmod>2017-09-01</lastmod>
+        <lastmod>2017-11-01</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.4</priority>
     </url>
     <!-- all pages -->
+    <url>
+        <loc>http://www.madmode.com//2017/sel4-rpi/</loc>
+        <lastmod>2017-11-09</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
     <url>
         <loc>http://www.madmode.com//2017/ocap-wish-list/</loc>
         <lastmod>2017-01-02</lastmod>
