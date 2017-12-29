@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+    <meta charset="utf-8" />
+    
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <title>MadMode: Soccer schedules, flight itineraries, timezones, and python web frameworks | Code</title>
+    <meta name="description" content="MadMode by Dan Connolly"/>
+    <meta name="viewport" content="width=device-width"/>
+
+    <!-- https://dev.twitter.com/docs/cards -->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:creator" content="dckc" />
+    <link rel="stylesheet" type="text/css" href="/static/packed.css?98036b3b"/>
+    <link rel="alternate" type="application/rss+xml" href="/feed/" title="Everything (RSS)"/>
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+</head>
+<body class="">
+    <!--[if lt IE 7]>
+    <p class="chromeframe">Your browser is <em>ancient!</em> Please <a href="http://www.quirksmode.org/upgrade.html">upgrade</a>.</p>
+    <![endif]-->
+    <div class="container">
+        <header class="main-title">
+            <h1><a href="/">MadMode</a></h1>
+            <small>Dan Connolly's tinkering lab notebook</small>
+        </header>
+        <div class="contents">
+            
+
+    <article lang="en" class="" itemscope="itemscope" itemtype="http://schema.org/BlogPosting">
+    <link itemprop="url" href="/2007/breadcrumbs_0201.html" />
+    <header>
+        <h2><a itemprop="name" href="/2007/breadcrumbs_0201.html">Soccer schedules, flight itineraries, timezones, and python web frameworks</a></h2></header>
+    
+    <section>
+        <p>The schedule for this fall soccer season came out August 11th. I got the <a href="http://www.w3.org/2007/09dc-sou/sou19">itinerary</a> for the trip I&#39;m about to take on July 26. But I <em>just now</em> got them synchronized with the family calendar. </p>
+
+<p>The soccer league publishes the schedule in somewhat reasonable HTML; to get that into my sidekick, I have a Makefile that does these steps:</p>
+
+<ol><li>Use <a href="http://tidy.sourceforge.net/">tidy</a> to make the markup well-formed.</li><li>Use 100 lines of XSLT (<strong>soccer-schedfix.xsl</strong>) to add <a href="http://microformats.org/wiki/hcalendar">hCalendar</a> markup.</li><li>Use <a href="http://www.w3.org/2002/12/cal/glean-hcal.xsl">glean-hcal.xsl</a> to get RDF calendar data.</li><li>Use <a href="http://homer.w3.org/%7Econnolly/projects/palmagent/file/9099246ab759/hipAgent.py" class="list">hipAgent.py</a> to upload the calendar items via XMLRPC to the danger/t-mobile service, which magically updates the sidekick device.</li></ol>
+
+<p>But oops! The timezones come out wrong. Ugh... manually fix the times of 12 soccer games... better than manually keying in all the data... then sync with the family calendar. My usual calendar sync Makefile does the following:</p>
+
+<ol><li>Use <a href="http://homer.w3.org/%7Econnolly/projects/palmagent/file/9099246ab759/dangerSync.py" class="list">dangerSync.py</a> to download the calendar and task data via XMLRPC.</li><li>Use <a href="http://homer.w3.org/%7Econnolly/projects/palmagent/file/9099246ab759/hipsrv.py" class="list">hipsrv.py</a> to filter by category=family, convert from danger/sidekick/hiptop conventions to iCalendar standard conventions pour the records into a <a href="http://www.kid-templating.org/">kid</a> template to produce RDF Calendar (and hCalendar).</li><li>Use <a href="http://www.w3.org/2000/10/swap/pim/toIcal.py">toIcal.py</a> to convert RDF Calendar to .ics format.</li><li>Upload to family WebDAV server using curl.<br /></li></ol>
+
+<p>Then check the results on my mac to make sure that when my wife refreshes her iCal subscriptions it will look right.</p>
+
+<p>Oh no! The timezones are wrong <strong>again</strong>!</p>
+
+<p>The sidekick has no visible support for timezones, but the <strong>start_time</strong> and <strong>end_time</strong> fields in the XMLRPC interface are in Z/UTC time, and there&#39;s a timezone field. However, after years with this device, I&#39;m still mystified about how it works. The Makefiles approach is not conducive to tinkering at this level, so I worked on my REST interface, <a href="http://homer.w3.org/%7Econnolly/projects/palmagent/file/9099246ab759/hipwsgi.py" class="list">hipwsgi.py</a> until it had crude support for editing records (using JSON syntax in a form field). What I discovered is that once you post an event record with a mixed up timezone, there&#39;s no way to fix it. When you use the device UI to change the start time, it looks OK, but the Z time via XMLRPC is then wrong.</p>
+
+<p>So I deleted all the soccer game records, carefully factored the danger/iCalendar conversion code out of hipAgent.py into <a href="http://homer.w3.org/%7Econnolly/projects/palmagent/file/9099246ab759/calitems.py" class="list">calitems.py</a> for ease of testing, and goit it working for local Chicago-time events.</p>
+
+<p>Then I went through the <em>whole story again</em> with my itinerary. Just replace tidy and <strong>soccer-schedfix.xsl</strong> with <a href="http://homer.w3.org/%7Econnolly/projects/data4/file/a0145e6c7948/flightCal.py" class="list">flightCal.py</a> to get the itinerary from SABRE&#39;s text format to hCalendar:</p>
+
+<ol><li>Upload itinerary to the sidekick.</li><li>Manually fix the times.</li><li>Sync with iCal. Bzzt. Off by several hours. </li><li>Delete the flights from the sidekick.</li><li>Work on calitems.py some more.</li><li>Upload to the sidekick again. <em>Ignore the sidekick display, which is right for the parts of the itinerary in Chicago, but wrong for the others.</em></li><li>Sync with iCal. Win!<br /></li></ol>
+
+<p>I suppose I&#39;m resigned that the only way to get the XMLRPC POST/upload right (the stored Z times, at least, if not the display) is to know what timezone the device is set to when the POST occurs. <em>Sigh.</em></p>
+
+<p>A <a href="http://www.mobileburn.com/review.jsp?Page=4&amp;Id=1200">March 2005 review</a> corroborates my findings:<br /> </p>
+
+<p><blockquote><p>The Sidekick and the sync software do not seem to be aware of time zones. That means that your PC and your Sidekick have to be configured for the same time zone when they synchronize, else your appointments will be all wrong. </p></blockquote> <p>&nbsp;</p><p> hipwsgi.py is about my 5th iteration on this idea of a web server interface to my PDA data. It uses WSGI and JSON and Genshi, following <a href="http://bitworking.org/news/Why_so_many_Python_web_frameworks">Joe G&#39;s stuff</a>. Previous itertions include:</p><ol><li> pdkb.pl - quick n dirty perl hack (started April 2001)</li><li>hipAgent.py - screen scraping (Dec 2002)<br /></li><li>dangerSync.py - XMLRPC with a python shelf and hardcoded RDF/XML output (Feb 2004)<br /></li><li>hipsrv.py - conversion logic in python with kid templates and SPARQL-like filters over JSON-shaped data (March 2006)</li></ol>It&#39;s pretty raw right now, but fleshing out the details looks like fun. Wish me luck.</p>
+    </section>
+    <aside>
+        <p>
+            <span class="article-author" itemprop="author" itemscope="itemscope" itemtype="http://schema.org/Person">
+                <span itemprop="name">Dan Connolly</span> —
+            </span>
+            <time datetime="2007-09-12" itemprop="datePublished">2007-09-12</time>
+            
+            — <a href="/2007/breadcrumbs_0201.html">Permalink</a>
+            — <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/">License</a>.
+	    <br />
+	    
+	    | <a class='tag' rel='tag'
+		 href="/search/label/breadcrumbs/">breadcrumbs</a>
+   	    
+        </p>
+    </aside>
+    <hr />
+    <nav>
+        <a class="prev" href="/2007/advogato_entry0055.html">23 Oct 2007</a>
+        |
+        <a class="next" href="/2007/breadcrumbs_0198.html">Units of measure and property chaining</a>
+    </nav>
+</article>
+
+
+        </div>
+        <nav class="sidebar">
+            <ul>
+                <li class="home"><a href="/" hreflang="en">Home</a></li>
+<!-- @@                <li class="code"><a href="@@ url_for("section", section="code") }}" hreflang="en">Blog</a></li> -->
+               <li>Archives
+		 
+               </li>
+
+                <li class="contact"><a href="/contact/" hreflang="en">Contact</a></li>
+            </ul>
+        </nav>
+        <footer class="site-footer">
+            <address>
+  <a href="https://www.codementor.io/dckc" rel="me">
+    <img  class="social-icon"
+          src="https://cdn.codementor.io/badges/i_am_a_codementor_dark.svg"
+          alt="I am a codementor" /></a>
+  &#160;&#160;&#160;
+  <a href="https://github.com/dckc" rel="me">
+    <img src="/static/img/GitHub-Mark/PNG/GitHub-Mark-64px.png"
+	 width="40px" height="40px" class="social-icon"
+	 alt="dckc on github" /></a>
+  &#160;&#160;&#160;
+  <a href="http://bitbucket.org/DanC" rel="me">
+    <img src="/static/img/bitbucket_icon.png"
+	 width="40px" height="40px" class="social-icon"
+	 alt="bitbucket/DanC code" /></a>
+  &#160;&#160;&#160;
+  <a href="https://twitter.com/dckc" rel="me">
+    <img src="/static/img/twitter_icon.png"
+	 width="40px" height="40px" class="social-icon"
+	 alt="@dckc on twitter" /></a>
+  &#160;&#160;&#160;
+  <a href="https://www.linkedin.com/in/connollydan/" rel="me">
+    <img class="social-icon"
+         src="/static/img/In-2C-34px-R.png"
+	 alt="Dan Connolly on LinkedIn" /></a>
+  &#160;&#160;&#160;
+  <a href="https://keybase.io/dckc">
+    <img class="social-icon"
+         src="https://keybase.io/images/icons/icon-keybase-logo-48.png"
+         alt="dckc on keybase" />
+  </a>
+  &#160;&#160;&#160;
+  <a href="https://21.co/madmode/" rel="me">
+    <img class="social-icon"
+         src="https://static.21.co/shared/img/icon-21-gold.svg" alt=""/>
+  </a>
+
+  <br />
+  <small>&#169; 1994-2017 <a href="/contact/">Dan Connolly. Contact me.</a></small>
+
+              <br/>
+            </address>
+        </footer>
+    </div>
+    <!-- /container -->
+
+    <!-- TODO: add this only to ipython articles -->
+    <!-- cribbed from ipython's html_full.tpl -->
+<!-- updated w.r.t. http://docs.mathjax.org/en/latest/start.html -->
+<script type="text/javascript"
+  src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+<script type="text/javascript">
+init_mathjax = function() {
+    if (window.MathJax) {
+        // MathJax loaded
+        MathJax.Hub.Config({
+            tex2jax: {
+                inlineMath: [ ["\\(","\\)"] ],
+                displayMath: [ ["\\[","\\]"] ]
+            },
+            displayAlign: 'left', // Change this to 'center' to center equations.
+            "HTML-CSS": {
+                styles: {'.MathJax_Display': {"margin": 0}}
+            }
+        });
+        MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+    }
+}
+init_mathjax();
+</script>
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script><![CDATA[window.jQuery || document.write('<script src="js/libs/jquery-1.7.1.min.js"><\/script>')]]></script>
+    <script type="text/javascript" src="/static/packed.js?98d60569"></script>
+    <script src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+</body>
+</html>

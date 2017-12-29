@@ -151,8 +151,7 @@ The clincher was a StackOverflow clue on <a href="http://stackoverflow.com/a/384
 </pre></div>
 
 </div>
-
-<p></div>
+</div>
 <div class="vbox output_wrapper">
 <div class="output vbox">
 <div class="hbox output_area">
@@ -163,7 +162,8 @@ The clincher was a StackOverflow clue on <a href="http://stackoverflow.com/a/384
 </div>
 </div>
 </div>
-</div></p>
+</div>
+
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2>Aside/Colophon</h2>
 <p>I'm trying out <a href="http://ipython.org/">IPython</a> as an authoring tool.
@@ -184,8 +184,7 @@ mature as RStudio, it's getting pretty close.</p>
 </pre></div>
 
 </div>
-
-<p></div>
+</div>
 <div class="vbox output_wrapper">
 <div class="output vbox">
 <div class="hbox output_area">
@@ -199,7 +198,8 @@ For more information, type &apos;help(pylab)&apos;.
 </div>
 </div>
 </div>
-</div></p>
+</div>
+
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Making a numpy array out of a <code>.wav</code> file is a piece of cake.
 Scaling the amplitude to fit in an 8 bit DAC like the CoCo's
@@ -224,8 +224,7 @@ helps eliminate some high frequency noise:
 </pre></div>
 
 </div>
-
-<p></div>
+</div>
 <div class="vbox output_wrapper">
 <div class="output vbox">
 <div class="hbox output_area">
@@ -237,22 +236,25 @@ helps eliminate some high frequency noise:
 </div>
 </div>
 </div>
+
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>The next step is to find the long sequence of
 alternating 0s and 1s that mark the beginning of a sequence of bytes.
 In Audacity, I could hear the tone right around 2 seconds in.
 The signal at this point looks about right:</p>
 </div>
+
 <div class="cell border-box-sizing code_cell vbox">
 <div class="input hbox">
 <div class="prompt input_prompt">In&nbsp;[4]:</div>
 <div class="input_area box-flex1">
 <div class="highlight"><pre><span class="n">t</span> <span class="o">=</span> <span class="n">arange</span><span class="p">(</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">2.01</span><span class="p">,</span> <span class="mf">1.0</span><span class="o">/</span><span class="n">framerate</span><span class="p">)</span>
 <span class="n">_</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span>
-         <span class="n">signal</span><span class="p">[</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o"><em></span> <span class="n">framerate</span><span class="p">:</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o"></em></span> <span class="n">framerate</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">)])</span>
+         <span class="n">signal</span><span class="p">[</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">framerate</span><span class="p">:</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">framerate</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">)])</span>
 <span class="n">grid</span><span class="p">()</span>
-</pre></div></p>
-<p></div>
+</pre></div>
+
+</div>
 </div>
 <div class="vbox output_wrapper">
 <div class="output vbox">
@@ -618,9 +620,11 @@ xf8Hfi3Ai3Y1rDkAAAAASUVORK5CYII=
 </div>
 </div>
 </div>
+
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>The pattern of bits was close, but not quite there, no matter how I played with the threshold:</p>
 </div>
+
 <div class="cell border-box-sizing code_cell vbox">
 <div class="input hbox">
 <div class="prompt input_prompt">In&nbsp;[5]:</div>
@@ -629,8 +633,9 @@ xf8Hfi3Ai3Y1rDkAAAAASUVORK5CYII=
 <span class="n">threshold</span> <span class="o">=</span> <span class="mi">1400</span>  <span class="c"># experimental; cf. (CoCo.rate0 + CoCo.rate1) / 2</span>
 <span class="n">bits</span> <span class="o">=</span> <span class="p">(</span><span class="n">freqs</span> <span class="o">&gt;</span> <span class="n">threshold</span><span class="p">)</span> <span class="o">+</span> <span class="mi">0</span>
 <span class="n">bits</span><span class="p">[</span><span class="n">wave_ix</span> <span class="o">&gt;</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">framerate</span><span class="p">][:</span><span class="mi">40</span><span class="p">]</span>
-</pre></div></p>
-<p></div>
+</pre></div>
+
+</div>
 </div>
 <div class="vbox output_wrapper">
 <div class="output vbox">
@@ -644,9 +649,11 @@ xf8Hfi3Ai3Y1rDkAAAAASUVORK5CYII=
 </div>
 </div>
 </div>
+
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>I pored over the disassembly from <em>The FACTS</em>, wondering what I'd missed:</p>
-</div></p>
+</div>
+
 <pre>
 *** LOOK FOR THE SYNC BYTES - RETURN WITH ACCA = 0 IF SYNC’ED
 *** ON HI - LO TRANSITION, ACCA = $A0 IF SYNC’ED ON THE
@@ -696,7 +703,7 @@ by Spectral Associates, digitally restored by <a href="https://sites.google.com/
          <span class="n">wave_ix</span><span class="p">[</span><span class="n">zeros</span><span class="p">],</span> <span class="n">bits</span><span class="p">[</span><span class="n">zeros</span><span class="p">],</span> <span class="s">&#39;ro&#39;</span><span class="p">)</span>
 </pre></div>
 
-<p></div>
+</div>
 </div>
 <div class="vbox output_wrapper">
 <div class="output vbox">
@@ -1079,6 +1086,7 @@ CwkFQRAEYcv/D5jWcffSBWH4AAAAAElFTkSuQmCC
 </div>
 </div>
 </div>
+
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Do you see it?</p>
 <p>The crossings start lo-hi for the first five bits, but somehow
@@ -1090,15 +1098,18 @@ the next bit is marked at a hi-lo transition.</p>
 So I tweaked <code>zero_crossings</code> algorithm to use <code>sign() &gt; 0</code> so that we
 have just +/-, rather than +1/0/-1:</p>
 </div>
+
 <div class="cell border-box-sizing code_cell vbox">
 <div class="input hbox">
 <div class="prompt input_prompt">In&nbsp;[7]:</div>
 <div class="input_area box-flex1">
 <div class="highlight"><pre><span class="k">def</span> <span class="nf">zero_crossings</span><span class="p">(</span><span class="n">signal</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">signal</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span></p>
-<p><span class="n">zero_crossings</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="o">-</span><span class="mi">4</span><span class="p">])</span>
-</pre></div></p>
-<p></div>
+    <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">signal</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+
+<span class="n">zero_crossings</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="o">-</span><span class="mi">4</span><span class="p">])</span>
+</pre></div>
+
+</div>
 </div>
 <div class="vbox output_wrapper">
 <div class="output vbox">
@@ -1111,9 +1122,11 @@ have just +/-, rather than +1/0/-1:</p>
 </div>
 </div>
 </div>
+
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Now the 1's and 0's alternate nicely:</p>
 </div>
+
 <div class="cell border-box-sizing code_cell vbox">
 <div class="input hbox">
 <div class="prompt input_prompt">In&nbsp;[8]:</div>
@@ -1122,8 +1135,9 @@ have just +/-, rather than +1/0/-1:</p>
 <span class="n">threshold</span> <span class="o">=</span> <span class="mi">1400</span>  <span class="c"># experimental; cf. (CoCo.rate0 + CoCo.rate1) / 2</span>
 <span class="n">bits</span> <span class="o">=</span> <span class="p">(</span><span class="n">freqs</span> <span class="o">&gt;</span> <span class="n">threshold</span><span class="p">)</span> <span class="o">+</span> <span class="mi">0</span>
 <span class="n">bits</span><span class="p">[</span><span class="n">wave_ix</span> <span class="o">&gt;</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">framerate</span><span class="p">][:</span><span class="mi">40</span><span class="p">]</span>
-</pre></div></p>
-<p></div>
+</pre></div>
+
+</div>
 </div>
 <div class="vbox output_wrapper">
 <div class="output vbox">
@@ -1137,16 +1151,19 @@ have just +/-, rather than +1/0/-1:</p>
 </div>
 </div>
 </div>
+
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>This allows us to find the sync pattern:</p>
 </div>
+
 <div class="cell border-box-sizing code_cell vbox">
 <div class="input hbox">
 <div class="prompt input_prompt">In&nbsp;[9]:</div>
 <div class="input_area box-flex1">
 <div class="highlight"><pre><span class="n">c</span><span class="o">.</span><span class="n">find_sync</span><span class="p">(</span><span class="n">bits</span><span class="p">)</span>
-</pre></div></p>
-<p></div>
+</pre></div>
+
+</div>
 </div>
 <div class="vbox output_wrapper">
 <div class="output vbox">
@@ -1159,9 +1176,11 @@ have just +/-, rather than +1/0/-1:</p>
 </div>
 </div>
 </div>
+
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Putting it all together, we see that we get a certain distance before falling out of sync:</p>
 </div>
+
 <div class="cell border-box-sizing code_cell vbox">
 <div class="input hbox">
 <div class="prompt input_prompt">In&nbsp;[10]:</div>
@@ -1175,8 +1194,9 @@ have just +/-, rather than +1/0/-1:</p>
     <span class="n">c</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">tape</span><span class="p">,</span> <span class="n">dest</span><span class="p">)</span>
 <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
     <span class="k">print</span> <span class="s">&quot;oops!&quot;</span>
-</pre></div></p>
-<p></div>
+</pre></div>
+
+</div>
 </div>
 <div class="vbox output_wrapper">
 <div class="output vbox">
@@ -1212,9 +1232,11 @@ INFO:cloadm:block type: 2 length: 254
 </div>
 </div>
 </div>
+
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>The filename and copyright statement confirm that we're on the right track:</p>
 </div>
+
 <div class="cell border-box-sizing code_cell vbox">
 <div class="input hbox">
 <div class="prompt input_prompt">In&nbsp;[11]:</div>
@@ -1223,24 +1245,28 @@ INFO:cloadm:block type: 2 length: 254
 <span class="k">print</span> <span class="s">&quot;filename:&quot;</span><span class="p">,</span> <span class="n">content</span><span class="p">[:</span><span class="mi">8</span><span class="p">]</span>
 <span class="k">print</span>
 <span class="k">print</span> <span class="n">content</span><span class="p">[</span><span class="mi">229</span><span class="p">:</span><span class="mi">298</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\x00</span><span class="s">&#39;</span><span class="p">,</span> <span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
-</pre></div></p>
-<p></div>
+</pre></div>
+
+</div>
 </div>
 <div class="vbox output_wrapper">
 <div class="output vbox">
 <div class="hbox output_area">
 <div class="prompt output_prompt"></div>
 <div class="output_subarea output_stream output_stdout">
-<pre>filename: RUNNER  </p>
-<p>LIGHT RUNNER
+<pre>filename: RUNNER  
+
+LIGHT RUNNER
 COPR(C) 1983 BY CO&amp;CO SOFTWARE
-WRITTEN BY: DAN CONNOLLY</p>
-<p></pre>
+WRITTEN BY: DAN CONNOLLY
+
+</pre>
 </div>
 </div>
 </div>
 </div>
 </div>
+
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2>Related Work</h2>
 <p>Browsing around the <a href="http://five.pairlist.net/pipermail/coco/">coco mailing list</a>
@@ -1249,7 +1275,7 @@ I got it running under dosbox; the first thing it said was:</p>
 <pre><code>This .WAV file is not a 11025Hz/mono/8-bit sample.
 </code></pre>
 <p>So sox to the rescue:</p>
-<pre><code>$ <code>sox ../../lr-cut.wav -r 11025 -b 8 lr8.wav</code>
+<pre><code>$ `sox ../../lr-cut.wav -r 11025 -b 8 lr8.wav`
 </code></pre>
 <p>Then <code>CASIN</code> made some progress, but didn't get very far.
 It decoded even less data than my code did. I might have felt
@@ -1258,7 +1284,7 @@ there was a well-known solution that worked out of the box.
 But data analysis and signal processing is a growing part
 of my day job, and learning the scientific python toolset
 has been on my todo list for quite some time, so I'm glad I did.</p>
-</div></p>
+</div>
     </section>
     <aside>
         <p>

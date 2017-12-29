@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+    <meta charset="utf-8" />
+    
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <title>MadMode: ACL 2 seminar at U.T. Austin: Toward proof exchange in the Semantic Web | Code</title>
+    <meta name="description" content="MadMode by Dan Connolly"/>
+    <meta name="viewport" content="width=device-width"/>
+
+    <!-- https://dev.twitter.com/docs/cards -->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:creator" content="dckc" />
+    <link rel="stylesheet" type="text/css" href="/static/packed.css?98036b3b"/>
+    <link rel="alternate" type="application/rss+xml" href="/feed/" title="Everything (RSS)"/>
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+</head>
+<body class="">
+    <!--[if lt IE 7]>
+    <p class="chromeframe">Your browser is <em>ancient!</em> Please <a href="http://www.quirksmode.org/upgrade.html">upgrade</a>.</p>
+    <![endif]-->
+    <div class="container">
+        <header class="main-title">
+            <h1><a href="/">MadMode</a></h1>
+            <small>Dan Connolly's tinkering lab notebook</small>
+        </header>
+        <div class="contents">
+            
+
+    <article lang="en" class="" itemscope="itemscope" itemtype="http://schema.org/BlogPosting">
+    <link itemprop="url" href="/2006/breadcrumbs_0160.html" />
+    <header>
+        <h2><a itemprop="name" href="/2006/breadcrumbs_0160.html">ACL 2 seminar at U.T. Austin: Toward proof exchange in the Semantic Web</a></h2></header>
+    
+    <section>
+        <p>&nbsp;</p>
+
+<p>In our <a href="http://www.policyawareweb.org/">PAW</a> and <a href="/TAMI/">TAMI</a> projects, we&#39;re making a lot of progress on the practical aspects of proof exchange: in PAW we&#39;re working out the <a href="/2005/09/rein/examples/">nitty gritty details</a> of making an HTTP client (proxy) and server that exchange proofs, and in TAMI, we&#39;re working on user interfaces for audit trails and justifications and on integration with a truth maintenance system.</p>
+
+<p><p>It doesn&#39;t concern me too much that <a href="http://www.w3.org/2000/10/swap/doc/cwm">cwm</a> does some crazy stuff when <em>finding</em> proofs; it&#39;s the proof <em>checker</em> that I expect to deploy as part of trusted computing bases and the proof language specification that I hope will complete the Semantic Web standards stack.</p>  <p>But N3 proof exchange is no longer a completely hypothetical problem; the <a href="http://lists.w3.org/Archives/Public/public-cwm-talk/2006AprJun/0015.html">first examples of interoperating with InferenceWeb</a> (via a mapping to PML) and <a href="http://lists.w3.org/Archives/Public/public-cwm-talk/2006AprJun/0024.html">with Euler</a> are working. So it&#39;s time to take a close look at the proof representation and the proof theory in more detail.</p>  <p>My trip to Austin for a <a href="http://www.utexas.edu/president/symposium/index.html">research library symposium at the University of Texas</a> gave me a chance to re-connect with <a href="http://www.cs.utexas.edu/users/boyer/">Bob Boyer</a>. A while back, I told him about RDF and asked him about <a href="http://www.w3.org/DesignIssues/Logic">Semantic Web logic issues</a> and he showed me the proof checking part of McCune&#39;s <cite><a href="http://www-unix.mcs.anl.gov/~mccune/papers/robbins/">Robbins Algebras Are Boolean</a></cite> result:</p>  <blockquote><p>Proofs found by programs are always questionable. Our approach to this problem is to have the theorem prover construct a detailed proof object and have a very simple program (written in a high-level language) check that the proof object is correct. The proof checking program is simple enough that it can be scrutinized by humans, and formal verification is probably feasible.</p></blockquote><p>In my <a href="http://lists.w3.org/Archives/Public/sw99/2000JanMar/0002">Jan 2000 notes</a>, that excerpt is followed by...</p>  <blockquote><p>I offer a 500 brownie-point bounty to anybody who converts it to Java and converts the ()&#39;s in the input format to &lt;&gt;&#39;s.</p>  <p>5 points for perl. ;-)</p>  </blockquote><p>Bob got me invited to the <a href="http://www.cs.utexas.edu/users/moore/acl2/seminar/index.html" class="summary">ACL2  seminar</a> this week; in my presentation, <cite><a href="http://www.w3.org/2006/09dc-aus/swpf">Toward proof exchange in the      Semantic Web</a></cite>. I reviewed a bit of Web Architecture and the standardization status of RDF, RDFS, OWL, and SPARQL as background to demonstrating that we&#39;re close to collecting that bounty. (Little did I know in 2000 that TimBL would <a href="http://www.w3.org/2000/10/swap/#L88">pick up python</a> so that I could avoid Java as well as perl ;-)<br /> </p>  <p> <a href="http://www.cs.utexas.edu/users/kaufmann/">Matt Kauffman</a> and company gave all sorts of great feedback on my presentation. I had to go back to the <a href="http://www.w3.org/2006/09dc-aus/swpf#(8)"><em>Semantic Web Wave</em> diagram</a> a few times to clarify the boundary between research and standardization:</p>  <ul> <li>RDF is fully standardized/ratified<br /> </li> <li>turtle has the same expressive capability as RDF&#39;s XML syntax, but isn&#39;t fully ratified, and</li> <li>N3 goes beyond the standards in both syntax and expressiveness<br /> </li> </ul> <p>One of the people there who knew about RDF and OWL and such really encouraged me to get N3/turtle done, since every time he does any Semantic Web advocacy, the RDF/XML syntax is a deal-killer. I tried to show them my work on a turtle bnf, but what I was looking for was in <a href="http://lists.w3.org/Archives/Public/public-cwm-talk/2006AprJun/0032.html">June mailing list discussion</a>, not in my <a href="/breadcrumbs/node/85">February bnf2turtle breadcrumbs item</a>.<br /> </p>  <p>They asked what happens if an identifier is used before it appears in an <strong>@forAll</strong> directive and I had to admit that I could test what the software does if they wanted to, but I couldn&#39;t be sure whether that was by design or not; exactly how quantification and {}s interact in N3 is sort of an open issue, or at least something I&#39;m not quite sure about.<br /> </p>  <p>Moore noticed that our conjunction introduction (CI) step doesn&#39;t result in a formula whose main connective is conjuction; the conjuction gets pushed inside the quantifiers. It&#39;s not wrong, but it&#39;s not traditional CI either.<br /> </p>  <p>I asked about ACL2&#39;s proof format, and they said what goes in an ACL2 &quot;book&quot; is not so much a proof as a sequence of lemmas and such, but Jared was working on <a href="http://www.cs.utexas.edu/users/jared/milawa/Web/">Milawa</a>, a simple proof checker that can be extended with new prooftechniques.</p>  <p>I started talking a little after 4pm; different people left at different times, but it wasn&#39;t until about 8 that Matt realized he was late for a squash game and headed out.</p>  <p><a href="http://www.flickr.com/photos/dckc/243400207/" title="MLK and the UT Tower"><img src="http://static.flickr.com/89/243400207_61c4f60b5a_t.jpg" border="0" alt="MLK and the UT Tower" width="75" height="100" align="left" /></a>I went back to visit them in the U.T. tower the next day to follow up on ACL2/N3 connections and Milawa.  Matt suggested  a translation of N3 quantifiers and {}s into ACL2 that doesn&#39;t involve quotation. He offered to guide me as I fleshed it out, but I only got as far as <a href="http://chatlogs.planetrdf.com/swig/2006-09-14.html#T15-12-39">installing lisp and ACL2</a>; I was too tired to get into a coding fugue.</p>  <p>Jared not only gave me some essential installation clues, but for every technical topic I brought up, he printed out two papers showing different approaches. I sure hope I can find time to follow up on at least some of this stuff.<br /> </p>  <p style="font-size: 10px; text-align: right">del.icio.us tags:<a rel="tag" href="http://del.icio.us/connolly/Austin">Austin</a>, <a rel="tag" href="http://del.icio.us/connolly/semantic">semantic</a>, <a rel="tag" href="http://del.icio.us/connolly/web">web</a>, <a rel="tag" href="http://del.icio.us/connolly/logic">logic</a>, <a rel="tag" href="http://del.icio.us/connolly/research">research</a></p><p style="text-align: right; font-size: 8px">Blogged with <a href="http://www.flock.com/blogged-with-flock" target="_new" title="Flock">Flock</a></p></p>
+    </section>
+    <aside>
+        <p>
+            <span class="article-author" itemprop="author" itemscope="itemscope" itemtype="http://schema.org/Person">
+                <span itemprop="name">Dan Connolly</span> —
+            </span>
+            <time datetime="2006-09-16" itemprop="datePublished">2006-09-16</time>
+            
+            — <a href="/2006/breadcrumbs_0160.html">Permalink</a>
+            — <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/">License</a>.
+	    <br />
+	    
+	    | <a class='tag' rel='tag'
+		 href="/search/label/breadcrumbs/">breadcrumbs</a>
+   	    
+	    | <a class='tag' rel='tag'
+		 href="/search/label/Austin/">Austin</a>
+   	    
+	    | <a class='tag' rel='tag'
+		 href="/search/label/semantic/">semantic</a>
+   	    
+	    | <a class='tag' rel='tag'
+		 href="/search/label/web/">web</a>
+   	    
+	    | <a class='tag' rel='tag'
+		 href="/search/label/logic/">logic</a>
+   	    
+	    | <a class='tag' rel='tag'
+		 href="/search/label/research/">research</a>
+   	    
+        </p>
+    </aside>
+    <hr />
+    <nav>
+        <a class="prev" href="/2006/breadcrumbs_0161.html">Talking with U.T. Austin students about the Microformats, Drug Discovery, the Tabulator, and the Semantic Web</a>
+        |
+        <a class="next" href="/2006/breadcrumbs_0159.html">On the Future of Research Libraries at U.T. Austin</a>
+    </nav>
+</article>
+
+
+        </div>
+        <nav class="sidebar">
+            <ul>
+                <li class="home"><a href="/" hreflang="en">Home</a></li>
+<!-- @@                <li class="code"><a href="@@ url_for("section", section="code") }}" hreflang="en">Blog</a></li> -->
+               <li>Archives
+		 
+               </li>
+
+                <li class="contact"><a href="/contact/" hreflang="en">Contact</a></li>
+            </ul>
+        </nav>
+        <footer class="site-footer">
+            <address>
+  <a href="https://www.codementor.io/dckc" rel="me">
+    <img  class="social-icon"
+          src="https://cdn.codementor.io/badges/i_am_a_codementor_dark.svg"
+          alt="I am a codementor" /></a>
+  &#160;&#160;&#160;
+  <a href="https://github.com/dckc" rel="me">
+    <img src="/static/img/GitHub-Mark/PNG/GitHub-Mark-64px.png"
+	 width="40px" height="40px" class="social-icon"
+	 alt="dckc on github" /></a>
+  &#160;&#160;&#160;
+  <a href="http://bitbucket.org/DanC" rel="me">
+    <img src="/static/img/bitbucket_icon.png"
+	 width="40px" height="40px" class="social-icon"
+	 alt="bitbucket/DanC code" /></a>
+  &#160;&#160;&#160;
+  <a href="https://twitter.com/dckc" rel="me">
+    <img src="/static/img/twitter_icon.png"
+	 width="40px" height="40px" class="social-icon"
+	 alt="@dckc on twitter" /></a>
+  &#160;&#160;&#160;
+  <a href="https://www.linkedin.com/in/connollydan/" rel="me">
+    <img class="social-icon"
+         src="/static/img/In-2C-34px-R.png"
+	 alt="Dan Connolly on LinkedIn" /></a>
+  &#160;&#160;&#160;
+  <a href="https://keybase.io/dckc">
+    <img class="social-icon"
+         src="https://keybase.io/images/icons/icon-keybase-logo-48.png"
+         alt="dckc on keybase" />
+  </a>
+  &#160;&#160;&#160;
+  <a href="https://21.co/madmode/" rel="me">
+    <img class="social-icon"
+         src="https://static.21.co/shared/img/icon-21-gold.svg" alt=""/>
+  </a>
+
+  <br />
+  <small>&#169; 1994-2017 <a href="/contact/">Dan Connolly. Contact me.</a></small>
+
+              <br/>
+            </address>
+        </footer>
+    </div>
+    <!-- /container -->
+
+    <!-- TODO: add this only to ipython articles -->
+    <!-- cribbed from ipython's html_full.tpl -->
+<!-- updated w.r.t. http://docs.mathjax.org/en/latest/start.html -->
+<script type="text/javascript"
+  src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+<script type="text/javascript">
+init_mathjax = function() {
+    if (window.MathJax) {
+        // MathJax loaded
+        MathJax.Hub.Config({
+            tex2jax: {
+                inlineMath: [ ["\\(","\\)"] ],
+                displayMath: [ ["\\[","\\]"] ]
+            },
+            displayAlign: 'left', // Change this to 'center' to center equations.
+            "HTML-CSS": {
+                styles: {'.MathJax_Display': {"margin": 0}}
+            }
+        });
+        MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+    }
+}
+init_mathjax();
+</script>
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script><![CDATA[window.jQuery || document.write('<script src="js/libs/jquery-1.7.1.min.js"><\/script>')]]></script>
+    <script type="text/javascript" src="/static/packed.js?98d60569"></script>
+    <script src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+</body>
+</html>

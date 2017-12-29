@@ -3,46 +3,52 @@
     <!-- homepage -->
     <url>
         <loc>http://www.madmode.com//</loc>
-        <lastmod>2017-11-10</lastmod>
+        <lastmod>2017-12-29</lastmod>
         <changefreq>hourly</changefreq>
         <priority>1</priority>
     </url>
     <!-- carnet -->
     <url>
         <loc>http://www.madmode.com//carnet/</loc>
-        <lastmod>2017-11-01</lastmod>
+        <lastmod>2017-12-01</lastmod>
         <changefreq>daily</changefreq>
         <priority>0.8</priority>
     </url>
     <!-- photography -->
     <url>
         <loc>http://www.madmode.com//photography/</loc>
-        <lastmod>2017-11-01</lastmod>
+        <lastmod>2017-12-01</lastmod>
         <changefreq>daily</changefreq>
         <priority>0.8</priority>
     </url>
     <!-- code -->
     <url>
         <loc>http://www.madmode.com//code/</loc>
-        <lastmod>2017-11-01</lastmod>
+        <lastmod>2017-12-01</lastmod>
         <changefreq>daily</changefreq>
         <priority>0.8</priority>
     </url>
     <!-- talks -->
     <url>
         <loc>http://www.madmode.com//talks/</loc>
-        <lastmod>2017-11-01</lastmod>
+        <lastmod>2017-12-01</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
     </url>
     <!-- contact -->
     <url>
         <loc>http://www.madmode.com//contact/</loc>
-        <lastmod>2017-11-01</lastmod>
+        <lastmod>2017-12-01</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.4</priority>
     </url>
     <!-- all pages -->
+    <url>
+        <loc>http://www.madmode.com//2017/breadcrumbs-migrate/</loc>
+        <lastmod>2017-12-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
     <url>
         <loc>http://www.madmode.com//2017/sel4-rpi/</loc>
         <lastmod>2017-11-09</lastmod>
@@ -458,7 +464,19 @@
         <priority>1</priority>
     </url>
     <url>
+        <loc>http://www.madmode.com//2010/breadcrumbs_0253/</loc>
+        <lastmod>2010-04-27</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
         <loc>http://www.madmode.com//2010/advogato_entry0072/</loc>
+        <lastmod>2010-01-20</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2010/breadcrumbs_0252/</loc>
         <lastmod>2010-01-20</lastmod>
         <changefreq>monthly</changefreq>
         <priority>1</priority>
@@ -518,6 +536,18 @@
         <priority>1</priority>
     </url>
     <url>
+        <loc>http://www.madmode.com//2009/breadcrumbs_0250/</loc>
+        <lastmod>2009-03-10</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2009/breadcrumbs_0251/</loc>
+        <lastmod>2009-03-10</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
         <loc>http://www.madmode.com//2009/advogato_entry0064/</loc>
         <lastmod>2009-02-24</lastmod>
         <changefreq>monthly</changefreq>
@@ -538,6 +568,12 @@
     <url>
         <loc>http://www.madmode.com//2009/advogato_entry0062/</loc>
         <lastmod>2009-01-11</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2009/breadcrumbs_0246/</loc>
+        <lastmod>2009-01-08</lastmod>
         <changefreq>monthly</changefreq>
         <priority>1</priority>
     </url>
@@ -572,6 +608,24 @@
         <priority>1</priority>
     </url>
     <url>
+        <loc>http://www.madmode.com//2008/breadcrumbs_0240/</loc>
+        <lastmod>2008-08-22</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2008/breadcrumbs_0229/</loc>
+        <lastmod>2008-03-08</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2008/breadcrumbs_0228/</loc>
+        <lastmod>2008-03-06</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
         <loc>http://www.madmode.com//2008/01/from-kc-to-mit-and-back-again/</loc>
         <lastmod>2008-01-22</lastmod>
         <changefreq>monthly</changefreq>
@@ -584,7 +638,31 @@
         <priority>1</priority>
     </url>
     <url>
+        <loc>http://www.madmode.com//2007/breadcrumbs_0221/</loc>
+        <lastmod>2007-12-09</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2007/breadcrumbs_0214/</loc>
+        <lastmod>2007-11-20</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2007/breadcrumbs_0207/</loc>
+        <lastmod>2007-11-05</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
         <loc>http://www.madmode.com//2007/advogato_entry0056/</loc>
+        <lastmod>2007-10-25</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2007/breadcrumbs_0206/</loc>
         <lastmod>2007-10-25</lastmod>
         <changefreq>monthly</changefreq>
         <priority>1</priority>
@@ -592,6 +670,18 @@
     <url>
         <loc>http://www.madmode.com//2007/advogato_entry0055/</loc>
         <lastmod>2007-10-23</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2007/breadcrumbs_0201/</loc>
+        <lastmod>2007-09-12</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2007/breadcrumbs_0198/</loc>
+        <lastmod>2007-07-31</lastmod>
         <changefreq>monthly</changefreq>
         <priority>1</priority>
     </url>
@@ -614,8 +704,32 @@
         <priority>1</priority>
     </url>
     <url>
+        <loc>http://www.madmode.com//2007/breadcrumbs_0194/</loc>
+        <lastmod>2007-05-17</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2007/breadcrumbs_0193/</loc>
+        <lastmod>2007-05-17</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2007/breadcrumbs_0192/</loc>
+        <lastmod>2007-05-17</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
         <loc>http://www.madmode.com//2007/advogato_entry0051/</loc>
         <lastmod>2007-04-30</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2007/breadcrumbs_0187/</loc>
+        <lastmod>2007-03-23</lastmod>
         <changefreq>monthly</changefreq>
         <priority>1</priority>
     </url>
@@ -626,14 +740,50 @@
         <priority>1</priority>
     </url>
     <url>
+        <loc>http://www.madmode.com//2007/breadcrumbs_0180/</loc>
+        <lastmod>2007-01-25</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
         <loc>http://www.madmode.com//2007/advogato_entry0049/</loc>
         <lastmod>2007-01-05</lastmod>
         <changefreq>monthly</changefreq>
         <priority>1</priority>
     </url>
     <url>
+        <loc>http://www.madmode.com//2007/breadcrumbs_0179/</loc>
+        <lastmod>2007-01-02</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2006/breadcrumbs_0178/</loc>
+        <lastmod>2006-12-22</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
         <loc>http://www.madmode.com//2006/advogato_entry0048/</loc>
         <lastmod>2006-12-08</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2006/breadcrumbs_0172/</loc>
+        <lastmod>2006-11-16</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2006/breadcrumbs_0171/</loc>
+        <lastmod>2006-11-11</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2006/breadcrumbs_0165/</loc>
+        <lastmod>2006-10-26</lastmod>
         <changefreq>monthly</changefreq>
         <priority>1</priority>
     </url>
@@ -650,8 +800,200 @@
         <priority>1</priority>
     </url>
     <url>
+        <loc>http://www.madmode.com//2006/breadcrumbs_0164/</loc>
+        <lastmod>2006-10-16</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2006/breadcrumbs_0163/</loc>
+        <lastmod>2006-09-17</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2006/breadcrumbs_0162/</loc>
+        <lastmod>2006-09-16</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2006/breadcrumbs_0161/</loc>
+        <lastmod>2006-09-16</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2006/breadcrumbs_0160/</loc>
+        <lastmod>2006-09-16</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2006/breadcrumbs_0159/</loc>
+        <lastmod>2006-09-16</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
         <loc>http://www.madmode.com//2006/advogato_entry0045/</loc>
         <lastmod>2006-08-14</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2006/breadcrumbs_0158/</loc>
+        <lastmod>2006-08-11</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2006/breadcrumbs_0157/</loc>
+        <lastmod>2006-08-10</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2006/breadcrumbs_0156/</loc>
+        <lastmod>2006-08-09</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2006/breadcrumbs_0155/</loc>
+        <lastmod>2006-08-07</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2006/breadcrumbs_0154/</loc>
+        <lastmod>2006-07-31</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2006/breadcrumbs_0151/</loc>
+        <lastmod>2006-07-17</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2006/breadcrumbs_0148/</loc>
+        <lastmod>2006-07-11</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2006/breadcrumbs_0146/</loc>
+        <lastmod>2006-06-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2006/breadcrumbs_0142/</loc>
+        <lastmod>2006-06-17</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2006/breadcrumbs_0141/</loc>
+        <lastmod>2006-06-05</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2006/breadcrumbs_0140/</loc>
+        <lastmod>2006-06-02</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2006/breadcrumbs_0139/</loc>
+        <lastmod>2006-06-02</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2006/breadcrumbs_0135/</loc>
+        <lastmod>2006-05-19</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2006/breadcrumbs_0133/</loc>
+        <lastmod>2006-05-04</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2006/breadcrumbs_0129/</loc>
+        <lastmod>2006-04-25</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2006/breadcrumbs_0130/</loc>
+        <lastmod>2006-04-25</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2006/breadcrumbs_0131/</loc>
+        <lastmod>2006-04-25</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2006/breadcrumbs_0127/</loc>
+        <lastmod>2006-04-19</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2006/breadcrumbs_0124/</loc>
+        <lastmod>2006-04-06</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2006/breadcrumbs_0123/</loc>
+        <lastmod>2006-03-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2006/breadcrumbs_0107/</loc>
+        <lastmod>2006-03-26</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2006/breadcrumbs_0102/</loc>
+        <lastmod>2006-03-21</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2006/breadcrumbs_0101/</loc>
+        <lastmod>2006-03-20</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2006/breadcrumbs_0099/</loc>
+        <lastmod>2006-03-19</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2006/breadcrumbs_0098/</loc>
+        <lastmod>2006-03-19</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2006/breadcrumbs_0100/</loc>
+        <lastmod>2006-03-19</lastmod>
         <changefreq>monthly</changefreq>
         <priority>1</priority>
     </url>
@@ -668,8 +1010,122 @@
         <priority>1</priority>
     </url>
     <url>
+        <loc>http://www.madmode.com//2006/breadcrumbs_0097/</loc>
+        <lastmod>2006-03-17</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2006/breadcrumbs_0096/</loc>
+        <lastmod>2006-03-08</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2006/breadcrumbs_0094/</loc>
+        <lastmod>2006-03-08</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2006/breadcrumbs_0093/</loc>
+        <lastmod>2006-03-07</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2006/breadcrumbs_0092/</loc>
+        <lastmod>2006-03-07</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2006/breadcrumbs_0091/</loc>
+        <lastmod>2006-03-07</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2006/breadcrumbs_0090/</loc>
+        <lastmod>2006-02-25</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2006/breadcrumbs_0089/</loc>
+        <lastmod>2006-02-16</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2006/breadcrumbs_0088/</loc>
+        <lastmod>2006-02-15</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2006/breadcrumbs_0087/</loc>
+        <lastmod>2006-02-15</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2006/breadcrumbs_0086/</loc>
+        <lastmod>2006-02-10</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2006/breadcrumbs_0085/</loc>
+        <lastmod>2006-02-10</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2006/breadcrumbs_0084/</loc>
+        <lastmod>2006-02-08</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2006/breadcrumbs_0082/</loc>
+        <lastmod>2006-02-07</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2006/breadcrumbs_0077/</loc>
+        <lastmod>2006-02-02</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2006/breadcrumbs_0078/</loc>
+        <lastmod>2006-02-02</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
         <loc>http://www.madmode.com//2006/advogato_entry0042/</loc>
         <lastmod>2006-01-25</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2006/breadcrumbs_0070/</loc>
+        <lastmod>2006-01-23</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2006/breadcrumbs_0069/</loc>
+        <lastmod>2006-01-23</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2006/breadcrumbs_0066/</loc>
+        <lastmod>2006-01-09</lastmod>
         <changefreq>monthly</changefreq>
         <priority>1</priority>
     </url>
@@ -680,8 +1136,200 @@
         <priority>1</priority>
     </url>
     <url>
+        <loc>http://www.madmode.com//2006/breadcrumbs_0063/</loc>
+        <lastmod>2006-01-03</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2005/breadcrumbs_0061/</loc>
+        <lastmod>2005-12-28</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2005/breadcrumbs_0056/</loc>
+        <lastmod>2005-12-21</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2005/breadcrumbs_0057/</loc>
+        <lastmod>2005-12-21</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2005/breadcrumbs_0055/</loc>
+        <lastmod>2005-12-19</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2005/breadcrumbs_0052/</loc>
+        <lastmod>2005-12-19</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2005/breadcrumbs_0047/</loc>
+        <lastmod>2005-12-15</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2005/breadcrumbs_0046/</loc>
+        <lastmod>2005-12-14</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2005/breadcrumbs_0045/</loc>
+        <lastmod>2005-12-14</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2005/breadcrumbs_0030/</loc>
+        <lastmod>2005-12-03</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2005/breadcrumbs_0029/</loc>
+        <lastmod>2005-12-01</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2005/breadcrumbs_0028/</loc>
+        <lastmod>2005-11-30</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2005/breadcrumbs_0027/</loc>
+        <lastmod>2005-11-28</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2005/breadcrumbs_0026/</loc>
+        <lastmod>2005-11-21</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2005/breadcrumbs_0023/</loc>
+        <lastmod>2005-11-21</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2005/breadcrumbs_0025/</loc>
+        <lastmod>2005-11-21</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2005/breadcrumbs_0024/</loc>
+        <lastmod>2005-11-21</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
         <loc>http://www.madmode.com//2005/advogato_entry0040/</loc>
         <lastmod>2005-11-19</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2005/breadcrumbs_0018/</loc>
+        <lastmod>2005-11-10</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2005/breadcrumbs_0017/</loc>
+        <lastmod>2005-11-07</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2005/breadcrumbs_0016/</loc>
+        <lastmod>2005-11-03</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2005/breadcrumbs_0014/</loc>
+        <lastmod>2005-11-03</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2005/breadcrumbs_0015/</loc>
+        <lastmod>2005-11-03</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2005/breadcrumbs_0013/</loc>
+        <lastmod>2005-11-01</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2005/breadcrumbs_0007/</loc>
+        <lastmod>2005-10-31</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2005/breadcrumbs_0008/</loc>
+        <lastmod>2005-10-31</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2005/breadcrumbs_0012/</loc>
+        <lastmod>2005-10-31</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2005/breadcrumbs_0010/</loc>
+        <lastmod>2005-10-31</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2005/breadcrumbs_0011/</loc>
+        <lastmod>2005-10-31</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2005/breadcrumbs_0009/</loc>
+        <lastmod>2005-10-31</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2005/breadcrumbs_0005/</loc>
+        <lastmod>2005-10-26</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2005/breadcrumbs_0006/</loc>
+        <lastmod>2005-10-26</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
+    <url>
+        <loc>http://www.madmode.com//2005/breadcrumbs_0004/</loc>
+        <lastmod>2005-10-24</lastmod>
         <changefreq>monthly</changefreq>
         <priority>1</priority>
     </url>

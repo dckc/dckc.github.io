@@ -149,13 +149,14 @@ In&nbsp;[1]:
 </pre></div>
 
 </div>
+</div>
 
 </div>
 
-<p></div>
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Formal-Logic-in-Python-(FLiP)">Formal Logic in Python (FLiP)<a class="anchor-link" href="#Formal-Logic-in-Python-(FLiP)">&#182;</a></h2>
-</div></p>
+</div>
+
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>I'm increasingly happy with the IPython notebook for immersive hypertext editing with integrated computation. I'd like to integrate it with the idris REPL, but meanwhile, a search for <strong>python</strong> and <strong>natural deduction</strong> turned up <a href="https://pypi.python.org/pypi/FLiP/">FLiP</a>.</p>
 </div>
@@ -174,13 +175,14 @@ In&nbsp;[2]:
 </pre></div>
 
 </div>
+</div>
 
 </div>
 
-<p></div>
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Python syntax is used to enter formulas and proof steps. FLiP then generates a more traditional notation:</p>
 </div>
+
 <div class="cell border-box-sizing code_cell vbox">
 <div class="input hbox">
 <div class="prompt input_prompt">
@@ -189,11 +191,14 @@ In&nbsp;[3]:
 <div class="input_area box-flex1">
 <div class="highlight"><pre><span class="n">clear</span><span class="p">()</span>
 <span class="n">checkp</span><span class="p">(</span><span class="n">And</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">q</span><span class="p">),</span> <span class="n">assume</span><span class="p">)</span>
-</pre></div></p>
-<p></div>
-</div></p>
+</pre></div>
+
+</div>
+</div>
+
 <div class="vbox output_wrapper">
 <div class="output vbox">
+
 
 <div class="hbox output_area"><div class="prompt"></div>
 <div class="box-flex1 output_subarea output_stream output_stdout">
@@ -202,15 +207,17 @@ In&nbsp;[3]:
 
 </pre>
 </div>
+</div>
+
+</div>
+</div>
 
 </div>
 
-<p></div>
-</div></p>
-<p></div>
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>After the assumption, we can apply some elimination and introduction rules:</p>
 </div>
+
 <div class="cell border-box-sizing code_cell vbox">
 <div class="input hbox">
 <div class="prompt input_prompt">
@@ -218,11 +225,14 @@ In&nbsp;[4]:
 </div>
 <div class="input_area box-flex1">
 <div class="highlight"><pre><span class="n">apropos</span><span class="p">(</span><span class="n">And</span><span class="p">)</span>
-</pre></div></p>
-<p></div>
-</div></p>
+</pre></div>
+
+</div>
+</div>
+
 <div class="vbox output_wrapper">
 <div class="output vbox">
+
 
 <div class="hbox output_area"><div class="prompt"></div>
 <div class="box-flex1 output_subarea output_stream output_stdout">
@@ -233,12 +243,13 @@ In&nbsp;[4]:
 
 </pre>
 </div>
+</div>
+
+</div>
+</div>
 
 </div>
 
-<p></div>
-</div></p>
-<p></div>
 <div class="cell border-box-sizing code_cell vbox">
 <div class="input hbox">
 <div class="prompt input_prompt">
@@ -248,11 +259,14 @@ In&nbsp;[5]:
 <div class="highlight"><pre><span class="n">rapply</span><span class="p">(</span><span class="n">ael</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 <span class="n">rapply</span><span class="p">(</span><span class="n">aer</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 <span class="n">rapply</span><span class="p">(</span><span class="n">ai</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-</pre></div></p>
-<p></div>
-</div></p>
+</pre></div>
+
+</div>
+</div>
+
 <div class="vbox output_wrapper">
 <div class="output vbox">
+
 
 <div class="hbox output_area"><div class="prompt"></div>
 <div class="box-flex1 output_subarea output_stream output_stdout">
@@ -263,15 +277,17 @@ In&nbsp;[5]:
 
 </pre>
 </div>
+</div>
+
+</div>
+</div>
 
 </div>
 
-<p></div>
-</div></p>
-<p></div>
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>That much was pretty obvious, but to use subproofs, I had to read the documentation:</p>
 </div>
+
 <div class="cell border-box-sizing code_cell vbox">
 <div class="input hbox">
 <div class="prompt input_prompt">
@@ -279,11 +295,14 @@ In&nbsp;[6]:
 </div>
 <div class="input_area box-flex1">
 <div class="highlight"><pre><span class="n">checkp</span><span class="p">(</span><span class="n">Impl</span><span class="p">(</span><span class="n">And</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">q</span><span class="p">),</span> <span class="n">And</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">p</span><span class="p">)),</span> <span class="n">impli</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
-</pre></div></p>
-<p></div>
-</div></p>
+</pre></div>
+
+</div>
+</div>
+
 <div class="vbox output_wrapper">
 <div class="output vbox">
+
 
 <div class="hbox output_area"><div class="prompt"></div>
 <div class="box-flex1 output_subarea output_stream output_stdout">
@@ -292,15 +311,17 @@ In&nbsp;[6]:
 
 </pre>
 </div>
+</div>
+
+</div>
+</div>
 
 </div>
 
-<p></div>
-</div></p>
-<p></div>
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>The whole proof looks pretty much like the example from chapter 4:</p>
 </div>
+
 <div class="cell border-box-sizing code_cell vbox">
 <div class="input hbox">
 <div class="prompt input_prompt">
@@ -308,11 +329,14 @@ In&nbsp;[7]:
 </div>
 <div class="input_area box-flex1">
 <div class="highlight"><pre><span class="n">pp</span><span class="p">()</span>
-</pre></div></p>
-<p></div>
-</div></p>
+</pre></div>
+
+</div>
+</div>
+
 <div class="vbox output_wrapper">
 <div class="output vbox">
+
 
 <div class="hbox output_area"><div class="prompt"></div>
 <div class="box-flex1 output_subarea output_stream output_stdout">
@@ -325,15 +349,17 @@ In&nbsp;[7]:
 
 </pre>
 </div>
+</div>
+
+</div>
+</div>
 
 </div>
 
-<p></div>
-</div></p>
-<p></div>
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Quantification,-Rules,-and-a-hint-of-Type-Theory">Quantification, Rules, and a hint of Type Theory<a class="anchor-link" href="#Quantification,-Rules,-and-a-hint-of-Type-Theory">&#182;</a></h2>
-</div></p>
+</div>
+
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>This natural deduction system is not just propositional but first order, with quantification. The &quot;hello world&quot; example we used for <a href="http://www.w3.org/2000/10/swap/">semantic web research</a> was <a href="http://www.w3.org/2000/10/swap/test/reason/socrates.n3">socrates.n3</a>:</p>
 <p>\[
@@ -361,10 +387,12 @@ In&nbsp;[8]:
 <span class="n">rapply</span><span class="p">(</span><span class="n">imple</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 </pre></div>
 
-<p></div>
-</div></p>
+</div>
+</div>
+
 <div class="vbox output_wrapper">
 <div class="output vbox">
+
 
 <div class="hbox output_area"><div class="prompt"></div>
 <div class="box-flex1 output_subarea output_stream output_stdout">
@@ -376,12 +404,13 @@ Q(a)                      (3)  Implication-Elimination (Modus Ponens) (2) (0)
 
 </pre>
 </div>
+</div>
+
+</div>
+</div>
 
 </div>
 
-<p></div>
-</div></p>
-<p></div>
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Using idris and dependent types is another episode altogether, but to give a hint...</p>
 <p>We can state the theorem this way:</p>
@@ -393,9 +422,11 @@ Q(a)                      (3)  Implication-Elimination (Modus Ponens) (2) (0)
 <pre><code>thm1 all_men_mortal socrates socrates_a_man =
   all_men_mortal socrates socrates_a_man</code></pre>
 </div>
+
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="References">References<a class="anchor-link" href="#References">&#182;</a></h2>
-</div></p>
+</div>
+
 <div class="text_cell_render border-box-sizing rendered_html">
 <ul>
 <li><a name="Alps-Neveln81">Alps, Robert A., and Robert C. Neveln. 1981</a>. “A Predicate Logic Based on Indefinite Description and Two Notions of Identity.” Notre Dame J. Formal Logic 22 (3): 251–263. doi:doi:10.1305/ndjfl/1093883460. http://projecteuclid.org/euclid.ndjfl/1093883460.</li>

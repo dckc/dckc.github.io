@@ -5,14 +5,425 @@
         <link>http://www.madmode.com/</link>
         <description>Dan Connolly's tinkering notebook</description>
         <language>en-us</language>
-        <pubDate>Fri, 10 Nov 2017 17:06:14 +0000</pubDate>
-        <lastBuildDate>Fri, 10 Nov 2017 17:06:14 +0000</lastBuildDate>
+        <pubDate>Fri, 29 Dec 2017 14:34:34 +0000</pubDate>
+        <lastBuildDate>Fri, 29 Dec 2017 14:34:34 +0000</lastBuildDate>
         
+        <item>
+            <title>Migrating Breadcrumbs</title>
+            <link>http://www.madmode.com//2017/breadcrumbs-migrate/</link>
+            <description>&lt;p&gt;&lt;em&gt;Breadcrumbs&lt;/em&gt; was the blog of &lt;a href=&#34;http://dig.csail.mit.edu/&#34;&gt;DIG&lt;/a&gt;, the Decentralized Information Group at MIT CSAIL.&lt;/p&gt;
+&lt;p&gt;In a &lt;a href=&#34;http://logs.glob.uno/?c=freenode%23microformats&amp;amp;s=20+Jun+2015&amp;amp;e=20+Jun+2015#c81549&#34;&gt;2015 #microformats chat&lt;/a&gt;, I discovered that it was down:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;DanC&amp;gt; grr... the blog is down. http://dig.csail.mit.edu/breadcrumbs/node/228&lt;br /&gt;
+&#34;Unable to connect to database server&#34;&lt;br /&gt;
+&lt;em&gt;DanC verifies that he has an export of his work there...&lt;/em&gt;&lt;br /&gt;
+DanC&amp;gt; interesting... my backup is evidently python pickles of XMLRPC responses from the API of that CMS (drupal?)&lt;br /&gt;
+    &amp;gt;&amp;gt;&amp;gt; x[&#39;dateCreated&#39;]&lt;br /&gt;
+    &amp;lt;DateTime &#39;20080306T17:00:05&#39; at 7f20e8aef5f0&amp;gt;&lt;br /&gt;
+    &amp;gt;&amp;gt;&amp;gt; x[&#39;dateCreated&#39;].&lt;strong&gt;class&lt;/strong&gt;&lt;br /&gt;
+    &amp;lt;class xmlrpclib.DateTime at 0x7f20e444eef0&amp;gt;  &lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;The files are numbered:&lt;/p&gt;
+&lt;p&gt;```python
+def _numbered_files(pattern=&#39;[0-9]*&#39;,
+                    breadcrumbs=&#39;/home/connolly/sites/breadcrumbs&#39;):
+    from pathlib import Path
+    return Path(breadcrumbs).glob(pattern)&lt;/p&gt;
+&lt;p&gt;breadcrumbs_bak = list(_numbered_files())
+sorted(int(f.parts[-1]) for f in breadcrumbs_bak)[:10]
+```&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;[4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Each is a pickled XMLRPC response:&lt;/p&gt;
+&lt;p&gt;```python
+import pickle&lt;/p&gt;
+&lt;p&gt;breadcrumbs_xmlrpc = dict((int(f.parts[-1]), pickle.load(f.open(&#39;rb&#39;))) for f in breadcrumbs_bak)
+x = breadcrumbs_xmlrpc[228]
+x[&#39;title&#39;], x[&#39;dateCreated&#39;], x[&#39;dateCreated&#39;].&lt;strong&gt;class&lt;/strong&gt;
+```&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;(&#39;hAudio for microformats mixtapes, in progress&#39;,
+ &amp;lt;DateTime &#39;20080306T17:00:05&#39; at 7fa8242a5320&amp;gt;,
+ &amp;lt;class xmlrpclib.DateTime at 0x7fa82427cf58&amp;gt;)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;MadMode blog pages&lt;/h2&gt;
+&lt;p&gt;```python
+from collections import OrderedDict
+from &lt;strong&gt;future&lt;/strong&gt; import print_function
+from sys import stderr&lt;/p&gt;
+&lt;p&gt;class BlogWriter(object):
+    def &lt;strong&gt;init&lt;/strong&gt;(self, pages):
+        self._pages = pages&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;def addPage(self, body, title, date, tags, published, slug):
+    datestr = date.isoformat()
+    headings = OrderedDict(title=repr(title),
+                           date=datestr[:10],
+                           tags=&#34;[%s]&#34; % (&#39;, &#39;.join(&#34;&#39;%s&#39;&#34; % tag for tag in tags)),
+                           published=published)
+    header = &#39;\n&#39;.join([&#34;%s: %s&#34; % (k, v) for k, v in headings.iteritems()])
+    yyyy = datestr[:4]
+    page = (self._pages / yyyy / slug).with_suffix(&#39;.md&#39;)
+    print(&#34;addPage: &#34;, page, tags, file=stderr)
+    with page.open(&#39;wb&#39;) as out:
+        out.write(header)
+        out.write(&#39;\n\n&#39;)
+        out.write(body.encode(&#39;utf-8&#39;))
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;def _madmode():
+    from pathlib import Path&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;return BlogWriter(Path(&#39;/home/connolly/sites&#39;) / &#39;madmode-blog&#39; / &#39;pages&#39;)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;mmwr = _madmode()
+```&lt;/p&gt;
+&lt;p&gt;```python
+from time import mktime
+from datetime import datetime
+import re&lt;/p&gt;
+&lt;p&gt;def drupal2md(body):
+    body = body.split(&#39;&lt;/title&gt;&#39;, 1)[1]  # remove redundant title
+    body = body.replace(&#39;\r&#39;, &#39;&#39;)  # unix newlines
+    return body&lt;/p&gt;
+&lt;p&gt;def findTags(body):
+    tags = []
+    for txt in body.split(&#39;&amp;lt;&#39;):
+        if txt.startswith(&#39;a &#39;):
+            txt = txt[len(&#39;a &#39;):]
+            attrs = {}
+            while &#39;=&#39; in txt and not txt.startswith(&#39;&amp;gt;&#39;):
+                name, txt = txt.split(&#39;=&#39;, 1)
+                name = name.strip()
+                txt = txt.strip()
+                _, value, txt = txt.split(&#39;&#34;&#39;, 2)
+                attrs[name] = value
+                txt = txt.strip()
+            href = attrs.get(&#39;href&#39;, &#39;&#39;)
+            if &#39;tag&#39; in attrs.get(&#39;rel&#39;, &#39;&#39;) or &#39;del.icio.us&#39; in href:
+                if href.endswith(&#39;/&#39;):
+                    href = href[:-1]
+                tags.append(href.split(&#39;/&#39;)[-1])
+    return tags&lt;/p&gt;
+&lt;p&gt;for postid, item in sorted(breadcrumbs_xmlrpc.items()):
+    print(postid, item[&#39;title&#39;], file=stderr)
+    dt = datetime.fromtimestamp(mktime(item[&#39;dateCreated&#39;].timetuple()))
+    tags = [&#39;breadcrumbs&#39;] + findTags(item[&#39;content&#39;])
+    mmwr.addPage(drupal2md(item[&#39;content&#39;]), title=item[&#39;title&#39;], date=dt,
+                 tags=tags,
+                 published=True, slug=&#39;breadcrumbs_%04d&#39; % postid)
+```&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;4 On OpenID and comment policies
+addPage:  /home/connolly/sites/madmode-blog/pages/2005/breadcrumbs_0004.md [&#39;breadcrumbs&#39;]
+5 little burst of PAW demo hacking
+addPage:  /home/connolly/sites/madmode-blog/pages/2005/breadcrumbs_0005.md [&#39;breadcrumbs&#39;]
+6 DIG blog wish list
+addPage:  /home/connolly/sites/madmode-blog/pages/2005/breadcrumbs_0006.md [&#39;breadcrumbs&#39;, &#39;connolly&#39;]
+7 Fire at Southampton... hope everything&#39;s alright soon
+addPage:  /home/connolly/sites/madmode-blog/pages/2005/breadcrumbs_0007.md [&#39;breadcrumbs&#39;]
+8 Sourceforge is the place... to sell soap?
+addPage:  /home/connolly/sites/madmode-blog/pages/2005/breadcrumbs_0008.md [&#39;breadcrumbs&#39;]
+9 Reflecting blog structure into the Semantic Web with SIOC?
+addPage:  /home/connolly/sites/madmode-blog/pages/2005/breadcrumbs_0009.md [&#39;breadcrumbs&#39;]
+10 I&#39;d rather be...
+addPage:  /home/connolly/sites/madmode-blog/pages/2005/breadcrumbs_0010.md [&#39;breadcrumbs&#39;]
+11 PHP angst
+addPage:  /home/connolly/sites/madmode-blog/pages/2005/breadcrumbs_0011.md [&#39;breadcrumbs&#39;]
+12 Shopping for a client-side blogging editor
+addPage:  /home/connolly/sites/madmode-blog/pages/2005/breadcrumbs_0012.md [&#39;breadcrumbs&#39;, &#39;authoring&#39;]
+13 presented Issues in Semantic Web Logic to 6.898
+addPage:  /home/connolly/sites/madmode-blog/pages/2005/breadcrumbs_0013.md [&#39;breadcrumbs&#39;]
+14 xchat RFE: &#34;mail a log of this chat to mbox@domain&#34; macro
+addPage:  /home/connolly/sites/madmode-blog/pages/2005/breadcrumbs_0014.md [&#39;breadcrumbs&#39;]
+15 U.S. papertrail: the federal register
+addPage:  /home/connolly/sites/madmode-blog/pages/2005/breadcrumbs_0015.md [&#39;breadcrumbs&#39;]
+16 XHTML for computer science research papers and bibliographies
+addPage:  /home/connolly/sites/madmode-blog/pages/2005/breadcrumbs_0016.md [&#39;breadcrumbs&#39;]
+17 ISWC buzz
+addPage:  /home/connolly/sites/madmode-blog/pages/2005/breadcrumbs_0017.md [&#39;breadcrumbs&#39;]
+18 Why isn&#39;t bill payee set-up integrated with address book or yellow pages lookup?
+addPage:  /home/connolly/sites/madmode-blog/pages/2005/breadcrumbs_0018.md [&#39;breadcrumbs&#39;]
+23 RDF Calendar, GRDDL, Microformats, and all that at XML2005 in Atlanta
+addPage:  /home/connolly/sites/madmode-blog/pages/2005/breadcrumbs_0023.md [&#39;breadcrumbs&#39;, &#39;quality&#39;]
+24 SKOS, SIOC, and drupal taxonomy
+addPage:  /home/connolly/sites/madmode-blog/pages/2005/breadcrumbs_0024.md [&#39;breadcrumbs&#39;]
+25 sorry about overriding your font size
+addPage:  /home/connolly/sites/madmode-blog/pages/2005/breadcrumbs_0025.md [&#39;breadcrumbs&#39;]
+26 Ray Ozzie&#39;s take on diff/sync
+addPage:  /home/connolly/sites/madmode-blog/pages/2005/breadcrumbs_0026.md [&#39;breadcrumbs&#39;]
+27 a fly-by of XACML
+addPage:  /home/connolly/sites/madmode-blog/pages/2005/breadcrumbs_0027.md [&#39;breadcrumbs&#39;]
+28 MathML as a rule interchange format
+addPage:  /home/connolly/sites/madmode-blog/pages/2005/breadcrumbs_0028.md [&#39;breadcrumbs&#39;]
+29 GRDDL transform wanted: National Information Exchange Model (NIEM)
+addPage:  /home/connolly/sites/madmode-blog/pages/2005/breadcrumbs_0029.md [&#39;breadcrumbs&#39;]
+30 Go-Karting rush tainted by lack of OpenID for bug reporting about hypertext editing
+addPage:  /home/connolly/sites/madmode-blog/pages/2005/breadcrumbs_0030.md [&#39;breadcrumbs&#39;]
+45 Toward richtext syndicated feed
+addPage:  /home/connolly/sites/madmode-blog/pages/2005/breadcrumbs_0045.md [&#39;breadcrumbs&#39;]
+46 Toward better documentation of some schemas for the W3C digital library
+addPage:  /home/connolly/sites/madmode-blog/pages/2005/breadcrumbs_0046.md [&#39;breadcrumbs&#39;]
+47 Brought my hockey skates with me this time
+addPage:  /home/connolly/sites/madmode-blog/pages/2005/breadcrumbs_0047.md [&#39;breadcrumbs&#39;]
+52 Connecting DIG Student Projects to the MIT UROP listing
+addPage:  /home/connolly/sites/madmode-blog/pages/2005/breadcrumbs_0052.md [&#39;breadcrumbs&#39;]
+55 Drupal, OpenID, and the Mac OS X Keychain
+addPage:  /home/connolly/sites/madmode-blog/pages/2005/breadcrumbs_0055.md [&#39;breadcrumbs&#39;]
+56 Wikicompany?
+addPage:  /home/connolly/sites/madmode-blog/pages/2005/breadcrumbs_0056.md [&#39;breadcrumbs&#39;]
+57 upgrade to CivicSpace?
+addPage:  /home/connolly/sites/madmode-blog/pages/2005/breadcrumbs_0057.md [&#39;breadcrumbs&#39;]
+61 frbr:embodiment is enough without frbr:embodimentOf, no?
+addPage:  /home/connolly/sites/madmode-blog/pages/2005/breadcrumbs_0061.md [&#39;breadcrumbs&#39;]
+63 On Google, Jabber, and Jingle and good and evil in IM and IP networks
+addPage:  /home/connolly/sites/madmode-blog/pages/2006/breadcrumbs_0063.md [&#39;breadcrumbs&#39;]
+66 Arpeggio in D, a little three chord ditty
+addPage:  /home/connolly/sites/madmode-blog/pages/2006/breadcrumbs_0066.md [&#39;breadcrumbs&#39;]
+69 Fun with Policy Aware Web at UMD, AFS/SVN at CSAIL
+addPage:  /home/connolly/sites/madmode-blog/pages/2006/breadcrumbs_0069.md [&#39;breadcrumbs&#39;]
+70 Using truth maintenance techniques in RDF stores?
+addPage:  /home/connolly/sites/madmode-blog/pages/2006/breadcrumbs_0070.md [&#39;breadcrumbs&#39;]
+77 MadScientistMode
+addPage:  /home/connolly/sites/madmode-blog/pages/2006/breadcrumbs_0077.md [&#39;breadcrumbs&#39;]
+78 RSS is dead; long live RSS
+addPage:  /home/connolly/sites/madmode-blog/pages/2006/breadcrumbs_0078.md [&#39;breadcrumbs&#39;]
+82 python, javascript, and PHP, oh my!
+addPage:  /home/connolly/sites/madmode-blog/pages/2006/breadcrumbs_0082.md [&#39;breadcrumbs&#39;, &#39;installation&#39;, &#39;javascript&#39;, &#39;python&#39;, &#39;quality&#39;, &#39;testing&#39;, &#39;programming&#39;]
+84 tabulator use cases: when can we meet? and PathCross
+addPage:  /home/connolly/sites/madmode-blog/pages/2006/breadcrumbs_0084.md [&#39;breadcrumbs&#39;]
+85 bnf2turtle -- write a turtle version of an EBNF grammar
+addPage:  /home/connolly/sites/madmode-blog/pages/2006/breadcrumbs_0085.md [&#39;breadcrumbs&#39;]
+86 formally closing the feedback loop
+addPage:  /home/connolly/sites/madmode-blog/pages/2006/breadcrumbs_0086.md [&#39;breadcrumbs&#39;]
+87 Using RDF and OWL to model language evolution
+addPage:  /home/connolly/sites/madmode-blog/pages/2006/breadcrumbs_0087.md [&#39;breadcrumbs&#39;]
+88 Toward integration of cwm&#39;s proof structures with InferenceWeb&#39;s PML
+addPage:  /home/connolly/sites/madmode-blog/pages/2006/breadcrumbs_0088.md [&#39;breadcrumbs&#39;]
+89 Investigating logical reflection, constructive proof, and explicit provability
+addPage:  /home/connolly/sites/madmode-blog/pages/2006/breadcrumbs_0089.md [&#39;breadcrumbs&#39;]
+90 Fun with Embedded RDF and DOAP for the GRDDL profile
+addPage:  /home/connolly/sites/madmode-blog/pages/2006/breadcrumbs_0090.md [&#39;breadcrumbs&#39;]
+91 Toward Semantic Web data from Wikipedia
+addPage:  /home/connolly/sites/madmode-blog/pages/2006/breadcrumbs_0091.md [&#39;breadcrumbs&#39;, u&#39;connolly&#39;]
+92 Reflections on the W3C Technical Plenary week
+addPage:  /home/connolly/sites/madmode-blog/pages/2006/breadcrumbs_0092.md [&#39;breadcrumbs&#39;, &#39;NCE&#39;]
+93 Getting (dis)organized for SxSWi in Austin
+addPage:  /home/connolly/sites/madmode-blog/pages/2006/breadcrumbs_0093.md [&#39;breadcrumbs&#39;, &#39;Austin&#39;]
+94 Dates in drupal vs planetrdf
+addPage:  /home/connolly/sites/madmode-blog/pages/2006/breadcrumbs_0094.md [&#39;breadcrumbs&#39;]
+96 Getting my Personal Finance data back with hCalendar and hCard
+addPage:  /home/connolly/sites/madmode-blog/pages/2006/breadcrumbs_0096.md [&#39;breadcrumbs&#39;]
+97 A look at emerging Web security architectures from a Semantic Web perspective
+addPage:  /home/connolly/sites/madmode-blog/pages/2006/breadcrumbs_0097.md [&#39;breadcrumbs&#39;]
+98 a quick take on Kiko, a nifty looking calendar service
+addPage:  /home/connolly/sites/madmode-blog/pages/2006/breadcrumbs_0098.md [&#39;breadcrumbs&#39;]
+99 using JSON and templates to produce microformat data
+addPage:  /home/connolly/sites/madmode-blog/pages/2006/breadcrumbs_0099.md [&#39;breadcrumbs&#39;]
+100 geocoding and hCards for airports from wikipedia
+addPage:  /home/connolly/sites/madmode-blog/pages/2006/breadcrumbs_0100.md [&#39;breadcrumbs&#39;, &#39;geo&#39;]
+101 time, context, quoting, and reification
+addPage:  /home/connolly/sites/madmode-blog/pages/2006/breadcrumbs_0101.md [&#39;breadcrumbs&#39;]
+102 no more life in a textarea: MozEx and emacs to the rescue!
+addPage:  /home/connolly/sites/madmode-blog/pages/2006/breadcrumbs_0102.md [&#39;breadcrumbs&#39;]
+107 hacking soccer schedules into hCalendar and into my sidekick
+addPage:  /home/connolly/sites/madmode-blog/pages/2006/breadcrumbs_0107.md [&#39;breadcrumbs&#39;]
+123 A step forward with python and sshagent, and a walk around gnome security tools
+addPage:  /home/connolly/sites/madmode-blog/pages/2006/breadcrumbs_0123.md [&#39;breadcrumbs&#39;, &#39;web&#39;, &#39;policy&#39;, &#39;security&#39;, &#39;python&#39;, &#39;programming&#39;]
+124 Consensus and community review in open source and open standards
+addPage:  /home/connolly/sites/madmode-blog/pages/2006/breadcrumbs_0124.md [&#39;breadcrumbs&#39;]
+127 busy day in #microformats
+addPage:  /home/connolly/sites/madmode-blog/pages/2006/breadcrumbs_0127.md [&#39;breadcrumbs&#39;]
+129 Access control and version control: an over-constrained problem?
+addPage:  /home/connolly/sites/madmode-blog/pages/2006/breadcrumbs_0129.md [&#39;breadcrumbs&#39;]
+130 citing W3C specs from WWW conference papers
+addPage:  /home/connolly/sites/madmode-blog/pages/2006/breadcrumbs_0130.md [&#39;breadcrumbs&#39;]
+131 On GData, SPARQL update, and RDF Diff/Sync
+addPage:  /home/connolly/sites/madmode-blog/pages/2006/breadcrumbs_0131.md [&#39;breadcrumbs&#39;, &#39;diff&#39;, &#39;sync&#39;, &#39;sparql&#39;, &#39;calendar&#39;, &#39;web+architecture&#39;]
+133 RDF, Microformats, and Javascript hacking in person at the &#39;tute
+addPage:  /home/connolly/sites/madmode-blog/pages/2006/breadcrumbs_0133.md [&#39;breadcrumbs&#39;, &#39;mobile&#39;, &#39;javascript&#39;, &#39;microformats&#39;, &#39;travel&#39;, &#39;calendar&#39;, &#39;BOS&#39;, &#39;bos&#39;]
+135 webizing TaskJuggler
+addPage:  /home/connolly/sites/madmode-blog/pages/2006/breadcrumbs_0135.md [&#39;breadcrumbs&#39;, &#39;calendar&#39;]
+139 WWW2006 in Edinburgh: Identity, Reference, and Meaning
+addPage:  /home/connolly/sites/madmode-blog/pages/2006/breadcrumbs_0139.md [&#39;breadcrumbs&#39;, &#39;www2006&#39;, &#39;EDI&#39;, &#39;travel&#39;, &#39;web+architecture&#39;, &#39;URI&#39;]
+140 Exporting databases in the Semantic Web with SPARQL, D2R, dbview, ARC, and such
+addPage:  /home/connolly/sites/madmode-blog/pages/2006/breadcrumbs_0140.md [&#39;breadcrumbs&#39;, &#39;www2006&#39;, &#39;EDI&#39;, &#39;travel&#39;, &#39;sparql&#39;]
+141 Equality and inconsistency in the rules layer
+addPage:  /home/connolly/sites/madmode-blog/pages/2006/breadcrumbs_0141.md [&#39;breadcrumbs&#39;]
+142 fun with flock
+addPage:  /home/connolly/sites/madmode-blog/pages/2006/breadcrumbs_0142.md [&#39;breadcrumbs&#39;, u&#39;flock&#39;, u&#39;writing&#39;, u&#39;editing&#39;, u&#39;drupal&#39;]
+146 converting vcard .vcf syntax to hcard and catching up on CALSIFY
+addPage:  /home/connolly/sites/madmode-blog/pages/2006/breadcrumbs_0146.md [&#39;breadcrumbs&#39;]
+148 a walk thru the tabulator calendar view
+addPage:  /home/connolly/sites/madmode-blog/pages/2006/breadcrumbs_0148.md [&#39;breadcrumbs&#39;, &#39;calendar&#39;, &#39;SeedApplications&#39;]
+151 Choosing flight itineraries using tabulator and data from Wikipedia
+addPage:  /home/connolly/sites/madmode-blog/pages/2006/breadcrumbs_0151.md [&#39;breadcrumbs&#39;]
+154 OpenID, verisign, and my life: mediawiki, bugzilla, mailman, roundup, ...
+addPage:  /home/connolly/sites/madmode-blog/pages/2006/breadcrumbs_0154.md [&#39;breadcrumbs&#39;]
+155 tabulator maps in Argentina
+addPage:  /home/connolly/sites/madmode-blog/pages/2006/breadcrumbs_0155.md [&#39;breadcrumbs&#39;]
+156 how much do I want to know about drupal?
+addPage:  /home/connolly/sites/madmode-blog/pages/2006/breadcrumbs_0156.md [&#39;breadcrumbs&#39;]
+157 on Wikimania 2006, from a few hundred miles away
+addPage:  /home/connolly/sites/madmode-blog/pages/2006/breadcrumbs_0157.md [&#39;breadcrumbs&#39;]
+158 Stitching the Semantic Web together with OWL at AAAI-06
+addPage:  /home/connolly/sites/madmode-blog/pages/2006/breadcrumbs_0158.md [&#39;breadcrumbs&#39;, &#39;RdfAndSql&#39;, &#39;AAAI&#39;, &#39;public-sparql-dev&#39;, &#39;citation&#39;]
+159 On the Future of Research Libraries at U.T. Austin
+addPage:  /home/connolly/sites/madmode-blog/pages/2006/breadcrumbs_0159.md [&#39;breadcrumbs&#39;, &#39;Austin&#39;, &#39;URI&#39;, &#39;web+architecture&#39;]
+160 ACL 2 seminar at U.T. Austin: Toward proof exchange in the Semantic Web
+addPage:  /home/connolly/sites/madmode-blog/pages/2006/breadcrumbs_0160.md [&#39;breadcrumbs&#39;, &#39;Austin&#39;, &#39;semantic&#39;, &#39;web&#39;, &#39;logic&#39;, &#39;research&#39;]
+161 Talking with U.T. Austin students about the Microformats, Drug Discovery, the Tabulator, and the Semantic Web
+addPage:  /home/connolly/sites/madmode-blog/pages/2006/breadcrumbs_0161.md [&#39;breadcrumbs&#39;, &#39;Austin&#39;, &#39;semantic&#39;, &#39;web&#39;]
+162 Wishing for XOXO microformat support in OmniOutliner
+addPage:  /home/connolly/sites/madmode-blog/pages/2006/breadcrumbs_0162.md [&#39;breadcrumbs&#39;]
+163 Trip reporting with flock
+addPage:  /home/connolly/sites/madmode-blog/pages/2006/breadcrumbs_0163.md [&#39;breadcrumbs&#39;]
+164 Adding Shoenfield, Brachman books to my bookshelf?
+addPage:  /home/connolly/sites/madmode-blog/pages/2006/breadcrumbs_0164.md [&#39;breadcrumbs&#39;]
+165 Now is a good time to try the tabulator
+addPage:  /home/connolly/sites/madmode-blog/pages/2006/breadcrumbs_0165.md [&#39;breadcrumbs&#39;]
+171 Celebrating OWL interoperability and spec quality
+addPage:  /home/connolly/sites/madmode-blog/pages/2006/breadcrumbs_0171.md [&#39;breadcrumbs&#39;]
+172 A new Basketball season brings a new episode in the personal information disaster
+addPage:  /home/connolly/sites/madmode-blog/pages/2006/breadcrumbs_0172.md [&#39;breadcrumbs&#39;]
+178 Modelling HTTP cache configuration in the Semantic Web
+addPage:  /home/connolly/sites/madmode-blog/pages/2006/breadcrumbs_0178.md [&#39;breadcrumbs&#39;]
+179 She&#39;s a witch and I have the proof (in N3)
+addPage:  /home/connolly/sites/madmode-blog/pages/2007/breadcrumbs_0179.md [&#39;breadcrumbs&#39;]
+180 A design for web content labels built from GRDDL and rules
+addPage:  /home/connolly/sites/madmode-blog/pages/2007/breadcrumbs_0180.md [&#39;breadcrumbs&#39;]
+187 The Mercurial SCM: great for lots of stuff, but not the holy grail
+addPage:  /home/connolly/sites/madmode-blog/pages/2007/breadcrumbs_0187.md [&#39;breadcrumbs&#39;, &#39;python+scm&#39;]
+192 Collaboration and crime at a distance at HASTAC, WWW2007
+addPage:  /home/connolly/sites/madmode-blog/pages/2007/breadcrumbs_0192.md [&#39;breadcrumbs&#39;, &#39;openid&#39;, &#39;hastac&#39;, &#39;Duke&#39;, &#39;RDU&#39;, &#39;digital+media&#39;]
+193 IKL by Hayes et al. provides a semantics for N3?
+addPage:  /home/connolly/sites/madmode-blog/pages/2007/breadcrumbs_0193.md [&#39;breadcrumbs&#39;]
+194 Linked Data at WWW2007: GRDDL, SPARQL, and Wikipedia, oh my!
+addPage:  /home/connolly/sites/madmode-blog/pages/2007/breadcrumbs_0194.md [&#39;breadcrumbs&#39;, u&#39;banff&#39;, u&#39;grddl&#39;, u&#39;www2007&#39;, u&#39;travel&#39;]
+198 Units of measure and property chaining
+addPage:  /home/connolly/sites/madmode-blog/pages/2007/breadcrumbs_0198.md [&#39;breadcrumbs&#39;]
+201 Soccer schedules, flight itineraries, timezones, and python web frameworks
+addPage:  /home/connolly/sites/madmode-blog/pages/2007/breadcrumbs_0201.md [&#39;breadcrumbs&#39;]
+206 FOAF and OpenID: two great tastes that taste great together
+addPage:  /home/connolly/sites/madmode-blog/pages/2007/breadcrumbs_0206.md [&#39;breadcrumbs&#39;]
+207 brainstorming, issue tracking, and problem reporting... with tabulator?
+addPage:  /home/connolly/sites/madmode-blog/pages/2007/breadcrumbs_0207.md [&#39;breadcrumbs&#39;]
+214 Free Culture: Why buy the Amazon Kindle when you can give and get an OLPC XO-1 for the same price?
+addPage:  /home/connolly/sites/madmode-blog/pages/2007/breadcrumbs_0214.md [&#39;breadcrumbs&#39;]
+221 I can only imagine...
+addPage:  /home/connolly/sites/madmode-blog/pages/2007/breadcrumbs_0221.md [&#39;breadcrumbs&#39;]
+228 hAudio for microformats mixtapes, in progress
+addPage:  /home/connolly/sites/madmode-blog/pages/2008/breadcrumbs_0228.md [&#39;breadcrumbs&#39;]
+229 sidekick calendar subscription for SXSW
+addPage:  /home/connolly/sites/madmode-blog/pages/2008/breadcrumbs_0229.md [&#39;breadcrumbs&#39;]
+240 The details of data in documents; GRDDL, profiles, and HTML5
+addPage:  /home/connolly/sites/madmode-blog/pages/2008/breadcrumbs_0240.md [&#39;breadcrumbs&#39;]
+246 OpenID &#34;Hello World&#34; on apache still deep magic
+addPage:  /home/connolly/sites/madmode-blog/pages/2009/breadcrumbs_0246.md [&#39;breadcrumbs&#39;]
+250 DIG losing the battle with spammers again
+addPage:  /home/connolly/sites/madmode-blog/pages/2009/breadcrumbs_0250.md [&#39;breadcrumbs&#39;]
+251 migrating from danger/sidekick to android/G1
+addPage:  /home/connolly/sites/madmode-blog/pages/2009/breadcrumbs_0251.md [&#39;breadcrumbs&#39;]
+252 Existentials in ACL2 and Milawa make sense; how about level breakers?
+addPage:  /home/connolly/sites/madmode-blog/pages/2010/breadcrumbs_0252.md [&#39;breadcrumbs&#39;]
+253 Map and Territory in RDF APIs
+addPage:  /home/connolly/sites/madmode-blog/pages/2010/breadcrumbs_0253.md [&#39;breadcrumbs&#39;]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;PyData Tools&lt;/h2&gt;
+&lt;p&gt;&lt;code&gt;python
+import pandas as pd
+dict(pandas=pd.__version__)&lt;/code&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;{&#39;pandas&#39;: u&#39;0.17.1&#39;}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;python
+items = pd.DataFrame.from_records(breadcrumbs_xmlrpc.values())
+items.postid = items.postid.astype(int)
+items = items.set_index(&#39;postid&#39;)
+print(items.dtypes)
+items[[&#39;title&#39;, &#39;dateCreated&#39;]].sort_values(&#39;dateCreated&#39;).head()&lt;/code&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;content              object
+dateCreated          object
+description          object
+link                 object
+mt_allow_comments     int64
+mt_convert_breaks    object
+permaLink            object
+title                object
+userid               object
+dtype: object
+&lt;/code&gt;&lt;/pre&gt;
+&lt;div&gt;
+&lt;table border=&#34;1&#34; class=&#34;dataframe&#34;&gt;
+  &lt;thead&gt;
+    &lt;tr style=&#34;text-align: right;&#34;&gt;
+      &lt;th&gt;&lt;/th&gt;
+      &lt;th&gt;title&lt;/th&gt;
+      &lt;th&gt;dateCreated&lt;/th&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;postid&lt;/th&gt;
+      &lt;th&gt;&lt;/th&gt;
+      &lt;th&gt;&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;th&gt;4&lt;/th&gt;
+      &lt;td&gt;On OpenID and comment policies&lt;/td&gt;
+      &lt;td&gt;20051024T23:28:49&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;5&lt;/th&gt;
+      &lt;td&gt;little burst of PAW demo hacking&lt;/td&gt;
+      &lt;td&gt;20051026T20:12:18&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;6&lt;/th&gt;
+      &lt;td&gt;DIG blog wish list&lt;/td&gt;
+      &lt;td&gt;20051026T20:14:27&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;7&lt;/th&gt;
+      &lt;td&gt;Fire at Southampton... hope everything&#39;s alrig...&lt;/td&gt;
+      &lt;td&gt;20051031T11:59:08&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;9&lt;/th&gt;
+      &lt;td&gt;Reflecting blog structure into the Semantic We...&lt;/td&gt;
+      &lt;td&gt;20051031T13:18:51&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;code&gt;python
+items.loc[[228], [&#39;title&#39;, &#39;dateCreated&#39;]]&lt;/code&gt;&lt;/p&gt;
+&lt;div&gt;
+&lt;table border=&#34;1&#34; class=&#34;dataframe&#34;&gt;
+  &lt;thead&gt;
+    &lt;tr style=&#34;text-align: right;&#34;&gt;
+      &lt;th&gt;&lt;/th&gt;
+      &lt;th&gt;title&lt;/th&gt;
+      &lt;th&gt;dateCreated&lt;/th&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;postid&lt;/th&gt;
+      &lt;th&gt;&lt;/th&gt;
+      &lt;th&gt;&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;th&gt;228&lt;/th&gt;
+      &lt;td&gt;hAudio for microformats mixtapes, in progress&lt;/td&gt;
+      &lt;td&gt;20080306T17:00:05&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/div&gt;</description>
+            <pubDate>Fri, 29 Dec 2017 00:00:00 +0000</pubDate>
+            <guid>http://www.madmode.com//2017/breadcrumbs-migrate/</guid>
+        </item>
         <item>
             <title>Making Secure IoT: seL4 on my Raspberry Pi 3B</title>
             <link>http://www.madmode.com//2017/sel4-rpi/</link>
             <description>&lt;p&gt;I got seL4 running on my Raspberry Pi 3B tonight.&lt;/p&gt;
-&lt;p&gt;Even though I&#39;ve worked with Dale Dougherty since the early &#39;90s,
+&lt;p&gt;Even though I worked with Dale Dougherty in the early &#39;90s,
 I&#39;ve been on the sidelines of the whole maker thing until September when
 Micro Center bundled a &lt;a href=&#34;http://www.microcenter.com/site/content/google_aiy_preorder.aspx&#34;&gt;Google AIY VOICE KIT with Raspberry Pi 3B for $35&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;&lt;a data-flickr-embed=&#34;true&#34; data-footer=&#34;true&#34;
@@ -528,9 +939,9 @@ $ export GOOGLE_MUSIC_PASSWORD=`ssh-ask-password`
 &lt;p&gt;Yay! jawj&#39;s &lt;a href=&#34;https://github.com/jawj/iphoto-flickr&#34;&gt;iphoto-flickr&lt;/a&gt; sync&#39;d a 30GB iPhoto library flickr. Not only did it upload the images, but it made a map from iPhoto metadata to flickr metadata that lets me continue on with the flickr API, syncing dates and such, during and after the upload.&lt;/p&gt;
 
 &lt;/div&gt;
-
-&lt;p&gt;&lt;/div&gt;
 &lt;/div&gt;
+&lt;/div&gt;
+
 &lt;div class=&#34;cell border-box-sizing text_cell rendered&#34;&gt;
 &lt;div class=&#34;prompt input_prompt&#34;&gt;
 &lt;/div&gt;
@@ -540,19 +951,23 @@ $ export GOOGLE_MUSIC_PASSWORD=`ssh-ask-password`
 &lt;p&gt;So I&#39;m faced with another &#34;to Mac or not to Mac?&#34; moment.&lt;/p&gt;
 &lt;p&gt;This time I figure no, I lead a multi-platform life and I want something more web-native.&lt;/p&gt;
 &lt;p&gt;I spent a bunch of time trying to downgrade to Mavericks. Just when I had given up trying to do it myself and ordered Mavericks on a USB flash drive via eBay, I learned that if you &lt;a href=&#34;http://www.simplehelp.net/2015/05/01/how-to-install-iphoto-in-yosemite-os-x-10-10/#comment-2097851737&#34;&gt;start iPhoto from a command prompt&lt;/a&gt;, it runs on Yosemite after all.&lt;/p&gt;
-&lt;p&gt;The only complication was a dangling reference to &lt;code&gt;iLifeSlideshow.framework&lt;/code&gt; in &lt;code&gt;/System/Library/PrivateFrameworks&lt;/code&gt;. (Thank you &lt;a href=&#34;https://bombich.com/&#34;&gt;Carbon Copy Cloner&lt;/a&gt; for a complete backup!)&lt;/p&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;p&gt;The only complication was a dangling reference to &lt;code&gt;iLifeSlideshow.framework&lt;/code&gt; in &lt;code&gt;/System/Library/PrivateFrameworks&lt;/code&gt;. (Thank you &lt;a href=&#34;https://bombich.com/&#34;&gt;Carbon Copy Cloner&lt;/a&gt; for a complete backup!)&lt;/p&gt;
+
 &lt;/div&gt;
 &lt;/div&gt;
+&lt;/div&gt;
+
 &lt;div class=&#34;cell border-box-sizing text_cell rendered&#34;&gt;
 &lt;div class=&#34;prompt input_prompt&#34;&gt;
 &lt;/div&gt;
 &lt;div class=&#34;inner_cell&#34;&gt;
 &lt;div class=&#34;text_cell_render border-box-sizing rendered_html&#34;&gt;
-&lt;h3 id=&#34;Home-directory-in-encrypted-sparsebundle&#34;&gt;Home directory in encrypted sparsebundle&lt;a class=&#34;anchor-link&#34; href=&#34;#Home-directory-in-encrypted-sparsebundle&#34;&gt;&amp;#182;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;This photo library is on an external USB drive, in an encrypted sparsebundle. The &lt;a href=&#34;https://discussions.apple.com/thread/2082558?tstart=0&#34;&gt;sparsebundle support discussion&lt;/a&gt; said all I have to do is double-click it, but it&#39;s hidden (filename starts with a dot). Command-line to the rescue, again: &lt;code&gt;open /Users/.maryc&lt;/code&gt;.&lt;/p&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;h3 id=&#34;Home-directory-in-encrypted-sparsebundle&#34;&gt;Home directory in encrypted sparsebundle&lt;a class=&#34;anchor-link&#34; href=&#34;#Home-directory-in-encrypted-sparsebundle&#34;&gt;&amp;#182;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;This photo library is on an external USB drive, in an encrypted sparsebundle. The &lt;a href=&#34;https://discussions.apple.com/thread/2082558?tstart=0&#34;&gt;sparsebundle support discussion&lt;/a&gt; said all I have to do is double-click it, but it&#39;s hidden (filename starts with a dot). Command-line to the rescue, again: &lt;code&gt;open /Users/.maryc&lt;/code&gt;.&lt;/p&gt;
+
 &lt;/div&gt;
 &lt;/div&gt;
+&lt;/div&gt;
+
 &lt;div class=&#34;cell border-box-sizing text_cell rendered&#34;&gt;
 &lt;div class=&#34;prompt input_prompt&#34;&gt;
 &lt;/div&gt;
@@ -560,10 +975,12 @@ $ export GOOGLE_MUSIC_PASSWORD=`ssh-ask-password`
 &lt;div class=&#34;text_cell_render border-box-sizing rendered_html&#34;&gt;
 &lt;h2 id=&#34;Flickr-is-the-web-photo-service-for-the-closet-librarian&#34;&gt;Flickr is the web photo service for the closet librarian&lt;a class=&#34;anchor-link&#34; href=&#34;#Flickr-is-the-web-photo-service-for-the-closet-librarian&#34;&gt;&amp;#182;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;As an Android mobile user, Google&#39;s photo offerings were tempting. Then I discovered browsing photos of person X only works within one album. And to put a photo in multiple albums, you have to copy it, i.e. maintain the tags and such twice.&lt;/p&gt;
 &lt;p&gt;My friends-and-family photo sharing community mostly uses facebook these days, but for curating an archive, flickr is a much better match. Imagine my horror when I downloaded some of my photos from facebook and discovered they were only available at reduced resolution. Perhaps they&#39;ve addressed that since, but I still haven&#39;t seen any support for date-taken as separate from date-uploaded on facebook. There&#39;s little, if any, support for quietly curating without notifications firing every which way.&lt;/p&gt;
-&lt;p&gt;My photostream on flickr goes back to &lt;a href=&#34;https://www.flickr.com/photos/dckc/archives/date-posted/2004/12/calendar/&#34;&gt;Dec 2004&lt;/a&gt; when it was big in the open web community. I could never bring myself to go premium, but in May 2013 when they announced the terabyte storage offer, I dusted it off. Re-establishing my long lost yahoo credentials was no small feat, but I managed.&lt;/p&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;p&gt;My photostream on flickr goes back to &lt;a href=&#34;https://www.flickr.com/photos/dckc/archives/date-posted/2004/12/calendar/&#34;&gt;Dec 2004&lt;/a&gt; when it was big in the open web community. I could never bring myself to go premium, but in May 2013 when they announced the terabyte storage offer, I dusted it off. Re-establishing my long lost yahoo credentials was no small feat, but I managed.&lt;/p&gt;
+
 &lt;/div&gt;
 &lt;/div&gt;
+&lt;/div&gt;
+
 &lt;div class=&#34;cell border-box-sizing text_cell rendered&#34;&gt;
 &lt;div class=&#34;prompt input_prompt&#34;&gt;
 &lt;/div&gt;
@@ -574,20 +991,24 @@ $ export GOOGLE_MUSIC_PASSWORD=`ssh-ask-password`
 &lt;li&gt;&lt;a href=&#34;https://itunes.apple.com/us/app/backup-to-flickr-for-iphoto/id733300407?mt=12&#34;&gt;Backup to Flickr for iPhoto&lt;/a&gt;&lt;br&gt;
 By Sonia Bohelay&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;It was just a few bucks, so I went ahead. But oops: &lt;strong&gt;Your iPhoto library is either too old (iPhoto version &amp;lt; 9.0) or no photo found&lt;/strong&gt;. Indeed, my library is from 8.1.2. I might have been able to upgrade the library, but with Apple pushing Photos over iPhoto, I didn&#39;t want to bet on it.&lt;/p&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;p&gt;It was just a few bucks, so I went ahead. But oops: &lt;strong&gt;Your iPhoto library is either too old (iPhoto version &amp;lt; 9.0) or no photo found&lt;/strong&gt;. Indeed, my library is from 8.1.2. I might have been able to upgrade the library, but with Apple pushing Photos over iPhoto, I didn&#39;t want to bet on it.&lt;/p&gt;
+
 &lt;/div&gt;
 &lt;/div&gt;
+&lt;/div&gt;
+
 &lt;div class=&#34;cell border-box-sizing text_cell rendered&#34;&gt;
 &lt;div class=&#34;prompt input_prompt&#34;&gt;
 &lt;/div&gt;
 &lt;div class=&#34;inner_cell&#34;&gt;
 &lt;div class=&#34;text_cell_render border-box-sizing rendered_html&#34;&gt;
 &lt;h2 id=&#34;iPhoto--&amp;gt;-Flickr-in-350-lines-of-code&#34;&gt;iPhoto -&amp;gt; Flickr in 350 lines of code&lt;a class=&#34;anchor-link&#34; href=&#34;#iPhoto--&amp;gt;-Flickr-in-350-lines-of-code&#34;&gt;&amp;#182;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;I was thinking about rolling my own with the flickr API when I discovered a kindred spirit had already been down this path and come up with &lt;a href=&#34;https://github.com/jawj/iphoto-flickr&#34;&gt;iPhoto -&amp;gt; Flickr&lt;/a&gt;.&lt;/p&gt;
-&lt;p&gt;It worked in one go, so the incremental upload support wasn&#39;t necessary for the initial bulk upload, but to further sync the metadata, the resulting &lt;code&gt;uploaded-photo-ids-map.txt&lt;/code&gt; is critical. In fact, I had to wrestle with iPhoto a bit to get ids that are useful without iPhoto running.&lt;/p&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;p&gt;It worked in one go, so the incremental upload support wasn&#39;t necessary for the initial bulk upload, but to further sync the metadata, the resulting &lt;code&gt;uploaded-photo-ids-map.txt&lt;/code&gt; is critical. In fact, I had to wrestle with iPhoto a bit to get ids that are useful without iPhoto running.&lt;/p&gt;
+
 &lt;/div&gt;
 &lt;/div&gt;
+&lt;/div&gt;
+
 &lt;div class=&#34;cell border-box-sizing text_cell rendered&#34;&gt;
 &lt;div class=&#34;prompt input_prompt&#34;&gt;
 &lt;/div&gt;
@@ -597,20 +1018,24 @@ By Sonia Bohelay&lt;/li&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
+
 &lt;div class=&#34;cell border-box-sizing text_cell rendered&#34;&gt;
 &lt;div class=&#34;prompt input_prompt&#34;&gt;
 &lt;/div&gt;
 &lt;div class=&#34;inner_cell&#34;&gt;
 &lt;div class=&#34;text_cell_render border-box-sizing rendered_html&#34;&gt;
-&lt;p&gt;It works pretty much like it says on the tin. (&lt;em&gt;The &lt;a href=&#34;https://github.com/jawj/iphoto-flickr/issues/22&#34;&gt;colorize dependency issue&lt;/a&gt; was easy enough to figure out.&lt;/em&gt;)&lt;/p&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;p&gt;It works pretty much like it says on the tin. (&lt;em&gt;The &lt;a href=&#34;https://github.com/jawj/iphoto-flickr/issues/22&#34;&gt;colorize dependency issue&lt;/a&gt; was easy enough to figure out.&lt;/em&gt;)&lt;/p&gt;
+
 &lt;/div&gt;
 &lt;/div&gt;
+&lt;/div&gt;
+
 &lt;div class=&#34;cell border-box-sizing text_cell rendered&#34;&gt;
 &lt;div class=&#34;prompt input_prompt&#34;&gt;
 &lt;/div&gt;
 &lt;div class=&#34;inner_cell&#34;&gt;
-&lt;div class=&#34;text_cell_render border-box-sizing rendered_html&#34;&gt;&lt;/p&gt;
+&lt;div class=&#34;text_cell_render border-box-sizing rendered_html&#34;&gt;
+
 &lt;pre&gt;&lt;code&gt;airbook:src connolly$ git clone https://github.com/jawj/flickrbackup.git  # e339169212
 airbook:flickrbackup connolly$ sudo gem install flickraw-cached colorize
 Successfully installed flickraw-0.9.8
@@ -629,31 +1054,37 @@ Authorisation code: 162-...
 2015-07-04 13:47:44 -0500  8057 photos and 78 standard albums in iPhoto library
 2015-07-04 13:47:44 -0500  8057 photos not yet uploaded to Flickr&lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;&lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
+&lt;/div&gt;
+
 &lt;div class=&#34;cell border-box-sizing text_cell rendered&#34;&gt;
 &lt;div class=&#34;prompt input_prompt&#34;&gt;
 &lt;/div&gt;
 &lt;div class=&#34;inner_cell&#34;&gt;
 &lt;div class=&#34;text_cell_render border-box-sizing rendered_html&#34;&gt;
 &lt;h2 id=&#34;Platform-Independent-Data&#34;&gt;Platform Independent Data&lt;a class=&#34;anchor-link&#34; href=&#34;#Platform-Independent-Data&#34;&gt;&amp;#182;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;The kernel for this notebook is on my linux desktop, but iPhoto is running on &lt;strong&gt;airbook&lt;/strong&gt;.&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;Since spaces in filenames are a royal pain over ssh, I made a convenient symlink.&lt;/em&gt;&lt;/p&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;p&gt;&lt;em&gt;Since spaces in filenames are a royal pain over ssh, I made a convenient symlink.&lt;/em&gt;&lt;/p&gt;
+
 &lt;/div&gt;
 &lt;/div&gt;
+&lt;/div&gt;
+
 &lt;div class=&#34;cell border-box-sizing code_cell rendered&#34;&gt;
 &lt;div class=&#34;input&#34;&gt;
 &lt;div class=&#34;prompt input_prompt&#34;&gt;In&amp;nbsp;[190]:&lt;/div&gt;
 &lt;div class=&#34;inner_cell&#34;&gt;
     &lt;div class=&#34;input_area&#34;&gt;
 &lt;div class=&#34; highlight hl-ipython2&#34;&gt;&lt;pre&gt;&lt;span class=&#34;o&#34;&gt;!&lt;/span&gt;ssh airbook.local ls -l Pictures/flickrbackup
-&lt;/pre&gt;&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 &lt;/div&gt;
-&lt;/div&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
 &lt;div class=&#34;output_wrapper&#34;&gt;
 &lt;div class=&#34;output&#34;&gt;
+
 
 &lt;div class=&#34;output_area&#34;&gt;&lt;div class=&#34;prompt&#34;&gt;&lt;/div&gt;
 &lt;div class=&#34;output_subarea output_stream output_stdout output_text&#34;&gt;
@@ -663,23 +1094,24 @@ Authorisation code: 162-...
 &lt;/div&gt;
 
 &lt;/div&gt;
+&lt;/div&gt;
 
 &lt;/div&gt;
 
-&lt;p&gt;&lt;/div&gt;
 &lt;div class=&#34;cell border-box-sizing text_cell rendered&#34;&gt;
 &lt;div class=&#34;prompt input_prompt&#34;&gt;
 &lt;/div&gt;
 &lt;div class=&#34;inner_cell&#34;&gt;
 &lt;div class=&#34;text_cell_render border-box-sizing rendered_html&#34;&gt;
-&lt;h2 id=&#34;Upload-Map-DataFrame&#34;&gt;Upload Map DataFrame&lt;a class=&#34;anchor-link&#34; href=&#34;#Upload-Map-DataFrame&#34;&gt;&amp;#182;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;It carefully logs the correspondence to support incremental update:&lt;/p&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;2015-07-04 13:47:44 -0500  (1/8057)  Uploading &#39;...2002/Sep 25, 2002/....jpg&#39; ... 4294967334 -&amp;gt; 19226418710&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&#34;Upload-Map-DataFrame&#34;&gt;Upload Map DataFrame&lt;a class=&#34;anchor-link&#34; href=&#34;#Upload-Map-DataFrame&#34;&gt;&amp;#182;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;It carefully logs the correspondence to support incremental update:&lt;/p&gt;
 
+&lt;pre&gt;&lt;code&gt;2015-07-04 13:47:44 -0500  (1/8057)  Uploading &#39;...2002/Sep 25, 2002/....jpg&#39; ... 4294967334 -&amp;gt; 19226418710&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Let&#39;s make sure we have redundant copies of the map. And let&#39;s use ordinary CSV rather than the funky &lt;code&gt;-&amp;gt;&lt;/code&gt; format.&lt;/p&gt;
 
-&lt;p&gt;&lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
+&lt;/div&gt;
+
 &lt;div class=&#34;cell border-box-sizing code_cell rendered&#34;&gt;
 &lt;div class=&#34;input&#34;&gt;
 &lt;div class=&#34;prompt input_prompt&#34;&gt;In&amp;nbsp;[191]:&lt;/div&gt;
@@ -688,13 +1120,16 @@ Authorisation code: 162-...
 &lt;div class=&#34; highlight hl-ipython2&#34;&gt;&lt;pre&gt;&lt;span class=&#34;kn&#34;&gt;from&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;IPython.display&lt;/span&gt; &lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;display&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Image&lt;/span&gt;
 &lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;pandas&lt;/span&gt; &lt;span class=&#34;kn&#34;&gt;as&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;pd&lt;/span&gt;
 &lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;numpy&lt;/span&gt; &lt;span class=&#34;kn&#34;&gt;as&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;np&lt;/span&gt;
-&lt;span class=&#34;nb&#34;&gt;dict&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;pandas&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;pd&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;&lt;strong&gt;version&lt;/strong&gt;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;numpy&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;np&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;&lt;strong&gt;version&lt;/strong&gt;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;span class=&#34;nb&#34;&gt;dict&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;pandas&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;pd&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;__version__&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;numpy&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;np&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;__version__&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 &lt;/div&gt;
-&lt;/div&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
 &lt;div class=&#34;output_wrapper&#34;&gt;
 &lt;div class=&#34;output&#34;&gt;
+
 
 &lt;div class=&#34;output_area&#34;&gt;&lt;div class=&#34;prompt output_prompt&#34;&gt;Out[191]:&lt;/div&gt;
 
@@ -705,9 +1140,11 @@ Authorisation code: 162-...
 
 &lt;/div&gt;
 
-&lt;p&gt;&lt;/div&gt;
-&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
 &lt;div class=&#34;cell border-box-sizing code_cell rendered&#34;&gt;
 &lt;div class=&#34;input&#34;&gt;
 &lt;div class=&#34;prompt input_prompt&#34;&gt;In&amp;nbsp;[112]:&lt;/div&gt;
@@ -717,12 +1154,15 @@ Authorisation code: 162-...
 &lt;span class=&#34;n&#34;&gt;upload_map&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;pd&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;DataFrame&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;dict&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;apple&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;int&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;a&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;),&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;flickr&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;int&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;f&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;))&lt;/span&gt;
                           &lt;span class=&#34;k&#34;&gt;for&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;a&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;f&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;ow&#34;&gt;in&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;line&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;split&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#39; -&amp;gt; &amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;for&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;line&lt;/span&gt; &lt;span class=&#34;ow&#34;&gt;in&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;upload_map&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;])&lt;/span&gt;
 &lt;span class=&#34;n&#34;&gt;upload_map&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;head&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 &lt;/div&gt;
-&lt;/div&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
 &lt;div class=&#34;output_wrapper&#34;&gt;
 &lt;div class=&#34;output&#34;&gt;
+
 
 &lt;div class=&#34;output_area&#34;&gt;&lt;div class=&#34;prompt output_prompt&#34;&gt;Out[112]:&lt;/div&gt;
 
@@ -769,30 +1209,37 @@ Authorisation code: 162-...
 
 &lt;/div&gt;
 
-&lt;p&gt;&lt;/div&gt;
-&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
 &lt;div class=&#34;cell border-box-sizing code_cell rendered&#34;&gt;
 &lt;div class=&#34;input&#34;&gt;
 &lt;div class=&#34;prompt input_prompt&#34;&gt;In&amp;nbsp;[187]:&lt;/div&gt;
 &lt;div class=&#34;inner_cell&#34;&gt;
     &lt;div class=&#34;input_area&#34;&gt;
 &lt;div class=&#34; highlight hl-ipython2&#34;&gt;&lt;pre&gt;&lt;span class=&#34;n&#34;&gt;upload_map&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;to_csv&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#39;uploaded-photo-ids-map.csv&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 &lt;/div&gt;
-&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
 &lt;div class=&#34;cell border-box-sizing text_cell rendered&#34;&gt;
 &lt;div class=&#34;prompt input_prompt&#34;&gt;
 &lt;/div&gt;
 &lt;div class=&#34;inner_cell&#34;&gt;
 &lt;div class=&#34;text_cell_render border-box-sizing rendered_html&#34;&gt;
 &lt;h2 id=&#34;Flickr-metadata-access&#34;&gt;Flickr metadata access&lt;a class=&#34;anchor-link&#34; href=&#34;#Flickr-metadata-access&#34;&gt;&amp;#182;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Let&#39;s take a at the results on flickr. I experimented with python flickr apis; the main one seems to be &lt;a href=&#34;http://stuvel.eu/media/flickrapi-docs/documentation/index.html&#34;&gt;Python Flickr&lt;/a&gt;. &lt;a href=&#34;flickdata.py&#34;&gt;flickdata.py&lt;/a&gt; (in &lt;a href=&#34;http://bitbucket.org/DanC/palmagent/&#34;&gt;palmagent&lt;/a&gt;) is a least-authority packaging of that API.&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;TODO: use a separate Photo object for setDates.&lt;/em&gt;&lt;/p&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;p&gt;&lt;em&gt;TODO: use a separate Photo object for setDates.&lt;/em&gt;&lt;/p&gt;
+
 &lt;/div&gt;
 &lt;/div&gt;
+&lt;/div&gt;
+
 &lt;div class=&#34;cell border-box-sizing code_cell rendered&#34;&gt;
 &lt;div class=&#34;input&#34;&gt;
 &lt;div class=&#34;prompt input_prompt&#34;&gt;In&amp;nbsp;[168]:&lt;/div&gt;
@@ -800,13 +1247,16 @@ Authorisation code: 162-...
     &lt;div class=&#34;input_area&#34;&gt;
 &lt;div class=&#34; highlight hl-ipython2&#34;&gt;&lt;pre&gt;&lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;flickdata&lt;/span&gt;
 &lt;span class=&#34;nb&#34;&gt;reload&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;flickdata&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-&lt;span class=&#34;n&#34;&gt;flickdata&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;&lt;strong&gt;version&lt;/strong&gt;&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;span class=&#34;n&#34;&gt;flickdata&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;__version__&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 &lt;/div&gt;
-&lt;/div&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
 &lt;div class=&#34;output_wrapper&#34;&gt;
 &lt;div class=&#34;output&#34;&gt;
+
 
 &lt;div class=&#34;output_area&#34;&gt;&lt;div class=&#34;prompt output_prompt&#34;&gt;Out[168]:&lt;/div&gt;
 
@@ -817,18 +1267,22 @@ Authorisation code: 162-...
 
 &lt;/div&gt;
 
-&lt;p&gt;&lt;/div&gt;
-&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
 &lt;div class=&#34;cell border-box-sizing text_cell rendered&#34;&gt;
 &lt;div class=&#34;prompt input_prompt&#34;&gt;
 &lt;/div&gt;
 &lt;div class=&#34;inner_cell&#34;&gt;
 &lt;div class=&#34;text_cell_render border-box-sizing rendered_html&#34;&gt;
-&lt;p&gt;To make a &lt;code&gt;flickdata.Account&lt;/code&gt;, we use the privileged iPython notebook environment to get network access and the API key (&lt;em&gt;and OAuth credentials... where do they get squirrelled away?&lt;/em&gt;) and pass it to &lt;code&gt;flickdata&lt;/code&gt;:&lt;/p&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;p&gt;To make a &lt;code&gt;flickdata.Account&lt;/code&gt;, we use the privileged iPython notebook environment to get network access and the API key (&lt;em&gt;and OAuth credentials... where do they get squirrelled away?&lt;/em&gt;) and pass it to &lt;code&gt;flickdata&lt;/code&gt;:&lt;/p&gt;
+
 &lt;/div&gt;
 &lt;/div&gt;
+&lt;/div&gt;
+
 &lt;div class=&#34;cell border-box-sizing code_cell rendered&#34;&gt;
 &lt;div class=&#34;input&#34;&gt;
 &lt;div class=&#34;prompt input_prompt&#34;&gt;In&amp;nbsp;[45]:&lt;/div&gt;
@@ -839,12 +1293,15 @@ Authorisation code: 162-...
 &lt;span class=&#34;n&#34;&gt;logger&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;logging&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;getLogger&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
 &lt;span class=&#34;n&#34;&gt;logger&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;setLevel&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;logging&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;INFO&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
 &lt;span class=&#34;n&#34;&gt;logging&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;info&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#39;We try to log I/O.&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 &lt;/div&gt;
-&lt;/div&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
 &lt;div class=&#34;output_wrapper&#34;&gt;
 &lt;div class=&#34;output&#34;&gt;
+
 
 &lt;div class=&#34;output_area&#34;&gt;&lt;div class=&#34;prompt&#34;&gt;&lt;/div&gt;
 &lt;div class=&#34;output_subarea output_stream output_stderr output_text&#34;&gt;
@@ -854,10 +1311,10 @@ Authorisation code: 162-...
 &lt;/div&gt;
 
 &lt;/div&gt;
+&lt;/div&gt;
 
 &lt;/div&gt;
 
-&lt;p&gt;&lt;/div&gt;
 &lt;div class=&#34;cell border-box-sizing code_cell rendered&#34;&gt;
 &lt;div class=&#34;input&#34;&gt;
 &lt;div class=&#34;prompt input_prompt&#34;&gt;In&amp;nbsp;[75]:&lt;/div&gt;
@@ -867,14 +1324,18 @@ Authorisation code: 162-...
     &lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;pathlib&lt;/span&gt;
     &lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;flickrapi&lt;/span&gt;
     &lt;span class=&#34;n&#34;&gt;api_secret&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;pathlib&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Path&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#39;flickr_api_secret&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;open&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;read&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;strip&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
-    &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;flickdata&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Read&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;make&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;flickrapi&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;api_secret&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;user_id&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;&lt;span class=&#34;n&#34;&gt;myAcct&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;myFlickrAcct&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+    &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;flickdata&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Read&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;make&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;flickrapi&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;api_secret&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;user_id&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+
+&lt;span class=&#34;n&#34;&gt;myAcct&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;myFlickrAcct&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 &lt;/div&gt;
-&lt;/div&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
 &lt;div class=&#34;output_wrapper&#34;&gt;
 &lt;div class=&#34;output&#34;&gt;
+
 
 &lt;div class=&#34;output_area&#34;&gt;&lt;div class=&#34;prompt&#34;&gt;&lt;/div&gt;
 &lt;div class=&#34;output_subarea output_stream output_stderr output_text&#34;&gt;
@@ -887,20 +1348,22 @@ INFO:flickrapi.core:REST Parser: using xml.etree.cElementTree
 &lt;/div&gt;
 
 &lt;/div&gt;
+&lt;/div&gt;
 
 &lt;/div&gt;
 
-&lt;p&gt;&lt;/div&gt;
 &lt;div class=&#34;cell border-box-sizing text_cell rendered&#34;&gt;
 &lt;div class=&#34;prompt input_prompt&#34;&gt;
 &lt;/div&gt;
 &lt;div class=&#34;inner_cell&#34;&gt;
 &lt;div class=&#34;text_cell_render border-box-sizing rendered_html&#34;&gt;
 &lt;h3 id=&#34;Photostream-confused-about-recent-photos&#34;&gt;Photostream confused about recent photos&lt;a class=&#34;anchor-link&#34; href=&#34;#Photostream-confused-about-recent-photos&#34;&gt;&amp;#182;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;A bunch of old photos and videos are showing up as recent in my photostream as the upload progresses.&lt;/p&gt;
-&lt;p&gt;Flickr seems to set datetaken = date uploaded when there&#39;s no EXIF date, so let&#39;s look at these supposedly recent photos.&lt;/p&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;p&gt;Flickr seems to set datetaken = date uploaded when there&#39;s no EXIF date, so let&#39;s look at these supposedly recent photos.&lt;/p&gt;
+
 &lt;/div&gt;
 &lt;/div&gt;
+&lt;/div&gt;
+
 &lt;div class=&#34;cell border-box-sizing code_cell rendered&#34;&gt;
 &lt;div class=&#34;input&#34;&gt;
 &lt;div class=&#34;prompt input_prompt&#34;&gt;In&amp;nbsp;[172]:&lt;/div&gt;
@@ -918,12 +1381,15 @@ INFO:flickrapi.core:REST Parser: using xml.etree.cElementTree
 &lt;span class=&#34;n&#34;&gt;photo&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#39;id&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;photo&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;id&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;astype&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;int&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;  &lt;span class=&#34;c&#34;&gt;# odd... even in JSON format, ids come back as strings&lt;/span&gt;
 &lt;span class=&#34;n&#34;&gt;photo&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;photo&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;set_index&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#39;id&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
 &lt;span class=&#34;nb&#34;&gt;len&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;photo&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 &lt;/div&gt;
-&lt;/div&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
 &lt;div class=&#34;output_wrapper&#34;&gt;
 &lt;div class=&#34;output&#34;&gt;
+
 
 &lt;div class=&#34;output_area&#34;&gt;&lt;div class=&#34;prompt&#34;&gt;&lt;/div&gt;
 &lt;div class=&#34;output_subarea output_stream output_stderr output_text&#34;&gt;
@@ -944,30 +1410,37 @@ INFO:flickdata:page 1 of 1
 
 &lt;/div&gt;
 
-&lt;p&gt;&lt;/div&gt;
-&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
 &lt;div class=&#34;cell border-box-sizing text_cell rendered&#34;&gt;
 &lt;div class=&#34;prompt input_prompt&#34;&gt;
 &lt;/div&gt;
 &lt;div class=&#34;inner_cell&#34;&gt;
 &lt;div class=&#34;text_cell_render border-box-sizing rendered_html&#34;&gt;
-&lt;h3 id=&#34;Photo-URLs:-Thumbnail&#34;&gt;Photo URLs: Thumbnail&lt;a class=&#34;anchor-link&#34; href=&#34;#Photo-URLs:-Thumbnail&#34;&gt;&amp;#182;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Flickr&#39;s &lt;a href=&#34;https://www.flickr.com/services/api/misc.urls.html&#34;&gt;URLs API&lt;/a&gt; uses &#34;secrets&#34; so they serve as nice tasty &lt;a href=&#34;http://www.w3.org/TR/capability-urls/&#34;&gt;capability URLs&lt;/a&gt; for the photos. So we can see this thumbnail from this iPython notebook even though we&#39;re not logged in to flickr here.&lt;/p&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;h3 id=&#34;Photo-URLs:-Thumbnail&#34;&gt;Photo URLs: Thumbnail&lt;a class=&#34;anchor-link&#34; href=&#34;#Photo-URLs:-Thumbnail&#34;&gt;&amp;#182;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;Flickr&#39;s &lt;a href=&#34;https://www.flickr.com/services/api/misc.urls.html&#34;&gt;URLs API&lt;/a&gt; uses &#34;secrets&#34; so they serve as nice tasty &lt;a href=&#34;http://www.w3.org/TR/capability-urls/&#34;&gt;capability URLs&lt;/a&gt; for the photos. So we can see this thumbnail from this iPython notebook even though we&#39;re not logged in to flickr here.&lt;/p&gt;
+
 &lt;/div&gt;
 &lt;/div&gt;
+&lt;/div&gt;
+
 &lt;div class=&#34;cell border-box-sizing code_cell rendered&#34;&gt;
 &lt;div class=&#34;input&#34;&gt;
 &lt;div class=&#34;prompt input_prompt&#34;&gt;In&amp;nbsp;[173]:&lt;/div&gt;
 &lt;div class=&#34;inner_cell&#34;&gt;
     &lt;div class=&#34;input_area&#34;&gt;
 &lt;div class=&#34; highlight hl-ipython2&#34;&gt;&lt;pre&gt;&lt;span class=&#34;n&#34;&gt;Image&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;url&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;photo&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;iloc&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;url_t&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 &lt;/div&gt;
-&lt;/div&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
 &lt;div class=&#34;output_wrapper&#34;&gt;
 &lt;div class=&#34;output&#34;&gt;
+
 
 &lt;div class=&#34;output_area&#34;&gt;&lt;div class=&#34;prompt output_prompt&#34;&gt;Out[173]:&lt;/div&gt;
 
@@ -977,30 +1450,37 @@ INFO:flickdata:page 1 of 1
 
 &lt;/div&gt;
 
-&lt;p&gt;&lt;/div&gt;
-&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
 &lt;div class=&#34;cell border-box-sizing text_cell rendered&#34;&gt;
 &lt;div class=&#34;prompt input_prompt&#34;&gt;
 &lt;/div&gt;
 &lt;div class=&#34;inner_cell&#34;&gt;
 &lt;div class=&#34;text_cell_render border-box-sizing rendered_html&#34;&gt;
-&lt;h3 id=&#34;Photo-info-fields&#34;&gt;Photo info fields&lt;a class=&#34;anchor-link&#34; href=&#34;#Photo-info-fields&#34;&gt;&amp;#182;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;&lt;em&gt;Note: this isn&#39;t all fields available from &lt;a href=&#34;https://www.flickr.com/services/api/flickr.galleries.getPhotos.html&#34;&gt;getPhotos&lt;/a&gt;&lt;/em&gt;.&lt;/p&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;h3 id=&#34;Photo-info-fields&#34;&gt;Photo info fields&lt;a class=&#34;anchor-link&#34; href=&#34;#Photo-info-fields&#34;&gt;&amp;#182;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;&lt;em&gt;Note: this isn&#39;t all fields available from &lt;a href=&#34;https://www.flickr.com/services/api/flickr.galleries.getPhotos.html&#34;&gt;getPhotos&lt;/a&gt;&lt;/em&gt;.&lt;/p&gt;
+
 &lt;/div&gt;
 &lt;/div&gt;
+&lt;/div&gt;
+
 &lt;div class=&#34;cell border-box-sizing code_cell rendered&#34;&gt;
 &lt;div class=&#34;input&#34;&gt;
 &lt;div class=&#34;prompt input_prompt&#34;&gt;In&amp;nbsp;[174]:&lt;/div&gt;
 &lt;div class=&#34;inner_cell&#34;&gt;
     &lt;div class=&#34;input_area&#34;&gt;
 &lt;div class=&#34; highlight hl-ipython2&#34;&gt;&lt;pre&gt;&lt;span class=&#34;n&#34;&gt;photo&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;iloc&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 &lt;/div&gt;
-&lt;/div&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
 &lt;div class=&#34;output_wrapper&#34;&gt;
 &lt;div class=&#34;output&#34;&gt;
+
 
 &lt;div class=&#34;output_area&#34;&gt;&lt;div class=&#34;prompt output_prompt&#34;&gt;Out[174]:&lt;/div&gt;
 
@@ -1048,32 +1528,40 @@ Name: 19350464562, dtype: object&lt;/pre&gt;
 
 &lt;/div&gt;
 
-&lt;p&gt;&lt;/div&gt;
-&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
 &lt;div class=&#34;cell border-box-sizing text_cell rendered&#34;&gt;
 &lt;div class=&#34;prompt input_prompt&#34;&gt;
 &lt;/div&gt;
 &lt;div class=&#34;inner_cell&#34;&gt;
 &lt;div class=&#34;text_cell_render border-box-sizing rendered_html&#34;&gt;
-&lt;p&gt;Ah. Good. When the display defaults date taken to upload date, the underlying data tells us so:&lt;/p&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;p&gt;Ah. Good. When the display defaults date taken to upload date, the underlying data tells us so:&lt;/p&gt;
+
 &lt;/div&gt;
 &lt;/div&gt;
+&lt;/div&gt;
+
 &lt;div class=&#34;cell border-box-sizing code_cell rendered&#34;&gt;
 &lt;div class=&#34;input&#34;&gt;
 &lt;div class=&#34;prompt input_prompt&#34;&gt;In&amp;nbsp;[176]:&lt;/div&gt;
 &lt;div class=&#34;inner_cell&#34;&gt;
     &lt;div class=&#34;input_area&#34;&gt;
-&lt;div class=&#34; highlight hl-ipython2&#34;&gt;&lt;pre&gt;&lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;datetime&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;&lt;span class=&#34;n&#34;&gt;photo&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#39;upload_date&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;np&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;datetime64&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;datetime&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;datetime&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;fromtimestamp&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;int&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ts&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)))&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;for&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;ts&lt;/span&gt; &lt;span class=&#34;ow&#34;&gt;in&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;photo&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;dateupload&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;
+&lt;div class=&#34; highlight hl-ipython2&#34;&gt;&lt;pre&gt;&lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;datetime&lt;/span&gt;
+
+&lt;span class=&#34;n&#34;&gt;photo&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#39;upload_date&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;np&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;datetime64&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;datetime&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;datetime&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;fromtimestamp&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;int&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ts&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)))&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;for&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;ts&lt;/span&gt; &lt;span class=&#34;ow&#34;&gt;in&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;photo&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;dateupload&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;
 &lt;span class=&#34;n&#34;&gt;photo&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;photo&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;datetakenunknown&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;==&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;1&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;][[&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#39;datetaken&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;upload_date&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;title&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;width_o&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;height_o&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]]&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;head&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 &lt;/div&gt;
-&lt;/div&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
 &lt;div class=&#34;output_wrapper&#34;&gt;
 &lt;div class=&#34;output&#34;&gt;
+
 
 &lt;div class=&#34;output_area&#34;&gt;&lt;div class=&#34;prompt output_prompt&#34;&gt;Out[176]:&lt;/div&gt;
 
@@ -1146,30 +1634,37 @@ Name: 19350464562, dtype: object&lt;/pre&gt;
 
 &lt;/div&gt;
 
-&lt;p&gt;&lt;/div&gt;
-&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
 &lt;div class=&#34;cell border-box-sizing text_cell rendered&#34;&gt;
 &lt;div class=&#34;prompt input_prompt&#34;&gt;
 &lt;/div&gt;
 &lt;div class=&#34;inner_cell&#34;&gt;
 &lt;div class=&#34;text_cell_render border-box-sizing rendered_html&#34;&gt;
-&lt;p&gt;These were uploaded very soon after being taken; I suppose I turned on auto-upload on my phone:&lt;/p&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;p&gt;These were uploaded very soon after being taken; I suppose I turned on auto-upload on my phone:&lt;/p&gt;
+
 &lt;/div&gt;
 &lt;/div&gt;
+&lt;/div&gt;
+
 &lt;div class=&#34;cell border-box-sizing code_cell rendered&#34;&gt;
 &lt;div class=&#34;input&#34;&gt;
 &lt;div class=&#34;prompt input_prompt&#34;&gt;In&amp;nbsp;[192]:&lt;/div&gt;
 &lt;div class=&#34;inner_cell&#34;&gt;
     &lt;div class=&#34;input_area&#34;&gt;
 &lt;div class=&#34; highlight hl-ipython2&#34;&gt;&lt;pre&gt;&lt;span class=&#34;n&#34;&gt;photo&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;photo&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;datetakenunknown&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;==&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;0&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;][[&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#39;datetaken&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;upload_date&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;title&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;width_o&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;height_o&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]]&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;head&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 &lt;/div&gt;
-&lt;/div&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
 &lt;div class=&#34;output_wrapper&#34;&gt;
 &lt;div class=&#34;output&#34;&gt;
+
 
 &lt;div class=&#34;output_area&#34;&gt;&lt;div class=&#34;prompt output_prompt&#34;&gt;Out[192]:&lt;/div&gt;
 
@@ -1234,30 +1729,37 @@ Name: 19350464562, dtype: object&lt;/pre&gt;
 
 &lt;/div&gt;
 
-&lt;p&gt;&lt;/div&gt;
-&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
 &lt;div class=&#34;cell border-box-sizing text_cell rendered&#34;&gt;
 &lt;div class=&#34;prompt input_prompt&#34;&gt;
 &lt;/div&gt;
 &lt;div class=&#34;inner_cell&#34;&gt;
 &lt;div class=&#34;text_cell_render border-box-sizing rendered_html&#34;&gt;
-&lt;p&gt;I verified the most recent upload dates against iphoto-flickr logs to be sure there were no timezone issues:&lt;/p&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;p&gt;I verified the most recent upload dates against iphoto-flickr logs to be sure there were no timezone issues:&lt;/p&gt;
+
 &lt;/div&gt;
 &lt;/div&gt;
+&lt;/div&gt;
+
 &lt;div class=&#34;cell border-box-sizing code_cell rendered&#34;&gt;
 &lt;div class=&#34;input&#34;&gt;
 &lt;div class=&#34;prompt input_prompt&#34;&gt;In&amp;nbsp;[177]:&lt;/div&gt;
 &lt;div class=&#34;inner_cell&#34;&gt;
     &lt;div class=&#34;input_area&#34;&gt;
 &lt;div class=&#34; highlight hl-ipython2&#34;&gt;&lt;pre&gt;&lt;span class=&#34;n&#34;&gt;photo&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[[&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#39;datetaken&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;upload_date&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;title&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;width_o&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;height_o&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]]&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;sort&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#39;upload_date&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;ascending&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;bp&#34;&gt;False&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;head&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 &lt;/div&gt;
-&lt;/div&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
 &lt;div class=&#34;output_wrapper&#34;&gt;
 &lt;div class=&#34;output&#34;&gt;
+
 
 &lt;div class=&#34;output_area&#34;&gt;&lt;div class=&#34;prompt output_prompt&#34;&gt;Out[177]:&lt;/div&gt;
 
@@ -1330,31 +1832,38 @@ Name: 19350464562, dtype: object&lt;/pre&gt;
 
 &lt;/div&gt;
 
-&lt;p&gt;&lt;/div&gt;
-&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
 &lt;div class=&#34;cell border-box-sizing text_cell rendered&#34;&gt;
 &lt;div class=&#34;prompt input_prompt&#34;&gt;
 &lt;/div&gt;
 &lt;div class=&#34;inner_cell&#34;&gt;
 &lt;div class=&#34;text_cell_render border-box-sizing rendered_html&#34;&gt;
 &lt;h2 id=&#34;iPhoto,-give-me-my-data-back!&#34;&gt;iPhoto, give me my data back!&lt;a class=&#34;anchor-link&#34; href=&#34;#iPhoto,-give-me-my-data-back!&#34;&gt;&amp;#182;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;flickrbackup found the library I&#39;m interested in even though it&#39;s not in the default path. Ah... it&#39;s using Applescript.&lt;/p&gt;
-&lt;p&gt;iPhoto uses fairly nice .xml and .db files with a nice, sturdy uuid for each photo. But the id &lt;code&gt;flickerbackup.rb&lt;/code&gt; got via applescript is nowhere to be found in there!&lt;/p&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;p&gt;iPhoto uses fairly nice .xml and .db files with a nice, sturdy uuid for each photo. But the id &lt;code&gt;flickerbackup.rb&lt;/code&gt; got via applescript is nowhere to be found in there!&lt;/p&gt;
+
 &lt;/div&gt;
 &lt;/div&gt;
+&lt;/div&gt;
+
 &lt;div class=&#34;cell border-box-sizing code_cell rendered&#34;&gt;
 &lt;div class=&#34;input&#34;&gt;
 &lt;div class=&#34;prompt input_prompt&#34;&gt;In&amp;nbsp;[16]:&lt;/div&gt;
 &lt;div class=&#34;inner_cell&#34;&gt;
     &lt;div class=&#34;input_area&#34;&gt;
 &lt;div class=&#34; highlight hl-ipython2&#34;&gt;&lt;pre&gt;&lt;span class=&#34;o&#34;&gt;!&lt;/span&gt;ssh airbook.local grep &lt;span class=&#34;o&#34;&gt;{&lt;/span&gt;photo.index&lt;span class=&#34;o&#34;&gt;[&lt;/span&gt;0&lt;span class=&#34;o&#34;&gt;]}&lt;/span&gt; Pictures/flickrbackup/uploaded-photo-ids-map.txt 
-&lt;/pre&gt;&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 &lt;/div&gt;
-&lt;/div&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
 &lt;div class=&#34;output_wrapper&#34;&gt;
 &lt;div class=&#34;output&#34;&gt;
+
 
 &lt;div class=&#34;output_area&#34;&gt;&lt;div class=&#34;prompt&#34;&gt;&lt;/div&gt;
 &lt;div class=&#34;output_subarea output_stream output_stdout output_text&#34;&gt;
@@ -1364,41 +1873,49 @@ Name: 19350464562, dtype: object&lt;/pre&gt;
 &lt;/div&gt;
 
 &lt;/div&gt;
+&lt;/div&gt;
 
 &lt;/div&gt;
 
-&lt;p&gt;&lt;/div&gt;
 &lt;div class=&#34;cell border-box-sizing code_cell rendered&#34;&gt;
 &lt;div class=&#34;input&#34;&gt;
 &lt;div class=&#34;prompt input_prompt&#34;&gt;In&amp;nbsp;[17]:&lt;/div&gt;
 &lt;div class=&#34;inner_cell&#34;&gt;
     &lt;div class=&#34;input_area&#34;&gt;
 &lt;div class=&#34; highlight hl-ipython2&#34;&gt;&lt;pre&gt;&lt;span class=&#34;o&#34;&gt;!&lt;/span&gt;ssh airbook.local grep &lt;span class=&#34;m&#34;&gt;4294967334&lt;/span&gt; Pictures/iphoto-maryc/AlbumData.xml
-&lt;/pre&gt;&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 &lt;/div&gt;
-&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
 &lt;div class=&#34;cell border-box-sizing code_cell rendered&#34;&gt;
 &lt;div class=&#34;input&#34;&gt;
 &lt;div class=&#34;prompt input_prompt&#34;&gt;In&amp;nbsp;[18]:&lt;/div&gt;
 &lt;div class=&#34;inner_cell&#34;&gt;
     &lt;div class=&#34;input_area&#34;&gt;
 &lt;div class=&#34; highlight hl-ipython2&#34;&gt;&lt;pre&gt;&lt;span class=&#34;o&#34;&gt;!&lt;/span&gt;ssh airbook.local sqlite3 Pictures/iphoto-maryc/iPhotoMain.db .dump &lt;span class=&#34;p&#34;&gt;|&lt;/span&gt; grep &lt;span class=&#34;m&#34;&gt;4294967334&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 &lt;/div&gt;
-&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
 &lt;div class=&#34;cell border-box-sizing text_cell rendered&#34;&gt;
 &lt;div class=&#34;prompt input_prompt&#34;&gt;
 &lt;/div&gt;
 &lt;div class=&#34;inner_cell&#34;&gt;
 &lt;div class=&#34;text_cell_render border-box-sizing rendered_html&#34;&gt;
-&lt;p&gt;The &lt;a href=&#34;http://www.mugginsoft.com/html/kosmictask/ASDictionaryDocs/Apple/iPhoto/OS-X-10.7/iPhoto-9.2.3/html/&#34;&gt;iPhoto script dictionary&lt;/a&gt; doesn&#39;t show a uid property. &lt;strong&gt;Darn.&lt;/strong&gt; We&#39;ll have to use file paths or something.&lt;/p&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;p&gt;The &lt;a href=&#34;http://www.mugginsoft.com/html/kosmictask/ASDictionaryDocs/Apple/iPhoto/OS-X-10.7/iPhoto-9.2.3/html/&#34;&gt;iPhoto script dictionary&lt;/a&gt; doesn&#39;t show a uid property. &lt;strong&gt;Darn.&lt;/strong&gt; We&#39;ll have to use file paths or something.&lt;/p&gt;
+
 &lt;/div&gt;
 &lt;/div&gt;
+&lt;/div&gt;
+
 &lt;div class=&#34;cell border-box-sizing text_cell rendered&#34;&gt;
 &lt;div class=&#34;prompt input_prompt&#34;&gt;
 &lt;/div&gt;
@@ -1408,31 +1925,37 @@ Name: 19350464562, dtype: object&lt;/pre&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
+
 &lt;div class=&#34;cell border-box-sizing text_cell rendered&#34;&gt;
 &lt;div class=&#34;prompt input_prompt&#34;&gt;
 &lt;/div&gt;
 &lt;div class=&#34;inner_cell&#34;&gt;
 &lt;div class=&#34;text_cell_render border-box-sizing rendered_html&#34;&gt;
 &lt;p&gt;Ooh! We can use &lt;a href=&#34;https://developer.apple.com/library/mac/releasenotes/InterapplicationCommunication/RN-JavaScriptForAutomation/&#34;&gt;JXA&lt;/a&gt;, JavaScript for Automation. Somebody made a nice &lt;a href=&#34;https://github.com/dtinth/JXA-Cookbook/wiki/Using-JavaScript-for-Automation&#34;&gt;cookbook&lt;/a&gt; on github.&lt;/p&gt;
-&lt;p&gt;The first API I found for writing a string to a file was this &lt;code&gt;$.NSString&lt;/code&gt; objective-C bridge thing. Oh well. It works.&lt;/p&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;p&gt;The first API I found for writing a string to a file was this &lt;code&gt;$.NSString&lt;/code&gt; objective-C bridge thing. Oh well. It works.&lt;/p&gt;
+
 &lt;/div&gt;
 &lt;/div&gt;
+&lt;/div&gt;
+
 &lt;div class=&#34;cell border-box-sizing code_cell rendered&#34;&gt;
 &lt;div class=&#34;input&#34;&gt;
 &lt;div class=&#34;prompt input_prompt&#34;&gt;In&amp;nbsp;[39]:&lt;/div&gt;
 &lt;div class=&#34;inner_cell&#34;&gt;
     &lt;div class=&#34;input_area&#34;&gt;
 &lt;div class=&#34; highlight hl-ipython2&#34;&gt;&lt;pre&gt;&lt;span class=&#34;n&#34;&gt;export_keys&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;
-&lt;span class=&#34;s&#34;&gt;#!/usr/bin/env osascript -l JavaScript&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;&lt;span class=&#34;s&#34;&gt;function save(info, where) {&lt;/span&gt;
+&lt;span class=&#34;s&#34;&gt;#!/usr/bin/env osascript -l JavaScript&lt;/span&gt;
+
+&lt;span class=&#34;s&#34;&gt;function save(info, where) {&lt;/span&gt;
 &lt;span class=&#34;s&#34;&gt;    console.log(&amp;#39;saving to...&amp;#39;, where)&lt;/span&gt;
 &lt;span class=&#34;s&#34;&gt;    var str = $.NSString.alloc.initWithUTF8String(JSON.stringify(info));&lt;/span&gt;
 &lt;span class=&#34;s&#34;&gt;    str.writeToFileAtomicallyEncodingError(where, true, $.NSUTF8StringEncoding, null);    &lt;/span&gt;
-&lt;span class=&#34;s&#34;&gt;}&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;&lt;span class=&#34;s&#34;&gt;function getKeys(iPhoto) {&lt;/span&gt;
-&lt;span class=&#34;s&#34;&gt;    var photos = iPhoto.photoLibraryAlbum().photos;&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;&lt;span class=&#34;s&#34;&gt;    return {&lt;/span&gt;
+&lt;span class=&#34;s&#34;&gt;}&lt;/span&gt;
+
+&lt;span class=&#34;s&#34;&gt;function getKeys(iPhoto) {&lt;/span&gt;
+&lt;span class=&#34;s&#34;&gt;    var photos = iPhoto.photoLibraryAlbum().photos;&lt;/span&gt;
+
+&lt;span class=&#34;s&#34;&gt;    return {&lt;/span&gt;
 &lt;span class=&#34;s&#34;&gt;        id: photos.id(),&lt;/span&gt;
 &lt;span class=&#34;s&#34;&gt;        date: photos.date(),&lt;/span&gt;
 &lt;span class=&#34;s&#34;&gt;        width: photos.width(),&lt;/span&gt;
@@ -1440,27 +1963,33 @@ Name: 19350464562, dtype: object&lt;/pre&gt;
 &lt;span class=&#34;s&#34;&gt;        originalPath: photos.originalPath(),&lt;/span&gt;
 &lt;span class=&#34;s&#34;&gt;        imagePath: photos.imagePath()&lt;/span&gt;
 &lt;span class=&#34;s&#34;&gt;    };&lt;/span&gt;
-&lt;span class=&#34;s&#34;&gt;}&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;&lt;span class=&#34;s&#34;&gt;function run(argv) {&lt;/span&gt;
+&lt;span class=&#34;s&#34;&gt;}&lt;/span&gt;
+
+&lt;span class=&#34;s&#34;&gt;function run(argv) {&lt;/span&gt;
 &lt;span class=&#34;s&#34;&gt;    out = argv[0];&lt;/span&gt;
 &lt;span class=&#34;s&#34;&gt;    iPhoto = Application(&amp;#39;iPhoto&amp;#39;);&lt;/span&gt;
 &lt;span class=&#34;s&#34;&gt;    save(getKeys(iPhoto), out)&lt;/span&gt;
 &lt;span class=&#34;s&#34;&gt;}&lt;/span&gt;
 &lt;span class=&#34;s&#34;&gt;&amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;strip&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 &lt;/div&gt;
-&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
 &lt;div class=&#34;cell border-box-sizing text_cell rendered&#34;&gt;
 &lt;div class=&#34;prompt input_prompt&#34;&gt;
 &lt;/div&gt;
 &lt;div class=&#34;inner_cell&#34;&gt;
 &lt;div class=&#34;text_cell_render border-box-sizing rendered_html&#34;&gt;
-&lt;p&gt;Let&#39;s save it, &lt;code&gt;scp&lt;/code&gt; it over, run it, and &lt;code&gt;scp&lt;/code&gt; the results back:&lt;/p&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;p&gt;Let&#39;s save it, &lt;code&gt;scp&lt;/code&gt; it over, run it, and &lt;code&gt;scp&lt;/code&gt; the results back:&lt;/p&gt;
+
 &lt;/div&gt;
 &lt;/div&gt;
+&lt;/div&gt;
+
 &lt;div class=&#34;cell border-box-sizing code_cell rendered&#34;&gt;
 &lt;div class=&#34;input&#34;&gt;
 &lt;div class=&#34;prompt input_prompt&#34;&gt;In&amp;nbsp;[40]:&lt;/div&gt;
@@ -1469,25 +1998,32 @@ Name: 19350464562, dtype: object&lt;/pre&gt;
 &lt;div class=&#34; highlight hl-ipython2&#34;&gt;&lt;pre&gt;&lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;save_script&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;name&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;text&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
     &lt;span class=&#34;kn&#34;&gt;from&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;pathlib&lt;/span&gt; &lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Path&lt;/span&gt;
     &lt;span class=&#34;k&#34;&gt;with&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Path&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#39;photo_keys.js&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;open&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#39;wb&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;as&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;out&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;
-        &lt;span class=&#34;n&#34;&gt;out&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;write&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;export_keys&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;&lt;span class=&#34;n&#34;&gt;save_script&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#39;photo_keys.js&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;export_keys&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+        &lt;span class=&#34;n&#34;&gt;out&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;write&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;export_keys&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+
+&lt;span class=&#34;n&#34;&gt;save_script&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#39;photo_keys.js&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;export_keys&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 &lt;/div&gt;
-&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
 &lt;div class=&#34;cell border-box-sizing code_cell rendered&#34;&gt;
 &lt;div class=&#34;input&#34;&gt;
 &lt;div class=&#34;prompt input_prompt&#34;&gt;In&amp;nbsp;[41]:&lt;/div&gt;
 &lt;div class=&#34;inner_cell&#34;&gt;
     &lt;div class=&#34;input_area&#34;&gt;
 &lt;div class=&#34; highlight hl-ipython2&#34;&gt;&lt;pre&gt;&lt;span class=&#34;o&#34;&gt;!&lt;/span&gt;scp photo_keys.js airbook.local:Pictures/
-&lt;/pre&gt;&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 &lt;/div&gt;
-&lt;/div&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
 &lt;div class=&#34;output_wrapper&#34;&gt;
 &lt;div class=&#34;output&#34;&gt;
+
 
 &lt;div class=&#34;output_area&#34;&gt;&lt;div class=&#34;prompt&#34;&gt;&lt;/div&gt;
 &lt;div class=&#34;output_subarea output_stream output_stdout output_text&#34;&gt;
@@ -1497,22 +2033,25 @@ Name: 19350464562, dtype: object&lt;/pre&gt;
 &lt;/div&gt;
 
 &lt;/div&gt;
+&lt;/div&gt;
 
 &lt;/div&gt;
 
-&lt;p&gt;&lt;/div&gt;
 &lt;div class=&#34;cell border-box-sizing code_cell rendered&#34;&gt;
 &lt;div class=&#34;input&#34;&gt;
 &lt;div class=&#34;prompt input_prompt&#34;&gt;In&amp;nbsp;[42]:&lt;/div&gt;
 &lt;div class=&#34;inner_cell&#34;&gt;
     &lt;div class=&#34;input_area&#34;&gt;
 &lt;div class=&#34; highlight hl-ipython2&#34;&gt;&lt;pre&gt;&lt;span class=&#34;o&#34;&gt;!&lt;/span&gt;ssh airbook.local osascript -l JavaScript Pictures/photo_keys.js Pictures/keys.json
-&lt;/pre&gt;&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 &lt;/div&gt;
-&lt;/div&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
 &lt;div class=&#34;output_wrapper&#34;&gt;
 &lt;div class=&#34;output&#34;&gt;
+
 
 &lt;div class=&#34;output_area&#34;&gt;&lt;div class=&#34;prompt&#34;&gt;&lt;/div&gt;
 &lt;div class=&#34;output_subarea output_stream output_stdout output_text&#34;&gt;
@@ -1520,24 +2059,28 @@ Name: 19350464562, dtype: object&lt;/pre&gt;
 
 &lt;/pre&gt;
 &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
 
 &lt;/div&gt;
 
-&lt;p&gt;&lt;/div&gt;
-&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
 &lt;div class=&#34;cell border-box-sizing code_cell rendered&#34;&gt;
 &lt;div class=&#34;input&#34;&gt;
 &lt;div class=&#34;prompt input_prompt&#34;&gt;In&amp;nbsp;[43]:&lt;/div&gt;
 &lt;div class=&#34;inner_cell&#34;&gt;
     &lt;div class=&#34;input_area&#34;&gt;
 &lt;div class=&#34; highlight hl-ipython2&#34;&gt;&lt;pre&gt;&lt;span class=&#34;o&#34;&gt;!&lt;/span&gt;scp airbook.local:Pictures/keys.json .
-&lt;/pre&gt;&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 &lt;/div&gt;
-&lt;/div&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
 &lt;div class=&#34;output_wrapper&#34;&gt;
 &lt;div class=&#34;output&#34;&gt;
+
 
 &lt;div class=&#34;output_area&#34;&gt;&lt;div class=&#34;prompt&#34;&gt;&lt;/div&gt;
 &lt;div class=&#34;output_subarea output_stream output_stdout output_text&#34;&gt;
@@ -1547,19 +2090,21 @@ Name: 19350464562, dtype: object&lt;/pre&gt;
 &lt;/div&gt;
 
 &lt;/div&gt;
+&lt;/div&gt;
 
 &lt;/div&gt;
 
-&lt;p&gt;&lt;/div&gt;
 &lt;div class=&#34;cell border-box-sizing text_cell rendered&#34;&gt;
 &lt;div class=&#34;prompt input_prompt&#34;&gt;
 &lt;/div&gt;
 &lt;div class=&#34;inner_cell&#34;&gt;
 &lt;div class=&#34;text_cell_render border-box-sizing rendered_html&#34;&gt;
-&lt;p&gt;Now we can ground these ids in key information such as file paths, dates, and image sizes that we can join with other sources:&lt;/p&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;p&gt;Now we can ground these ids in key information such as file paths, dates, and image sizes that we can join with other sources:&lt;/p&gt;
+
 &lt;/div&gt;
 &lt;/div&gt;
+&lt;/div&gt;
+
 &lt;div class=&#34;cell border-box-sizing code_cell rendered&#34;&gt;
 &lt;div class=&#34;input&#34;&gt;
 &lt;div class=&#34;prompt input_prompt&#34;&gt;In&amp;nbsp;[47]:&lt;/div&gt;
@@ -1567,12 +2112,15 @@ Name: 19350464562, dtype: object&lt;/pre&gt;
     &lt;div class=&#34;input_area&#34;&gt;
 &lt;div class=&#34; highlight hl-ipython2&#34;&gt;&lt;pre&gt;&lt;span class=&#34;n&#34;&gt;pk&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;pd&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;DataFrame&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;json&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;load&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;open&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#39;keys.json&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)))&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;set_index&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#39;id&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
 &lt;span class=&#34;n&#34;&gt;pk&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;head&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 &lt;/div&gt;
-&lt;/div&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
 &lt;div class=&#34;output_wrapper&#34;&gt;
 &lt;div class=&#34;output&#34;&gt;
+
 
 &lt;div class=&#34;output_area&#34;&gt;&lt;div class=&#34;prompt output_prompt&#34;&gt;Out[47]:&lt;/div&gt;
 
@@ -1645,32 +2193,41 @@ Name: 19350464562, dtype: object&lt;/pre&gt;
 
 &lt;/div&gt;
 
-&lt;p&gt;&lt;/div&gt;
-&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
 &lt;div class=&#34;cell border-box-sizing text_cell rendered&#34;&gt;
 &lt;div class=&#34;prompt input_prompt&#34;&gt;
 &lt;/div&gt;
 &lt;div class=&#34;inner_cell&#34;&gt;
 &lt;div class=&#34;text_cell_render border-box-sizing rendered_html&#34;&gt;
-&lt;p&gt;Applescript reports the full image paths, but we&#39;ll need library-relative paths for our work below.&lt;/p&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;p&gt;Applescript reports the full image paths, but we&#39;ll need library-relative paths for our work below.&lt;/p&gt;
+
 &lt;/div&gt;
 &lt;/div&gt;
+&lt;/div&gt;
+
 &lt;div class=&#34;cell border-box-sizing code_cell rendered&#34;&gt;
 &lt;div class=&#34;input&#34;&gt;
 &lt;div class=&#34;prompt input_prompt&#34;&gt;In&amp;nbsp;[62]:&lt;/div&gt;
 &lt;div class=&#34;inner_cell&#34;&gt;
     &lt;div class=&#34;input_area&#34;&gt;
-&lt;div class=&#34; highlight hl-ipython2&#34;&gt;&lt;pre&gt;&lt;span class=&#34;n&#34;&gt;libloc&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;/Volumes/maryc/Pictures/iPhoto Library/&amp;#39;&lt;/span&gt;  &lt;span class=&#34;c&#34;&gt;# TODO: get from applescript?&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;&lt;span class=&#34;n&#34;&gt;pk&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#39;relativePath&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;p&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;len&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;libloc&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):]&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;for&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;p&lt;/span&gt; &lt;span class=&#34;ow&#34;&gt;in&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;pk&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;imagePath&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;&lt;span class=&#34;n&#34;&gt;pk&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;pk&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;date&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;gt;=&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;2002-09&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;amp;&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;pk&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;date&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;2002-10&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)][[&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#39;date&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;height&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;width&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;relativePath&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]]&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;div class=&#34; highlight hl-ipython2&#34;&gt;&lt;pre&gt;&lt;span class=&#34;n&#34;&gt;libloc&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;/Volumes/maryc/Pictures/iPhoto Library/&amp;#39;&lt;/span&gt;  &lt;span class=&#34;c&#34;&gt;# TODO: get from applescript?&lt;/span&gt;
+
+&lt;span class=&#34;n&#34;&gt;pk&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#39;relativePath&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;p&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;len&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;libloc&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):]&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;for&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;p&lt;/span&gt; &lt;span class=&#34;ow&#34;&gt;in&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;pk&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;imagePath&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;
+
+&lt;span class=&#34;n&#34;&gt;pk&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;pk&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;date&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;gt;=&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;2002-09&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;amp;&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;pk&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;date&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;2002-10&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)][[&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#39;date&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;height&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;width&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;relativePath&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]]&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 &lt;/div&gt;
-&lt;/div&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
 &lt;div class=&#34;output_wrapper&#34;&gt;
 &lt;div class=&#34;output&#34;&gt;
+
 
 &lt;div class=&#34;output_area&#34;&gt;&lt;div class=&#34;prompt output_prompt&#34;&gt;Out[62]:&lt;/div&gt;
 
@@ -1708,18 +2265,22 @@ Name: 19350464562, dtype: object&lt;/pre&gt;
 
 &lt;/div&gt;
 
-&lt;p&gt;&lt;/div&gt;
-&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
 &lt;div class=&#34;cell border-box-sizing text_cell rendered&#34;&gt;
 &lt;div class=&#34;prompt input_prompt&#34;&gt;
 &lt;/div&gt;
 &lt;div class=&#34;inner_cell&#34;&gt;
 &lt;div class=&#34;text_cell_render border-box-sizing rendered_html&#34;&gt;
-&lt;h2 id=&#34;iPhoto-data-without-iPhoto&#34;&gt;iPhoto data without iPhoto&lt;a class=&#34;anchor-link&#34; href=&#34;#iPhoto-data-without-iPhoto&#34;&gt;&amp;#182;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;iPhoto keeps nice sqlite3 databases.&lt;/p&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;h2 id=&#34;iPhoto-data-without-iPhoto&#34;&gt;iPhoto data without iPhoto&lt;a class=&#34;anchor-link&#34; href=&#34;#iPhoto-data-without-iPhoto&#34;&gt;&amp;#182;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;iPhoto keeps nice sqlite3 databases.&lt;/p&gt;
+
 &lt;/div&gt;
 &lt;/div&gt;
+&lt;/div&gt;
+
 &lt;div class=&#34;cell border-box-sizing code_cell rendered&#34;&gt;
 &lt;div class=&#34;input&#34;&gt;
 &lt;div class=&#34;prompt input_prompt&#34;&gt;In&amp;nbsp;[207]:&lt;/div&gt;
@@ -1727,18 +2288,23 @@ Name: 19350464562, dtype: object&lt;/pre&gt;
     &lt;div class=&#34;input_area&#34;&gt;
 &lt;div class=&#34; highlight hl-ipython2&#34;&gt;&lt;pre&gt;&lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;my_photo_db&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;path&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#39;maryc-airbook-iphoto-meta/iPhotoMain.db&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
     &lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;sqlite3&lt;/span&gt;
-    &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;sqlite3&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;connect&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;path&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;&lt;span class=&#34;n&#34;&gt;db1&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;my_photo_db&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;&lt;span class=&#34;n&#34;&gt;q&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;sqlite3&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;connect&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;path&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+
+&lt;span class=&#34;n&#34;&gt;db1&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;my_photo_db&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+
+&lt;span class=&#34;n&#34;&gt;q&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;
 &lt;span class=&#34;s&#34;&gt;select count(distinct uid) from SqPhotoInfo&lt;/span&gt;
 &lt;span class=&#34;s&#34;&gt;&amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;
 &lt;span class=&#34;n&#34;&gt;pd&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;read_sql&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;q&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;db1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 &lt;/div&gt;
-&lt;/div&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
 &lt;div class=&#34;output_wrapper&#34;&gt;
 &lt;div class=&#34;output&#34;&gt;
+
 
 &lt;div class=&#34;output_area&#34;&gt;&lt;div class=&#34;prompt output_prompt&#34;&gt;Out[207]:&lt;/div&gt;
 
@@ -1763,29 +2329,34 @@ Name: 19350464562, dtype: object&lt;/pre&gt;
 
 &lt;/div&gt;
 
-&lt;p&gt;&lt;/div&gt;
-&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
 &lt;div class=&#34;cell border-box-sizing code_cell rendered&#34;&gt;
 &lt;div class=&#34;input&#34;&gt;
 &lt;div class=&#34;prompt input_prompt&#34;&gt;In&amp;nbsp;[212]:&lt;/div&gt;
 &lt;div class=&#34;inner_cell&#34;&gt;
     &lt;div class=&#34;input_area&#34;&gt;
 &lt;div class=&#34; highlight hl-ipython2&#34;&gt;&lt;pre&gt;&lt;span class=&#34;n&#34;&gt;q&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;
-&lt;span class=&#34;s&#34;&gt;select count(&lt;em&gt;) qty, year from (&lt;/span&gt;
+&lt;span class=&#34;s&#34;&gt;select count(*) qty, year from (&lt;/span&gt;
 &lt;span class=&#34;s&#34;&gt;  select substr(datetime(photoDate +  julianday(&amp;#39;2000-01-01 00:00:00&amp;#39;)), 1, 4) year&lt;/span&gt;
 &lt;span class=&#34;s&#34;&gt;  from SqPhotoInfo&lt;/span&gt;
 &lt;span class=&#34;s&#34;&gt;) t&lt;/span&gt;
 &lt;span class=&#34;s&#34;&gt;group by year&lt;/span&gt;
-&lt;span class=&#34;s&#34;&gt;having count(&lt;/em&gt;) &amp;gt; 10&lt;/span&gt;
+&lt;span class=&#34;s&#34;&gt;having count(*) &amp;gt; 10&lt;/span&gt;
 &lt;span class=&#34;s&#34;&gt;&amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;
 &lt;span class=&#34;n&#34;&gt;pd&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;read_sql&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;q&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;db1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 &lt;/div&gt;
-&lt;/div&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
 &lt;div class=&#34;output_wrapper&#34;&gt;
 &lt;div class=&#34;output&#34;&gt;
+
 
 &lt;div class=&#34;output_area&#34;&gt;&lt;div class=&#34;prompt output_prompt&#34;&gt;Out[212]:&lt;/div&gt;
 
@@ -1832,9 +2403,11 @@ Name: 19350464562, dtype: object&lt;/pre&gt;
 
 &lt;/div&gt;
 
-&lt;p&gt;&lt;/div&gt;
-&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
 &lt;div class=&#34;cell border-box-sizing text_cell rendered&#34;&gt;
 &lt;div class=&#34;prompt input_prompt&#34;&gt;
 &lt;/div&gt;
@@ -1844,6 +2417,7 @@ Name: 19350464562, dtype: object&lt;/pre&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
+
 &lt;div class=&#34;cell border-box-sizing code_cell rendered&#34;&gt;
 &lt;div class=&#34;input&#34;&gt;
 &lt;div class=&#34;prompt input_prompt&#34;&gt;In&amp;nbsp;[195]:&lt;/div&gt;
@@ -1864,12 +2438,15 @@ Name: 19350464562, dtype: object&lt;/pre&gt;
 &lt;span class=&#34;s&#34;&gt;order by 1 desc&lt;/span&gt;
 &lt;span class=&#34;s&#34;&gt;&amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;
 &lt;span class=&#34;n&#34;&gt;pd&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;read_sql&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;q&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;db1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 &lt;/div&gt;
-&lt;/div&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
 &lt;div class=&#34;output_wrapper&#34;&gt;
 &lt;div class=&#34;output&#34;&gt;
+
 
 &lt;div class=&#34;output_area&#34;&gt;&lt;div class=&#34;prompt output_prompt&#34;&gt;Out[195]:&lt;/div&gt;
 
@@ -1977,43 +2554,52 @@ Name: 19350464562, dtype: object&lt;/pre&gt;
 
 &lt;/div&gt;
 
-&lt;p&gt;&lt;/div&gt;
-&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
 &lt;div class=&#34;cell border-box-sizing text_cell rendered&#34;&gt;
 &lt;div class=&#34;prompt input_prompt&#34;&gt;
 &lt;/div&gt;
 &lt;div class=&#34;inner_cell&#34;&gt;
 &lt;div class=&#34;text_cell_render border-box-sizing rendered_html&#34;&gt;
-&lt;h3 id=&#34;Photos-and-Images&#34;&gt;Photos and Images&lt;a class=&#34;anchor-link&#34; href=&#34;#Photos-and-Images&#34;&gt;&amp;#182;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;The model is nice and clean, separating photos, relating any number of possibly-edited images to each photo-taking event, and issuing a uuid to the photo-taking event.&lt;/p&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;h3 id=&#34;Photos-and-Images&#34;&gt;Photos and Images&lt;a class=&#34;anchor-link&#34; href=&#34;#Photos-and-Images&#34;&gt;&amp;#182;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;The model is nice and clean, separating photos, relating any number of possibly-edited images to each photo-taking event, and issuing a uuid to the photo-taking event.&lt;/p&gt;
+
 &lt;/div&gt;
 &lt;/div&gt;
+&lt;/div&gt;
+
 &lt;div class=&#34;cell border-box-sizing code_cell rendered&#34;&gt;
 &lt;div class=&#34;input&#34;&gt;
 &lt;div class=&#34;prompt input_prompt&#34;&gt;In&amp;nbsp;[139]:&lt;/div&gt;
 &lt;div class=&#34;inner_cell&#34;&gt;
     &lt;div class=&#34;input_area&#34;&gt;
-&lt;div class=&#34; highlight hl-ipython2&#34;&gt;&lt;pre&gt;&lt;span class=&#34;n&#34;&gt;q&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;&lt;span class=&#34;s&#34;&gt;select photo.primaryKey, photo.uid, datetime(photo.photoDate + julianday(&amp;#39;2000-01-01 00:00:00&amp;#39;)) as photoDate,&lt;/span&gt;
+&lt;div class=&#34; highlight hl-ipython2&#34;&gt;&lt;pre&gt;&lt;span class=&#34;n&#34;&gt;q&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;
+
+&lt;span class=&#34;s&#34;&gt;select photo.primaryKey, photo.uid, datetime(photo.photoDate + julianday(&amp;#39;2000-01-01 00:00:00&amp;#39;)) as photoDate,&lt;/span&gt;
 &lt;span class=&#34;s&#34;&gt;       photo.cameraModel, photo.archiveFilename,&lt;/span&gt;
 &lt;span class=&#34;s&#34;&gt;       fi.imageWidth, fi.imageHeight, fi.fileSize, fi.imageType, fi.version,&lt;/span&gt;
 &lt;span class=&#34;s&#34;&gt;       fl.relativePath, fl.aliasPath&lt;/span&gt;
 &lt;span class=&#34;s&#34;&gt;       -- TODO: decode fl.format&lt;/span&gt;
 &lt;span class=&#34;s&#34;&gt;from SqPhotoInfo photo&lt;/span&gt;
 &lt;span class=&#34;s&#34;&gt;join SqFileImage fi on fi.photoKey = photo.primaryKey&lt;/span&gt;
-&lt;span class=&#34;s&#34;&gt;join SqFileInfo fl on fi.sqFileInfo = fl.primaryKey&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;&lt;span class=&#34;s&#34;&gt;where fileSize &amp;gt; 0&lt;/span&gt;
+&lt;span class=&#34;s&#34;&gt;join SqFileInfo fl on fi.sqFileInfo = fl.primaryKey&lt;/span&gt;
+
+&lt;span class=&#34;s&#34;&gt;where fileSize &amp;gt; 0&lt;/span&gt;
 &lt;span class=&#34;s&#34;&gt;order by photo.photoDate desc&lt;/span&gt;
 &lt;span class=&#34;s&#34;&gt;&amp;#39;&amp;#39;&amp;#39;&lt;/span&gt;
 &lt;span class=&#34;n&#34;&gt;pdb&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;pd&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;read_sql&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;q&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;db1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
 &lt;span class=&#34;n&#34;&gt;pdb&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;head&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 &lt;/div&gt;
-&lt;/div&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
 &lt;div class=&#34;output_wrapper&#34;&gt;
 &lt;div class=&#34;output&#34;&gt;
+
 
 &lt;div class=&#34;output_area&#34;&gt;&lt;div class=&#34;prompt output_prompt&#34;&gt;Out[139]:&lt;/div&gt;
 
@@ -2120,30 +2706,37 @@ Name: 19350464562, dtype: object&lt;/pre&gt;
 
 &lt;/div&gt;
 
-&lt;p&gt;&lt;/div&gt;
-&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
 &lt;div class=&#34;cell border-box-sizing text_cell rendered&#34;&gt;
 &lt;div class=&#34;prompt input_prompt&#34;&gt;
 &lt;/div&gt;
 &lt;div class=&#34;inner_cell&#34;&gt;
 &lt;div class=&#34;text_cell_render border-box-sizing rendered_html&#34;&gt;
-&lt;h2 id=&#34;Joining-sqlite-data-with-flickr-via-applescript-key-info&#34;&gt;Joining sqlite data with flickr via applescript key info&lt;a class=&#34;anchor-link&#34; href=&#34;#Joining-sqlite-data-with-flickr-via-applescript-key-info&#34;&gt;&amp;#182;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Ah... excellent... even though there are more image files than photos, we get an exact 1-1 match when we join with our photo keys (implicitly on &lt;code&gt;relativePath&lt;/code&gt;).&lt;/p&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;h2 id=&#34;Joining-sqlite-data-with-flickr-via-applescript-key-info&#34;&gt;Joining sqlite data with flickr via applescript key info&lt;a class=&#34;anchor-link&#34; href=&#34;#Joining-sqlite-data-with-flickr-via-applescript-key-info&#34;&gt;&amp;#182;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Ah... excellent... even though there are more image files than photos, we get an exact 1-1 match when we join with our photo keys (implicitly on &lt;code&gt;relativePath&lt;/code&gt;).&lt;/p&gt;
+
 &lt;/div&gt;
 &lt;/div&gt;
+&lt;/div&gt;
+
 &lt;div class=&#34;cell border-box-sizing code_cell rendered&#34;&gt;
 &lt;div class=&#34;input&#34;&gt;
 &lt;div class=&#34;prompt input_prompt&#34;&gt;In&amp;nbsp;[109]:&lt;/div&gt;
 &lt;div class=&#34;inner_cell&#34;&gt;
     &lt;div class=&#34;input_area&#34;&gt;
 &lt;div class=&#34; highlight hl-ipython2&#34;&gt;&lt;pre&gt;&lt;span class=&#34;nb&#34;&gt;len&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;pdb&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;),&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;len&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;pk&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;),&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;len&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;pdb&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;merge&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;pk&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;))&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 &lt;/div&gt;
-&lt;/div&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
 &lt;div class=&#34;output_wrapper&#34;&gt;
 &lt;div class=&#34;output&#34;&gt;
+
 
 &lt;div class=&#34;output_area&#34;&gt;&lt;div class=&#34;prompt output_prompt&#34;&gt;Out[109]:&lt;/div&gt;
 
@@ -2154,9 +2747,11 @@ Name: 19350464562, dtype: object&lt;/pre&gt;
 
 &lt;/div&gt;
 
-&lt;p&gt;&lt;/div&gt;
-&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
 &lt;div class=&#34;cell border-box-sizing code_cell rendered&#34;&gt;
 &lt;div class=&#34;input&#34;&gt;
 &lt;div class=&#34;prompt input_prompt&#34;&gt;In&amp;nbsp;[150]:&lt;/div&gt;
@@ -2164,12 +2759,15 @@ Name: 19350464562, dtype: object&lt;/pre&gt;
     &lt;div class=&#34;input_area&#34;&gt;
 &lt;div class=&#34; highlight hl-ipython2&#34;&gt;&lt;pre&gt;&lt;span class=&#34;n&#34;&gt;pkdb&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;pk&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;reset_index&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;merge&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;pdb&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;set_index&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#39;id&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
 &lt;span class=&#34;n&#34;&gt;pkdb&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;head&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 &lt;/div&gt;
-&lt;/div&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
 &lt;div class=&#34;output_wrapper&#34;&gt;
 &lt;div class=&#34;output&#34;&gt;
+
 
 &lt;div class=&#34;output_area&#34;&gt;&lt;div class=&#34;prompt output_prompt&#34;&gt;Out[150]:&lt;/div&gt;
 
@@ -2326,31 +2924,39 @@ Name: 19350464562, dtype: object&lt;/pre&gt;
 
 &lt;/div&gt;
 
-&lt;p&gt;&lt;/div&gt;
-&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
 &lt;div class=&#34;cell border-box-sizing text_cell rendered&#34;&gt;
 &lt;div class=&#34;prompt input_prompt&#34;&gt;
 &lt;/div&gt;
 &lt;div class=&#34;inner_cell&#34;&gt;
 &lt;div class=&#34;text_cell_render border-box-sizing rendered_html&#34;&gt;
-&lt;p&gt;Merging with the &lt;code&gt;upload_map&lt;/code&gt; gives us a clear correspondence between iPhoto applescript ids and flickr ids.&lt;/p&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;p&gt;Merging with the &lt;code&gt;upload_map&lt;/code&gt; gives us a clear correspondence between iPhoto applescript ids and flickr ids.&lt;/p&gt;
+
 &lt;/div&gt;
 &lt;/div&gt;
+&lt;/div&gt;
+
 &lt;div class=&#34;cell border-box-sizing code_cell rendered&#34;&gt;
 &lt;div class=&#34;input&#34;&gt;
 &lt;div class=&#34;prompt input_prompt&#34;&gt;In&amp;nbsp;[151]:&lt;/div&gt;
 &lt;div class=&#34;inner_cell&#34;&gt;
     &lt;div class=&#34;input_area&#34;&gt;
-&lt;div class=&#34; highlight hl-ipython2&#34;&gt;&lt;pre&gt;&lt;span class=&#34;n&#34;&gt;upkdb&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;upload_map&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;merge&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;pkdb&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;left_on&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#39;apple&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;right_index&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;bp&#34;&gt;True&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;&lt;span class=&#34;nb&#34;&gt;len&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;upkdb&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;div class=&#34; highlight hl-ipython2&#34;&gt;&lt;pre&gt;&lt;span class=&#34;n&#34;&gt;upkdb&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;upload_map&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;merge&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;pkdb&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;left_on&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#39;apple&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;right_index&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;bp&#34;&gt;True&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+
+&lt;span class=&#34;nb&#34;&gt;len&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;upkdb&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 &lt;/div&gt;
-&lt;/div&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
 &lt;div class=&#34;output_wrapper&#34;&gt;
 &lt;div class=&#34;output&#34;&gt;
+
 
 &lt;div class=&#34;output_area&#34;&gt;&lt;div class=&#34;prompt output_prompt&#34;&gt;Out[151]:&lt;/div&gt;
 
@@ -2361,21 +2967,26 @@ Name: 19350464562, dtype: object&lt;/pre&gt;
 
 &lt;/div&gt;
 
-&lt;p&gt;&lt;/div&gt;
-&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
 &lt;div class=&#34;cell border-box-sizing code_cell rendered&#34;&gt;
 &lt;div class=&#34;input&#34;&gt;
 &lt;div class=&#34;prompt input_prompt&#34;&gt;In&amp;nbsp;[152]:&lt;/div&gt;
 &lt;div class=&#34;inner_cell&#34;&gt;
     &lt;div class=&#34;input_area&#34;&gt;
 &lt;div class=&#34; highlight hl-ipython2&#34;&gt;&lt;pre&gt;&lt;span class=&#34;n&#34;&gt;upkdb&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;head&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 &lt;/div&gt;
-&lt;/div&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
 &lt;div class=&#34;output_wrapper&#34;&gt;
 &lt;div class=&#34;output&#34;&gt;
+
 
 &lt;div class=&#34;output_area&#34;&gt;&lt;div class=&#34;prompt output_prompt&#34;&gt;Out[152]:&lt;/div&gt;
 
@@ -2524,19 +3135,23 @@ Name: 19350464562, dtype: object&lt;/pre&gt;
 
 &lt;/div&gt;
 
-&lt;p&gt;&lt;/div&gt;
-&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
 &lt;div class=&#34;cell border-box-sizing text_cell rendered&#34;&gt;
 &lt;div class=&#34;prompt input_prompt&#34;&gt;
 &lt;/div&gt;
 &lt;div class=&#34;inner_cell&#34;&gt;
 &lt;div class=&#34;text_cell_render border-box-sizing rendered_html&#34;&gt;
 &lt;h2 id=&#34;Fixing-Dates&#34;&gt;Fixing Dates&lt;a class=&#34;anchor-link&#34; href=&#34;#Fixing-Dates&#34;&gt;&amp;#182;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;Let&#39;s grab flickr photos with unkonwn date taken (with upload date, title, and original size).&lt;/p&gt;
-&lt;p&gt;Then merge with the date information from the sqlite3 db.&lt;/p&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;p&gt;Then merge with the date information from the sqlite3 db.&lt;/p&gt;
+
 &lt;/div&gt;
 &lt;/div&gt;
+&lt;/div&gt;
+
 &lt;div class=&#34;cell border-box-sizing code_cell rendered&#34;&gt;
 &lt;div class=&#34;input&#34;&gt;
 &lt;div class=&#34;prompt input_prompt&#34;&gt;In&amp;nbsp;[178]:&lt;/div&gt;
@@ -2549,12 +3164,15 @@ Name: 19350464562, dtype: object&lt;/pre&gt;
     &lt;span class=&#34;s&#34;&gt;&amp;#39;flickr&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;uid&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]]&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;set_index&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#39;flickr&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
 &lt;span class=&#34;k&#34;&gt;print&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;len&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;tofix&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;),&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;len&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;fixed&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
 &lt;span class=&#34;n&#34;&gt;fixed&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;head&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 &lt;/div&gt;
-&lt;/div&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
 &lt;div class=&#34;output_wrapper&#34;&gt;
 &lt;div class=&#34;output&#34;&gt;
+
 
 &lt;div class=&#34;output_area&#34;&gt;&lt;div class=&#34;prompt&#34;&gt;&lt;/div&gt;
 &lt;div class=&#34;output_subarea output_stream output_stdout output_text&#34;&gt;
@@ -2669,18 +3287,22 @@ Name: 19350464562, dtype: object&lt;/pre&gt;
 
 &lt;/div&gt;
 
-&lt;p&gt;&lt;/div&gt;
-&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
 &lt;div class=&#34;cell border-box-sizing text_cell rendered&#34;&gt;
 &lt;div class=&#34;prompt input_prompt&#34;&gt;
 &lt;/div&gt;
 &lt;div class=&#34;inner_cell&#34;&gt;
 &lt;div class=&#34;text_cell_render border-box-sizing rendered_html&#34;&gt;
-&lt;p&gt;For this, we need write access.&lt;/p&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;p&gt;For this, we need write access.&lt;/p&gt;
+
 &lt;/div&gt;
 &lt;/div&gt;
+&lt;/div&gt;
+
 &lt;div class=&#34;cell border-box-sizing code_cell rendered&#34;&gt;
 &lt;div class=&#34;input&#34;&gt;
 &lt;div class=&#34;prompt input_prompt&#34;&gt;In&amp;nbsp;[169]:&lt;/div&gt;
@@ -2690,14 +3312,18 @@ Name: 19350464562, dtype: object&lt;/pre&gt;
     &lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;pathlib&lt;/span&gt;
     &lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;flickrapi&lt;/span&gt;
     &lt;span class=&#34;n&#34;&gt;api_secret&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;pathlib&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Path&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#39;flickr_api_secret&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;open&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;read&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;strip&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
-    &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;flickdata&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Write&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;make&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;flickrapi&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;api_secret&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;user_id&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;&lt;span class=&#34;n&#34;&gt;edit&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;myFlickrEdit&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+    &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;flickdata&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Write&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;make&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;flickrapi&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;api_secret&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;user_id&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
+
+&lt;span class=&#34;n&#34;&gt;edit&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;myFlickrEdit&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 &lt;/div&gt;
-&lt;/div&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
 &lt;div class=&#34;output_wrapper&#34;&gt;
 &lt;div class=&#34;output&#34;&gt;
+
 
 &lt;div class=&#34;output_area&#34;&gt;&lt;div class=&#34;prompt&#34;&gt;&lt;/div&gt;
 &lt;div class=&#34;output_subarea output_stream output_stderr output_text&#34;&gt;
@@ -2710,31 +3336,36 @@ INFO:flickrapi.core:REST Parser: using xml.etree.cElementTree
 &lt;/div&gt;
 
 &lt;/div&gt;
+&lt;/div&gt;
 
 &lt;/div&gt;
 
-&lt;p&gt;&lt;/div&gt;
 &lt;div class=&#34;cell border-box-sizing text_cell rendered&#34;&gt;
 &lt;div class=&#34;prompt input_prompt&#34;&gt;
 &lt;/div&gt;
 &lt;div class=&#34;inner_cell&#34;&gt;
 &lt;div class=&#34;text_cell_render border-box-sizing rendered_html&#34;&gt;
-&lt;p&gt;Let&#39;s work with one photo at first, verifying with the flickr web UI as we go.&lt;/p&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;p&gt;Let&#39;s work with one photo at first, verifying with the flickr web UI as we go.&lt;/p&gt;
+
 &lt;/div&gt;
 &lt;/div&gt;
+&lt;/div&gt;
+
 &lt;div class=&#34;cell border-box-sizing code_cell rendered&#34;&gt;
 &lt;div class=&#34;input&#34;&gt;
 &lt;div class=&#34;prompt input_prompt&#34;&gt;In&amp;nbsp;[179]:&lt;/div&gt;
 &lt;div class=&#34;inner_cell&#34;&gt;
     &lt;div class=&#34;input_area&#34;&gt;
 &lt;div class=&#34; highlight hl-ipython2&#34;&gt;&lt;pre&gt;&lt;span class=&#34;n&#34;&gt;Image&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;url&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;photo&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;loc&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;19426161436&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;url_t&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 &lt;/div&gt;
-&lt;/div&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
 &lt;div class=&#34;output_wrapper&#34;&gt;
 &lt;div class=&#34;output&#34;&gt;
+
 
 &lt;div class=&#34;output_area&#34;&gt;&lt;div class=&#34;prompt output_prompt&#34;&gt;Out[179]:&lt;/div&gt;
 
@@ -2744,21 +3375,26 @@ INFO:flickrapi.core:REST Parser: using xml.etree.cElementTree
 
 &lt;/div&gt;
 
-&lt;p&gt;&lt;/div&gt;
-&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
 &lt;div class=&#34;cell border-box-sizing code_cell rendered&#34;&gt;
 &lt;div class=&#34;input&#34;&gt;
 &lt;div class=&#34;prompt input_prompt&#34;&gt;In&amp;nbsp;[180]:&lt;/div&gt;
 &lt;div class=&#34;inner_cell&#34;&gt;
     &lt;div class=&#34;input_area&#34;&gt;
 &lt;div class=&#34; highlight hl-ipython2&#34;&gt;&lt;pre&gt;&lt;span class=&#34;n&#34;&gt;fixed&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;loc&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;19426161436&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;photoDate&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 &lt;/div&gt;
-&lt;/div&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
 &lt;div class=&#34;output_wrapper&#34;&gt;
 &lt;div class=&#34;output&#34;&gt;
+
 
 &lt;div class=&#34;output_area&#34;&gt;&lt;div class=&#34;prompt output_prompt&#34;&gt;Out[180]:&lt;/div&gt;
 
@@ -2769,21 +3405,26 @@ INFO:flickrapi.core:REST Parser: using xml.etree.cElementTree
 
 &lt;/div&gt;
 
-&lt;p&gt;&lt;/div&gt;
-&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
 &lt;div class=&#34;cell border-box-sizing code_cell rendered&#34;&gt;
 &lt;div class=&#34;input&#34;&gt;
 &lt;div class=&#34;prompt input_prompt&#34;&gt;In&amp;nbsp;[181]:&lt;/div&gt;
 &lt;div class=&#34;inner_cell&#34;&gt;
     &lt;div class=&#34;input_area&#34;&gt;
 &lt;div class=&#34; highlight hl-ipython2&#34;&gt;&lt;pre&gt;&lt;span class=&#34;n&#34;&gt;edit&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;setDates&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;19426161436&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;date_taken&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;fixed&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;loc&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;19426161436&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;photoDate&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 &lt;/div&gt;
-&lt;/div&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
 &lt;div class=&#34;output_wrapper&#34;&gt;
 &lt;div class=&#34;output&#34;&gt;
+
 
 &lt;div class=&#34;output_area&#34;&gt;&lt;div class=&#34;prompt&#34;&gt;&lt;/div&gt;
 &lt;div class=&#34;output_subarea output_stream output_stderr output_text&#34;&gt;
@@ -2803,30 +3444,37 @@ INFO:requests.packages.urllib3.connectionpool:Starting new HTTPS connection (1):
 
 &lt;/div&gt;
 
-&lt;p&gt;&lt;/div&gt;
-&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
 &lt;div class=&#34;cell border-box-sizing text_cell rendered&#34;&gt;
 &lt;div class=&#34;prompt input_prompt&#34;&gt;
 &lt;/div&gt;
 &lt;div class=&#34;inner_cell&#34;&gt;
 &lt;div class=&#34;text_cell_render border-box-sizing rendered_html&#34;&gt;
 &lt;p&gt;Now we can iterate over all the fixes.&lt;/p&gt;
-&lt;p&gt;Incremental updates came in handy here. At first, I forgot to rate-limit my requests and flickr noticed after a few hundred. I went back and fetched metadata for recent photos in my photostream again and finished off the rest.&lt;/p&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;p&gt;Incremental updates came in handy here. At first, I forgot to rate-limit my requests and flickr noticed after a few hundred. I went back and fetched metadata for recent photos in my photostream again and finished off the rest.&lt;/p&gt;
+
 &lt;/div&gt;
 &lt;/div&gt;
+&lt;/div&gt;
+
 &lt;div class=&#34;cell border-box-sizing code_cell rendered&#34;&gt;
 &lt;div class=&#34;input&#34;&gt;
 &lt;div class=&#34;prompt input_prompt&#34;&gt;In&amp;nbsp;[182]:&lt;/div&gt;
 &lt;div class=&#34;inner_cell&#34;&gt;
     &lt;div class=&#34;input_area&#34;&gt;
 &lt;div class=&#34; highlight hl-ipython2&#34;&gt;&lt;pre&gt;&lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;time&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 &lt;/div&gt;
-&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
 &lt;div class=&#34;cell border-box-sizing code_cell rendered&#34;&gt;
 &lt;div class=&#34;input&#34;&gt;
 &lt;div class=&#34;prompt input_prompt&#34;&gt;In&amp;nbsp;[185]:&lt;/div&gt;
@@ -2837,12 +3485,15 @@ INFO:requests.packages.urllib3.connectionpool:Starting new HTTPS connection (1):
         &lt;span class=&#34;n&#34;&gt;edit&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;setDates&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;pid&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;date_taken&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;photo&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;photoDate&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
         &lt;span class=&#34;n&#34;&gt;time&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;sleep&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;mf&#34;&gt;0.5&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
 &lt;span class=&#34;n&#34;&gt;do_fixes&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
 &lt;/div&gt;
-&lt;/div&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
 &lt;div class=&#34;output_wrapper&#34;&gt;
 &lt;div class=&#34;output&#34;&gt;
+
 
 &lt;div class=&#34;output_area&#34;&gt;&lt;div class=&#34;prompt&#34;&gt;&lt;/div&gt;
 &lt;div class=&#34;output_subarea output_stream output_stderr output_text&#34;&gt;
@@ -3073,10 +3724,10 @@ INFO:requests.packages.urllib3.connectionpool:Starting new HTTPS connection (1):
 &lt;/div&gt;
 
 &lt;/div&gt;
+&lt;/div&gt;
 
 &lt;/div&gt;
 
-&lt;p&gt;&lt;/div&gt;
 &lt;div class=&#34;cell border-box-sizing text_cell rendered&#34;&gt;
 &lt;div class=&#34;prompt input_prompt&#34;&gt;
 &lt;/div&gt;
@@ -3090,19 +3741,22 @@ INFO:requests.packages.urllib3.connectionpool:Starting new HTTPS connection (1):
 &lt;/li&gt;
 &lt;li&gt;sync events... using photosets?&lt;/li&gt;
 &lt;li&gt;sync faces&lt;/li&gt;
-&lt;/ul&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;/ul&gt;
+
 &lt;/div&gt;
 &lt;/div&gt;
+&lt;/div&gt;
+
 &lt;div class=&#34;cell border-box-sizing text_cell rendered&#34;&gt;
 &lt;div class=&#34;prompt input_prompt&#34;&gt;
 &lt;/div&gt;
 &lt;div class=&#34;inner_cell&#34;&gt;
 &lt;div class=&#34;text_cell_render border-box-sizing rendered_html&#34;&gt;
-&lt;p&gt;Additional notes bookmarked under: &lt;a href=&#34;https://www.diigo.com/user/dckc-madmode/mac%20photos&#34;&gt;mac photos&lt;/a&gt;, &lt;a href=&#34;https://www.diigo.com/user/dckc-madmode/mac%20sysadmin&#34;&gt;mac sysadmin&lt;/a&gt;&lt;/p&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;p&gt;Additional notes bookmarked under: &lt;a href=&#34;https://www.diigo.com/user/dckc-madmode/mac%20photos&#34;&gt;mac photos&lt;/a&gt;, &lt;a href=&#34;https://www.diigo.com/user/dckc-madmode/mac%20sysadmin&#34;&gt;mac sysadmin&lt;/a&gt;&lt;/p&gt;
+
 &lt;/div&gt;
-&lt;/div&gt;&lt;/p&gt;</description>
+&lt;/div&gt;
+&lt;/div&gt;</description>
             <pubDate>Tue, 07 Jul 2015 00:00:00 +0000</pubDate>
             <guid>http://www.madmode.com//2015/photo-flickr-explore/</guid>
         </item>
@@ -3891,29 +4545,36 @@ In&amp;nbsp;[1]:
 &lt;span class=&#34;n&#34;&gt;mm_ipy&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;imp&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;load_source&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#39;mm_ipy&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;s&#34;&gt;&amp;#39;code/ipynb_pub/mm_ipy.py&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
-&lt;p&gt;&lt;/div&gt;
-&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
 &lt;div class=&#34;text_cell_render border-box-sizing rendered_html&#34;&gt;
 &lt;p&gt;Then let&#39;s connect the dots between rst markup in documentation and HTML renditions of values in ipython notebook cell outputs:&lt;/p&gt;
 &lt;/div&gt;
+
 &lt;div class=&#34;cell border-box-sizing code_cell vbox&#34;&gt;
 &lt;div class=&#34;input hbox&#34;&gt;
 &lt;div class=&#34;prompt input_prompt&#34;&gt;
 In&amp;nbsp;[2]:
 &lt;/div&gt;
 &lt;div class=&#34;input_area box-flex1&#34;&gt;
-&lt;div class=&#34;highlight&#34;&gt;&lt;pre&gt;&lt;span class=&#34;kn&#34;&gt;from&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;docutils.core&lt;/span&gt; &lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;publish_parts&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;&lt;span class=&#34;k&#34;&gt;class&lt;/span&gt; &lt;span class=&#34;nc&#34;&gt;Doc&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;object&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
-    &lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;&lt;strong&gt;init&lt;/strong&gt;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;it&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
-        &lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;it&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;it&lt;/span&gt;&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;&amp;lt;span class=&#34;k&#34;&amp;gt;def&amp;lt;/span&amp;gt; &amp;lt;span class=&#34;nf&#34;&amp;gt;_repr_html_&amp;lt;/span&amp;gt;&amp;lt;span class=&#34;p&#34;&amp;gt;(&amp;lt;/span&amp;gt;&amp;lt;span class=&#34;bp&#34;&amp;gt;self&amp;lt;/span&amp;gt;&amp;lt;span class=&#34;p&#34;&amp;gt;):&amp;lt;/span&amp;gt;
-    &amp;lt;span class=&#34;k&#34;&amp;gt;return&amp;lt;/span&amp;gt; &amp;lt;span class=&#34;n&#34;&amp;gt;publish_parts&amp;lt;/span&amp;gt;&amp;lt;span class=&#34;p&#34;&amp;gt;(&amp;lt;/span&amp;gt;&amp;lt;span class=&#34;bp&#34;&amp;gt;self&amp;lt;/span&amp;gt;&amp;lt;span class=&#34;o&#34;&amp;gt;.&amp;lt;/span&amp;gt;&amp;lt;span class=&#34;n&#34;&amp;gt;it&amp;lt;/span&amp;gt;&amp;lt;span class=&#34;o&#34;&amp;gt;.&amp;lt;/span&amp;gt;&amp;lt;span class=&#34;n&#34;&amp;gt;__doc__&amp;lt;/span&amp;gt;&amp;lt;span class=&#34;p&#34;&amp;gt;,&amp;lt;/span&amp;gt; &amp;lt;span class=&#34;n&#34;&amp;gt;writer_name&amp;lt;/span&amp;gt;&amp;lt;span class=&#34;o&#34;&amp;gt;=&amp;lt;/span&amp;gt;&amp;lt;span class=&#34;s&#34;&amp;gt;&amp;amp;#39;html&amp;amp;#39;&amp;lt;/span&amp;gt;&amp;lt;span class=&#34;p&#34;&amp;gt;)[&amp;lt;/span&amp;gt;&amp;lt;span class=&#34;s&#34;&amp;gt;&amp;amp;#39;html_body&amp;amp;#39;&amp;lt;/span&amp;gt;&amp;lt;span class=&#34;p&#34;&amp;gt;]&amp;lt;/span&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
-&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre&gt;&lt;span class=&#34;kn&#34;&gt;from&lt;/span&gt; &lt;span class=&#34;nn&#34;&gt;docutils.core&lt;/span&gt; &lt;span class=&#34;kn&#34;&gt;import&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;publish_parts&lt;/span&gt;
+
+&lt;span class=&#34;k&#34;&gt;class&lt;/span&gt; &lt;span class=&#34;nc&#34;&gt;Doc&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;object&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
+    &lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;__init__&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;it&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
+        &lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;it&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;it&lt;/span&gt;
+
+    &lt;span class=&#34;k&#34;&gt;def&lt;/span&gt; &lt;span class=&#34;nf&#34;&gt;_repr_html_&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;):&lt;/span&gt;
+        &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;publish_parts&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;bp&#34;&gt;self&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;it&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;__doc__&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;writer_name&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#39;html&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)[&lt;/span&gt;&lt;span class=&#34;s&#34;&gt;&amp;#39;html_body&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
 &lt;div class=&#34;cell border-box-sizing code_cell vbox&#34;&gt;
 &lt;div class=&#34;input hbox&#34;&gt;
 &lt;div class=&#34;prompt input_prompt&#34;&gt;
@@ -3921,11 +4582,14 @@ In&amp;nbsp;[3]:
 &lt;/div&gt;
 &lt;div class=&#34;input_area box-flex1&#34;&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre&gt;&lt;span class=&#34;n&#34;&gt;Doc&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;mm_ipy&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
-&lt;/div&gt;&lt;/p&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+
 &lt;div class=&#34;vbox output_wrapper&#34;&gt;
 &lt;div class=&#34;output vbox&#34;&gt;
+
 
 &lt;div class=&#34;hbox output_area&#34;&gt;&lt;div class=&#34;prompt output_prompt&#34;&gt;
     Out[3]:&lt;/div&gt;
@@ -3957,14 +4621,18 @@ Matthias Bussonnier (Carreau) Dec 01, 2013&lt;/li&gt;
 
 &lt;/div&gt;
 
-&lt;p&gt;&lt;/div&gt;
-&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
-&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
 &lt;div class=&#34;text_cell_render border-box-sizing rendered_html&#34;&gt;
 &lt;p&gt;The notebook should have some article metadata in a markdown cell surrounded by a certain kind of pre tags:&lt;/p&gt;
 &lt;/div&gt;
+
 &lt;div class=&#34;cell border-box-sizing code_cell vbox&#34;&gt;
 &lt;div class=&#34;input hbox&#34;&gt;
 &lt;div class=&#34;prompt input_prompt&#34;&gt;
@@ -3972,11 +4640,14 @@ In&amp;nbsp;[4]:
 &lt;/div&gt;
 &lt;div class=&#34;input_area box-flex1&#34;&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre&gt;&lt;span class=&#34;n&#34;&gt;Doc&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;mm_ipy&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;article_meta&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
-&lt;/div&gt;&lt;/p&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+
 &lt;div class=&#34;vbox output_wrapper&#34;&gt;
 &lt;div class=&#34;output vbox&#34;&gt;
+
 
 &lt;div class=&#34;hbox output_area&#34;&gt;&lt;div class=&#34;prompt output_prompt&#34;&gt;
     Out[4]:&lt;/div&gt;
@@ -4004,11 +4675,14 @@ for details).&lt;/p&gt;
 
 &lt;/div&gt;
 
-&lt;p&gt;&lt;/div&gt;
-&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
-&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
 &lt;div class=&#34;cell border-box-sizing code_cell vbox&#34;&gt;
 &lt;div class=&#34;input hbox&#34;&gt;
 &lt;div class=&#34;prompt input_prompt&#34;&gt;
@@ -4016,11 +4690,14 @@ In&amp;nbsp;[5]:
 &lt;/div&gt;
 &lt;div class=&#34;input_area box-flex1&#34;&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre&gt;&lt;span class=&#34;n&#34;&gt;Doc&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;mm_ipy&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;grok_yaml&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
-&lt;/div&gt;&lt;/p&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+
 &lt;div class=&#34;vbox output_wrapper&#34;&gt;
 &lt;div class=&#34;output vbox&#34;&gt;
+
 
 &lt;div class=&#34;hbox output_area&#34;&gt;&lt;div class=&#34;prompt output_prompt&#34;&gt;
     Out[5]:&lt;/div&gt;
@@ -4053,14 +4730,18 @@ In&amp;nbsp;[5]:
 
 &lt;/div&gt;
 
-&lt;p&gt;&lt;/div&gt;
-&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
-&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
 &lt;div class=&#34;text_cell_render border-box-sizing rendered_html&#34;&gt;
 &lt;h2 id=&#34;Packages-from-apt-and-PyPI&#34;&gt;Packages from apt and PyPI&lt;a class=&#34;anchor-link&#34; href=&#34;#Packages-from-apt-and-PyPI&#34;&gt;&amp;#182;&lt;/a&gt;&lt;/h2&gt;
-&lt;/div&gt;&lt;/p&gt;
+&lt;/div&gt;
+
 &lt;div class=&#34;text_cell_render border-box-sizing rendered_html&#34;&gt;
 &lt;p&gt;The container doesn&#39;t have access to packages installed in the host system via pip or apt-get. But I can install from pypi within the container.&lt;/p&gt;
 &lt;p&gt;Installing from within the Dockerfile makes the package part of the container, but it involves killing and re-starting the container. And it feels less minimal/modular somehow.&lt;/p&gt;
@@ -4212,13 +4893,14 @@ In&amp;nbsp;[1]:
 &lt;/pre&gt;&lt;/div&gt;
 
 &lt;/div&gt;
+&lt;/div&gt;
 
 &lt;/div&gt;
 
-&lt;p&gt;&lt;/div&gt;
 &lt;div class=&#34;text_cell_render border-box-sizing rendered_html&#34;&gt;
 &lt;h2 id=&#34;Formal-Logic-in-Python-(FLiP)&#34;&gt;Formal Logic in Python (FLiP)&lt;a class=&#34;anchor-link&#34; href=&#34;#Formal-Logic-in-Python-(FLiP)&#34;&gt;&amp;#182;&lt;/a&gt;&lt;/h2&gt;
-&lt;/div&gt;&lt;/p&gt;
+&lt;/div&gt;
+
 &lt;div class=&#34;text_cell_render border-box-sizing rendered_html&#34;&gt;
 &lt;p&gt;I&#39;m increasingly happy with the IPython notebook for immersive hypertext editing with integrated computation. I&#39;d like to integrate it with the idris REPL, but meanwhile, a search for &lt;strong&gt;python&lt;/strong&gt; and &lt;strong&gt;natural deduction&lt;/strong&gt; turned up &lt;a href=&#34;https://pypi.python.org/pypi/FLiP/&#34;&gt;FLiP&lt;/a&gt;.&lt;/p&gt;
 &lt;/div&gt;
@@ -4237,13 +4919,14 @@ In&amp;nbsp;[2]:
 &lt;/pre&gt;&lt;/div&gt;
 
 &lt;/div&gt;
+&lt;/div&gt;
 
 &lt;/div&gt;
 
-&lt;p&gt;&lt;/div&gt;
 &lt;div class=&#34;text_cell_render border-box-sizing rendered_html&#34;&gt;
 &lt;p&gt;Python syntax is used to enter formulas and proof steps. FLiP then generates a more traditional notation:&lt;/p&gt;
 &lt;/div&gt;
+
 &lt;div class=&#34;cell border-box-sizing code_cell vbox&#34;&gt;
 &lt;div class=&#34;input hbox&#34;&gt;
 &lt;div class=&#34;prompt input_prompt&#34;&gt;
@@ -4252,11 +4935,14 @@ In&amp;nbsp;[3]:
 &lt;div class=&#34;input_area box-flex1&#34;&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre&gt;&lt;span class=&#34;n&#34;&gt;clear&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
 &lt;span class=&#34;n&#34;&gt;checkp&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;And&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;p&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;q&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;),&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;assume&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
-&lt;/div&gt;&lt;/p&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+
 &lt;div class=&#34;vbox output_wrapper&#34;&gt;
 &lt;div class=&#34;output vbox&#34;&gt;
+
 
 &lt;div class=&#34;hbox output_area&#34;&gt;&lt;div class=&#34;prompt&#34;&gt;&lt;/div&gt;
 &lt;div class=&#34;box-flex1 output_subarea output_stream output_stdout&#34;&gt;
@@ -4265,15 +4951,17 @@ In&amp;nbsp;[3]:
 
 &lt;/pre&gt;
 &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
 
 &lt;/div&gt;
 
-&lt;p&gt;&lt;/div&gt;
-&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
 &lt;div class=&#34;text_cell_render border-box-sizing rendered_html&#34;&gt;
 &lt;p&gt;After the assumption, we can apply some elimination and introduction rules:&lt;/p&gt;
 &lt;/div&gt;
+
 &lt;div class=&#34;cell border-box-sizing code_cell vbox&#34;&gt;
 &lt;div class=&#34;input hbox&#34;&gt;
 &lt;div class=&#34;prompt input_prompt&#34;&gt;
@@ -4281,11 +4969,14 @@ In&amp;nbsp;[4]:
 &lt;/div&gt;
 &lt;div class=&#34;input_area box-flex1&#34;&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre&gt;&lt;span class=&#34;n&#34;&gt;apropos&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;And&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
-&lt;/div&gt;&lt;/p&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+
 &lt;div class=&#34;vbox output_wrapper&#34;&gt;
 &lt;div class=&#34;output vbox&#34;&gt;
+
 
 &lt;div class=&#34;hbox output_area&#34;&gt;&lt;div class=&#34;prompt&#34;&gt;&lt;/div&gt;
 &lt;div class=&#34;box-flex1 output_subarea output_stream output_stdout&#34;&gt;
@@ -4296,12 +4987,13 @@ In&amp;nbsp;[4]:
 
 &lt;/pre&gt;
 &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
 
 &lt;/div&gt;
 
-&lt;p&gt;&lt;/div&gt;
-&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
 &lt;div class=&#34;cell border-box-sizing code_cell vbox&#34;&gt;
 &lt;div class=&#34;input hbox&#34;&gt;
 &lt;div class=&#34;prompt input_prompt&#34;&gt;
@@ -4311,11 +5003,14 @@ In&amp;nbsp;[5]:
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre&gt;&lt;span class=&#34;n&#34;&gt;rapply&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ael&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
 &lt;span class=&#34;n&#34;&gt;rapply&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;aer&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
 &lt;span class=&#34;n&#34;&gt;rapply&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;ai&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
-&lt;/div&gt;&lt;/p&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+
 &lt;div class=&#34;vbox output_wrapper&#34;&gt;
 &lt;div class=&#34;output vbox&#34;&gt;
+
 
 &lt;div class=&#34;hbox output_area&#34;&gt;&lt;div class=&#34;prompt&#34;&gt;&lt;/div&gt;
 &lt;div class=&#34;box-flex1 output_subarea output_stream output_stdout&#34;&gt;
@@ -4326,15 +5021,17 @@ In&amp;nbsp;[5]:
 
 &lt;/pre&gt;
 &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
 
 &lt;/div&gt;
 
-&lt;p&gt;&lt;/div&gt;
-&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
 &lt;div class=&#34;text_cell_render border-box-sizing rendered_html&#34;&gt;
 &lt;p&gt;That much was pretty obvious, but to use subproofs, I had to read the documentation:&lt;/p&gt;
 &lt;/div&gt;
+
 &lt;div class=&#34;cell border-box-sizing code_cell vbox&#34;&gt;
 &lt;div class=&#34;input hbox&#34;&gt;
 &lt;div class=&#34;prompt input_prompt&#34;&gt;
@@ -4342,11 +5039,14 @@ In&amp;nbsp;[6]:
 &lt;/div&gt;
 &lt;div class=&#34;input_area box-flex1&#34;&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre&gt;&lt;span class=&#34;n&#34;&gt;checkp&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Impl&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;And&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;p&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;q&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;),&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;And&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;q&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;p&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)),&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;impli&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;3&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
-&lt;/div&gt;&lt;/p&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+
 &lt;div class=&#34;vbox output_wrapper&#34;&gt;
 &lt;div class=&#34;output vbox&#34;&gt;
+
 
 &lt;div class=&#34;hbox output_area&#34;&gt;&lt;div class=&#34;prompt&#34;&gt;&lt;/div&gt;
 &lt;div class=&#34;box-flex1 output_subarea output_stream output_stdout&#34;&gt;
@@ -4355,15 +5055,17 @@ In&amp;nbsp;[6]:
 
 &lt;/pre&gt;
 &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
 
 &lt;/div&gt;
 
-&lt;p&gt;&lt;/div&gt;
-&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
 &lt;div class=&#34;text_cell_render border-box-sizing rendered_html&#34;&gt;
 &lt;p&gt;The whole proof looks pretty much like the example from chapter 4:&lt;/p&gt;
 &lt;/div&gt;
+
 &lt;div class=&#34;cell border-box-sizing code_cell vbox&#34;&gt;
 &lt;div class=&#34;input hbox&#34;&gt;
 &lt;div class=&#34;prompt input_prompt&#34;&gt;
@@ -4371,11 +5073,14 @@ In&amp;nbsp;[7]:
 &lt;/div&gt;
 &lt;div class=&#34;input_area box-flex1&#34;&gt;
 &lt;div class=&#34;highlight&#34;&gt;&lt;pre&gt;&lt;span class=&#34;n&#34;&gt;pp&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
-&lt;/div&gt;&lt;/p&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
+
 &lt;div class=&#34;vbox output_wrapper&#34;&gt;
 &lt;div class=&#34;output vbox&#34;&gt;
+
 
 &lt;div class=&#34;hbox output_area&#34;&gt;&lt;div class=&#34;prompt&#34;&gt;&lt;/div&gt;
 &lt;div class=&#34;box-flex1 output_subarea output_stream output_stdout&#34;&gt;
@@ -4388,15 +5093,17 @@ In&amp;nbsp;[7]:
 
 &lt;/pre&gt;
 &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
 
 &lt;/div&gt;
 
-&lt;p&gt;&lt;/div&gt;
-&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
 &lt;div class=&#34;text_cell_render border-box-sizing rendered_html&#34;&gt;
 &lt;h2 id=&#34;Quantification,-Rules,-and-a-hint-of-Type-Theory&#34;&gt;Quantification, Rules, and a hint of Type Theory&lt;a class=&#34;anchor-link&#34; href=&#34;#Quantification,-Rules,-and-a-hint-of-Type-Theory&#34;&gt;&amp;#182;&lt;/a&gt;&lt;/h2&gt;
-&lt;/div&gt;&lt;/p&gt;
+&lt;/div&gt;
+
 &lt;div class=&#34;text_cell_render border-box-sizing rendered_html&#34;&gt;
 &lt;p&gt;This natural deduction system is not just propositional but first order, with quantification. The &amp;quot;hello world&amp;quot; example we used for &lt;a href=&#34;http://www.w3.org/2000/10/swap/&#34;&gt;semantic web research&lt;/a&gt; was &lt;a href=&#34;http://www.w3.org/2000/10/swap/test/reason/socrates.n3&#34;&gt;socrates.n3&lt;/a&gt;:&lt;/p&gt;
 &lt;p&gt;\[
@@ -4424,10 +5131,12 @@ In&amp;nbsp;[8]:
 &lt;span class=&#34;n&#34;&gt;rapply&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;imple&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
-&lt;p&gt;&lt;/div&gt;
-&lt;/div&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
 &lt;div class=&#34;vbox output_wrapper&#34;&gt;
 &lt;div class=&#34;output vbox&#34;&gt;
+
 
 &lt;div class=&#34;hbox output_area&#34;&gt;&lt;div class=&#34;prompt&#34;&gt;&lt;/div&gt;
 &lt;div class=&#34;box-flex1 output_subarea output_stream output_stdout&#34;&gt;
@@ -4439,12 +5148,13 @@ Q(a)                      (3)  Implication-Elimination (Modus Ponens) (2) (0)
 
 &lt;/pre&gt;
 &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;/div&gt;
 
 &lt;/div&gt;
 
-&lt;p&gt;&lt;/div&gt;
-&lt;/div&gt;&lt;/p&gt;
-&lt;p&gt;&lt;/div&gt;
 &lt;div class=&#34;text_cell_render border-box-sizing rendered_html&#34;&gt;
 &lt;p&gt;Using idris and dependent types is another episode altogether, but to give a hint...&lt;/p&gt;
 &lt;p&gt;We can state the theorem this way:&lt;/p&gt;
@@ -4456,9 +5166,11 @@ Q(a)                      (3)  Implication-Elimination (Modus Ponens) (2) (0)
 &lt;pre&gt;&lt;code&gt;thm1 all_men_mortal socrates socrates_a_man =
   all_men_mortal socrates socrates_a_man&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
+
 &lt;div class=&#34;text_cell_render border-box-sizing rendered_html&#34;&gt;
 &lt;h2 id=&#34;References&#34;&gt;References&lt;a class=&#34;anchor-link&#34; href=&#34;#References&#34;&gt;&amp;#182;&lt;/a&gt;&lt;/h2&gt;
-&lt;/div&gt;&lt;/p&gt;
+&lt;/div&gt;
+
 &lt;div class=&#34;text_cell_render border-box-sizing rendered_html&#34;&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a name=&#34;Alps-Neveln81&#34;&gt;Alps, Robert A., and Robert C. Neveln. 1981&lt;/a&gt;. “A Predicate Logic Based on Indefinite Description and Two Notions of Identity.” Notre Dame J. Formal Logic 22 (3): 251–263. doi:doi:10.1305/ndjfl/1093883460. http://projecteuclid.org/euclid.ndjfl/1093883460.&lt;/li&gt;
@@ -4729,203 +5441,6 @@ class Mock(object):
 &lt;/code&gt;&lt;/pre&gt;</description>
             <pubDate>Thu, 25 Jul 2013 00:00:00 +0000</pubDate>
             <guid>http://www.madmode.com//2013/python-capability-idioms-part-1/</guid>
-        </item>
-        <item>
-            <title>The Sorry State of the Art in Consumer Medical Data Portability</title>
-            <link>http://www.madmode.com//2013/the-sorry-state-of-the-art-in-medical-data-portability/</link>
-            <description>&lt;p&gt;My employment health benefits include a discount if I provide &#34;current
-biometric values&#34; such as cholesterol and glucose in a health
-assessment questionnaire. My doctor just started giving access to lab
-results via a patient portal. The portal even supports download in
-&lt;a href=&#34;http://en.wikipedia.org/wiki/Continuity_of_Care_Document&#34;&gt;CCD&lt;/a&gt;
-format:&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;As part of U.S. federal incentives for the adoption of electronic
-health records, known as Meaningful Use, the CCD and Continuity of
-Care Record (CCR) were both selected as acceptable extract formats
-for clinical care summaries in the program&#39;s first stage. To be
-certified for this federal program, an Electronic Health Record must
-be able to generate a CCD (or equivalent CCR) that has the sections
-of allergies, medications, problems, and laboratory results, in
-addition to patient header information.[6] Several of these sections
-also have mandated vocabularies, such as LOINC for laboratory
-results, according to the federal program.&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;I&#39;m just back from &lt;a href=&#34;https://www.i2b2.org/&#34;&gt;i2b2&lt;/a&gt; meetings at Harvard
-Medical School, learning about
-&lt;a href=&#34;http://smartplatforms.org/&#34;&gt;SMART&lt;/a&gt;-enabled health information
-technology and amazing data-driven advances in treatment of childhood
-diseases.&lt;/p&gt;
-&lt;p&gt;And what was the shortest path to get the data from my doctor&#39;s portal
-to my employer&#39;s health assessment?&lt;/p&gt;
-&lt;p&gt;Copy and paste, one field at a time.&lt;/p&gt;
-&lt;p&gt;The health assessment site doesn&#39;t support CCDs or anything like it.
-Maybe it&#39;s because they took one look at what&#39;s inside and ran away
-screaming. Who could blame them?&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;  &amp;lt;component&amp;gt;
-    &amp;lt;section&amp;gt;
-      &amp;lt;templateId root=&#34;2.16.840.1.113883.10.20.1.11&#34; /&amp;gt;
-      &amp;lt;templateId root=&#34;2.16.840.1.113883.3.88.11.83.103&#34; /&amp;gt;
-      &amp;lt;templateId root=&#34;1.3.6.1.4.1.19376.1.5.3.1.3.6&#34; /&amp;gt;
-      &amp;lt;code code=&#34;11450-4&#34; codeSystem=&#34;2.16.840.1.113883.6.1&#34;
-      codeSystemName=&#34;LOINC&#34; displayName=&#34;Problems&#34; /&amp;gt;
-      ...
-      &amp;lt;entry typeCode=&#34;DRIV&#34;&amp;gt;
-        &amp;lt;act classCode=&#34;ACT&#34; moodCode=&#34;EVN&#34;&amp;gt;
-          &amp;lt;templateId root=&#34;&#34; /&amp;gt;
-          &amp;lt;templateId root=&#34;2.16.840.1.113883.3.88.11.83.7&#34; /&amp;gt;
-          &amp;lt;templateId root=&#34;1.3.6.1.4.1.19376.1.5.3.1.4.5.2&#34; /&amp;gt;
-          &amp;lt;templateId root=&#34;1.3.6.1.4.1.19376.1.5.3.1.4.5.1&#34; /&amp;gt;
-          &amp;lt;id root=&#34;XZomV5It-NdyF-BlXK-Fz1A-ZwTQpgeAUiE0&#34; /&amp;gt;
-          &amp;lt;code nullFlavor=&#34;NA&#34; /&amp;gt;
-          &amp;lt;statusCode code=&#34;active&#34; /&amp;gt;
-          &amp;lt;effectiveTime&amp;gt;
-            &amp;lt;low nullFlavor=&#34;UNK&#34; /&amp;gt;
-          &amp;lt;/effectiveTime&amp;gt;
-          &amp;lt;entryRelationship inversionInd=&#34;false&#34;
-          typeCode=&#34;SUBJ&#34;&amp;gt;
-            &amp;lt;observation classCode=&#34;OBS&#34; moodCode=&#34;EVN&#34;&amp;gt;
-              &amp;lt;templateId root=&#34;&#34; /&amp;gt;
-              &amp;lt;templateId root=&#34;1.3.6.1.4.1.19376.1.5.3.1.4.5&#34; /&amp;gt;
-              &amp;lt;id root=&#34;xNr52F8j-QD9W-19Fg-01c1-b96uLHssa0MF&#34; /&amp;gt;
-              &amp;lt;code code=&#34;55607006&#34;
-              codeSystem=&#34;2.16.840.1.113883.6.96&#34;
-              codeSystemName=&#34;SNOMED CT&#34;
-              displayName=&#34;Problem&#34; /&amp;gt;
-              &amp;lt;text&amp;gt;
-                &amp;lt;reference value=&#34;#prob3&#34; /&amp;gt;
-              &amp;lt;/text&amp;gt;
-              &amp;lt;statusCode code=&#34;completed&#34; /&amp;gt;
-              &amp;lt;effectiveTime&amp;gt;
-                &amp;lt;low nullFlavor=&#34;UNK&#34; /&amp;gt;
-              &amp;lt;/effectiveTime&amp;gt;
-              &amp;lt;value nullFlavor=&#34;UNK&#34; xsi:type=&#34;CD&#34;&amp;gt;
-                &amp;lt;translation code=&#34;V70.0&#34; codeSystem=&#34;&#34;
-                codeSystemName=&#34;&#34;
-                displayName=&#34;Physical exam, routine&#34; /&amp;gt;
-              &amp;lt;/value&amp;gt;
-              &amp;lt;entryRelationship typeCode=&#34;REFR&#34;&amp;gt;
-                &amp;lt;observation classCode=&#34;OBS&#34; moodCode=&#34;EVN&#34;&amp;gt;
-                  &amp;lt;templateId root=&#34;&#34; /&amp;gt;
-                  &amp;lt;code code=&#34;&#34; codeSystem=&#34;&#34;
-                  codeSystemName=&#34;LOINC&#34;
-                  displayName=&#34;STATUS&#34; /&amp;gt;
-                  &amp;lt;statusCode code=&#34;completed&#34; /&amp;gt;
-                  &amp;lt;value code=&#34;&#34; codeSystem=&#34;&#34;
-                  codeSystemName=&#34;SNOMED CT&#34;
-                  displayName=&#34;Active&#34; xsi:type=&#34;CE&#34; /&amp;gt;
-                &amp;lt;/observation&amp;gt;
-              &amp;lt;/entryRelationship&amp;gt;
-            &amp;lt;/observation&amp;gt;
-          &amp;lt;/entryRelationship&amp;gt;
-        &amp;lt;/act&amp;gt;
-      &amp;lt;/entry&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Whether motivated by good taste or fear of change, there is &lt;em&gt;some&lt;/em&gt;
-respect for the
-&lt;a href=&#34;http://microformats.org/wiki/humans-first&#34;&gt;humans first microformats principle&lt;/a&gt;;
-the bit I elided above is:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;      &amp;lt;title&amp;gt;Problems&amp;lt;/title&amp;gt;
-      &amp;lt;text&amp;gt;
-        &amp;lt;table border=&#34;1&#34; width=&#34;100%&#34;&amp;gt;
-          &amp;lt;thead&amp;gt;
-            &amp;lt;tr&amp;gt;
-              &amp;lt;th&amp;gt;Problem Type&amp;lt;/th&amp;gt;
-              &amp;lt;th&amp;gt;Condition&amp;lt;/th&amp;gt;
-              &amp;lt;th&amp;gt;ICD-9 Code&amp;lt;/th&amp;gt;
-              &amp;lt;th&amp;gt;Effective Dates&amp;lt;/th&amp;gt;
-              &amp;lt;th&amp;gt;OnSet Dates&amp;lt;/th&amp;gt;
-              &amp;lt;th&amp;gt;Condition Status&amp;lt;/th&amp;gt;
-            &amp;lt;/tr&amp;gt;
-          &amp;lt;/thead&amp;gt;
-          &amp;lt;tbody&amp;gt;
-            ...
-            &amp;lt;tr&amp;gt;
-              &amp;lt;td&amp;gt;Problem&amp;lt;/td&amp;gt;
-              &amp;lt;td&amp;gt;Physical exam, routine&amp;lt;/td&amp;gt;
-              &amp;lt;td&amp;gt;V70.0&amp;lt;/td&amp;gt;
-              &amp;lt;td&amp;gt;May 29, 2013&amp;lt;/td&amp;gt;
-              &amp;lt;td&amp;gt;&amp;lt;/td&amp;gt;
-              &amp;lt;td&amp;gt;Active&amp;lt;/td&amp;gt;
-            &amp;lt;/tr&amp;gt;
-            ...
-          &amp;lt;/tbody&amp;gt;
-        &amp;lt;/table&amp;gt;
-      &amp;lt;/text&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;That&#39;s pretty much what it looks like on the paper documents that the
-medical community has been using for decades:&lt;/p&gt;
-&lt;h2&gt;Problems&lt;/h2&gt;
-
-&lt;table border=&#34;1&#34; width=&#34;100%&#34;&gt;
-              &lt;thead&gt;
-                &lt;tr&gt;
-                  &lt;th&gt;Problem Type&lt;/th&gt;
-                  &lt;th&gt;Condition&lt;/th&gt;
-                  &lt;th&gt;ICD-9 Code&lt;/th&gt;
-                  &lt;th&gt;Effective Dates&lt;/th&gt;
-                  &lt;th&gt;OnSet Dates&lt;/th&gt;
-                  &lt;th&gt;Condition Status&lt;/th&gt;
-                &lt;/tr&gt;
-              &lt;/thead&gt;
-              &lt;tbody&gt;
-                &lt;tr&gt;
-                  &lt;td&gt;Problem&lt;/td&gt;
-                  &lt;td&gt;Physical exam, routine&lt;/td&gt;
-                  &lt;td&gt;V70.0&lt;/td&gt;
-                  &lt;td&gt;May 29, 2013&lt;/td&gt;
-                  &lt;td&gt;&lt;/td&gt;
-                  &lt;td&gt;Active&lt;/td&gt;
-                &lt;/tr&gt;
-              &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;p&gt;It&#39;s also useful data: you can paste it into a web form or a
-spreadsheet or database tool without losing the structure. After all, the&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;... goal is not adoption alone but &#39;meaningful use&#39; of EHRs&amp;mdash;that
-is, their use by providers to achieve significant improvements in
-care. &amp;mdash; &lt;a href=&#34;http://www.ncbi.nlm.nih.gov/pubmed/20647183&#34;&gt;Blumenthal and Tavenner, New England Journal of Medicine, 2010&lt;/a&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;I can&#39;t help thinking that if interchange were based on simple, visible
-tables like that, my doctor&#39;s portal vendor woul notice that, for example,
-their CCD only contains lab panel names and not the actual labs with values:&lt;/p&gt;
-&lt;table border=&#34;1&#34; width=&#34;100%&#34;&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt;Test&lt;/th&gt;
-      &lt;th&gt;Attribute&lt;/th&gt;
-      &lt;th&gt;Value(Normal Range)&lt;/th&gt;
-      &lt;th&gt;LOINC Code&lt;/th&gt;
-      &lt;th&gt;Result&lt;/th&gt;
-      &lt;th&gt;Date&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;CMP Comp. Metabolic Panel (14)**322000&lt;/td&gt;
-      &lt;td&gt;&lt;/td&gt;
-      &lt;td&gt;()&lt;/td&gt;
-      &lt;td&gt;&lt;/td&gt;
-      &lt;td&gt;&lt;/td&gt;
-    &lt;td&gt;May 30, 2013&lt;/td&gt;
-  &lt;/tr&gt;
- &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;p&gt;I&#39;ve toyed with various tools for keeping a personal health record,
-and a spreadsheet works pretty well: one sheet (aka table) for problems,
-one for meds, one for labs, and so on.&lt;/p&gt;
-&lt;p&gt;To address the abiguity of short text column headings, we should, of
-course, ground the terms in the web using linked data techniques
-such as &lt;a href=&#34;http://jenit.github.io/linked-csv/&#34;&gt;linked CSV&lt;/a&gt;
-and &lt;a href=&#34;http://www.ldtables.org/wiki/Tutorial&#34;&gt;linked data tables&lt;/a&gt;.
-But even if the global identifiers got stripped, copying a table
-of lab values from my doctor&#39;s portal into a &#34;paste your Cholesterol
-labs&#34; box on the health assessment form should
-work just fine.&lt;/p&gt;</description>
-            <pubDate>Sat, 22 Jun 2013 00:00:00 +0000</pubDate>
-            <guid>http://www.madmode.com//2013/the-sorry-state-of-the-art-in-medical-data-portability/</guid>
         </item>
         
     </channel>

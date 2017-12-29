@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+    <meta charset="utf-8" />
+    
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <title>MadMode: hacking soccer schedules into hCalendar and into my sidekick | Code</title>
+    <meta name="description" content="MadMode by Dan Connolly"/>
+    <meta name="viewport" content="width=device-width"/>
+
+    <!-- https://dev.twitter.com/docs/cards -->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:creator" content="dckc" />
+    <link rel="stylesheet" type="text/css" href="/static/packed.css?98036b3b"/>
+    <link rel="alternate" type="application/rss+xml" href="/feed/" title="Everything (RSS)"/>
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+</head>
+<body class="">
+    <!--[if lt IE 7]>
+    <p class="chromeframe">Your browser is <em>ancient!</em> Please <a href="http://www.quirksmode.org/upgrade.html">upgrade</a>.</p>
+    <![endif]-->
+    <div class="container">
+        <header class="main-title">
+            <h1><a href="/">MadMode</a></h1>
+            <small>Dan Connolly's tinkering lab notebook</small>
+        </header>
+        <div class="contents">
+            
+
+    <article lang="en" class="" itemscope="itemscope" itemtype="http://schema.org/BlogPosting">
+    <link itemprop="url" href="/2006/breadcrumbs_0107.html" />
+    <header>
+        <h2><a itemprop="name" href="/2006/breadcrumbs_0107.html">hacking soccer schedules into hCalendar and into my sidekick</a></h2></header>
+    
+    <section>
+        <p>When I gave a <a href="http://www.w3.org/2003/g/talk62/slides">microformats+GRDDL</a> talk early this month, I listed my kid&#39;s soccer schedules on my <a href="http://www.w3.org/2003/g/talk62/slides#(10)">wish list</a> slide.</p>
+
+<p><p>Those soccer schedules are now available. No matter how badly I need them in my sidekick calendar in order to coordinate other family activities, I couldn&#39;t bear the thought of manually keying them in. <strong>The bane of my existence is doing things that I know the computer could do for me.</strong><sup><a href="http://www.nature.com/nature/webmatters/xml/xml.html">1998</a>,<a href="http://www.w3.org/Talks/2002/10/09-swcal/all.htm">2002</a></sup></p>   <p>One of the schedules is in PDF. I toyed with a <a href="http://www.solidpdf.com/">PDF to excel converter</a> and with google&#39;s &quot;view as HTML&quot; cache feature but didn&#39;t get very far with those. But the other schedule is on a normal <a href="http://www.htgsports.net/">database-backed web site</a>.</p>  <p>It took just 91 lines of XSLT to put <a href="http://microformats.org/wiki/hcalendar">hCalendar</a> markup to the page. Each event was a row; I added a tbody element around each row so that I could use the row element as the class=&quot;description&quot; element. I used an <a href="http://aspn.activestate.com/ASPN/Cookbook/XSLT/Recipe/415002">ASP recipie</a> to figure out how to just add an attribute here and there and leave the rest alone. I didn&#39;t get the AM/PM XSLT code right the first time; silly, since I&#39;ve written it before; I should have copied it, if not factored it out for reuse.</p>  <p>My PDA/cellphone is a t-mobile sidekick. There&#39;s a very nice XMLRPC interface to the data, but it went read-only and it&#39;s not supported, so I use a <a href="http://wwwsearch.sourceforge.net/ClientForm/">ClientForm</a> screen-scraping hack to upload flight schedules and such to my PDA. hipAgent.py (in my <a href="http://dev.w3.org/cvsweb/2001/palmagent/">palmagent</a> project) gets its data thru a simple command-line interface or thru tab-separated text files. I had a set of eventlines.n3 rules for reducing RDF calendar data to tab-separated format, but its timezone support is quirky and it doesn&#39;t handle multi-line descriptions. So I bit the bullet and integrated cwm&#39;s RDF reader via the simple <a href="http://www.w3.org/2000/10/swap/myStore">myStore</a> API into hipAgent.py. I was simple enough:</p>  <pre><br />        elif o in (&quot;--importRDF&quot;,):<br />            import uripath, os<br />            from myStore import load # http://www.w3.org/2000/10/swap/<br />            addr = uripath.join(&quot;file:&quot; + os.getcwd() + &quot;/&quot;, a)<br />            kb = load(addr)<br />            importTimedRDF(number, passwd, kb, icon<br /><br />...<br /><br />    from myStore import Namespace<br />    RDF = Namespace(&quot;http://www.w3.org/1999/02/22-rdf-syntax-ns#&quot;)<br />    ICAL = Namespace(&#39;http://www.w3.org/2002/12/cal/icaltzd#&#39;)<br /><br />    for ev in kb.each(pred = RDF.type, obj = ICAL.Vevent):<br />        titl = unicode(kb.the(subj = ev, pred = ICAL.summary)).encode(&quot;utf-8&quot;)<br />        progress(&quot;== found event:&quot;, titl)<br /><br />        when = str(kb.the(subj = ev, pred = ICAL.dtstart))<br />        dt = when[:10]<br />        ti = when[11:16]<br />        <br />        loc = kb.any(subj = ev, pred = ICAL.location)<br />        if loc: loc = unicode(loc).encode(&quot;utf-8&quot;)<br />        desc = kb.any(subj = ev, pred = ICAL.description)<br />        if desc: desc = unicode(desc).encode(&quot;utf-8&quot;)<br />        <br />        progress(&quot;a.addTimedEvent&quot;, dt, ti)<br />        a.addTimedEvent(dt, ti,<br />                        titl, desc,<br />                        &#39;minutes&#39;, 60, #@@hardcoded<br />                        where=loc)<br /> </pre>  <p>So I succesfully loaded son&#39;s soccer schedule into my sidekick PDA calendar:</p>  <ol>   <li>GET the schedule</li>   <li><a href="http://www.w3.org/People/Raggett/tidy/">tidy</a> it</li>   <li>add hCalendar markup (vevent, description, summary dtstart, location) using XSLT</li>   <li>convert to RDF/XML using a GRDDL transform for hCalendar, <a href="http://www.w3.org/2002/12/cal/glean-hcal.xsl">glean-hcal.xsl</a></li>   <li>load into sidekick using hipAgent.py</li> </ol>  <p>The folks running the DB-backed web site could add hCalendar markup with even less hassle then I did (though they might have to think a little bit to produce well-formed XHTML), at which point I could reduce the first 4 steps with GRDDL (either via remote service or by adding GRDDL support to hipAgent.py or to cwm&#39;s myStore.load() function).</p> </p>
+    </section>
+    <aside>
+        <p>
+            <span class="article-author" itemprop="author" itemscope="itemscope" itemtype="http://schema.org/Person">
+                <span itemprop="name">Dan Connolly</span> —
+            </span>
+            <time datetime="2006-03-26" itemprop="datePublished">2006-03-26</time>
+            
+            — <a href="/2006/breadcrumbs_0107.html">Permalink</a>
+            — <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/">License</a>.
+	    <br />
+	    
+	    | <a class='tag' rel='tag'
+		 href="/search/label/breadcrumbs/">breadcrumbs</a>
+   	    
+        </p>
+    </aside>
+    <hr />
+    <nav>
+        <a class="prev" href="/2006/breadcrumbs_0123.html">A step forward with python and sshagent, and a walk around gnome security tools</a>
+        |
+        <a class="next" href="/2006/breadcrumbs_0102.html">no more life in a textarea: MozEx and emacs to the rescue!</a>
+    </nav>
+</article>
+
+
+        </div>
+        <nav class="sidebar">
+            <ul>
+                <li class="home"><a href="/" hreflang="en">Home</a></li>
+<!-- @@                <li class="code"><a href="@@ url_for("section", section="code") }}" hreflang="en">Blog</a></li> -->
+               <li>Archives
+		 
+               </li>
+
+                <li class="contact"><a href="/contact/" hreflang="en">Contact</a></li>
+            </ul>
+        </nav>
+        <footer class="site-footer">
+            <address>
+  <a href="https://www.codementor.io/dckc" rel="me">
+    <img  class="social-icon"
+          src="https://cdn.codementor.io/badges/i_am_a_codementor_dark.svg"
+          alt="I am a codementor" /></a>
+  &#160;&#160;&#160;
+  <a href="https://github.com/dckc" rel="me">
+    <img src="/static/img/GitHub-Mark/PNG/GitHub-Mark-64px.png"
+	 width="40px" height="40px" class="social-icon"
+	 alt="dckc on github" /></a>
+  &#160;&#160;&#160;
+  <a href="http://bitbucket.org/DanC" rel="me">
+    <img src="/static/img/bitbucket_icon.png"
+	 width="40px" height="40px" class="social-icon"
+	 alt="bitbucket/DanC code" /></a>
+  &#160;&#160;&#160;
+  <a href="https://twitter.com/dckc" rel="me">
+    <img src="/static/img/twitter_icon.png"
+	 width="40px" height="40px" class="social-icon"
+	 alt="@dckc on twitter" /></a>
+  &#160;&#160;&#160;
+  <a href="https://www.linkedin.com/in/connollydan/" rel="me">
+    <img class="social-icon"
+         src="/static/img/In-2C-34px-R.png"
+	 alt="Dan Connolly on LinkedIn" /></a>
+  &#160;&#160;&#160;
+  <a href="https://keybase.io/dckc">
+    <img class="social-icon"
+         src="https://keybase.io/images/icons/icon-keybase-logo-48.png"
+         alt="dckc on keybase" />
+  </a>
+  &#160;&#160;&#160;
+  <a href="https://21.co/madmode/" rel="me">
+    <img class="social-icon"
+         src="https://static.21.co/shared/img/icon-21-gold.svg" alt=""/>
+  </a>
+
+  <br />
+  <small>&#169; 1994-2017 <a href="/contact/">Dan Connolly. Contact me.</a></small>
+
+              <br/>
+            </address>
+        </footer>
+    </div>
+    <!-- /container -->
+
+    <!-- TODO: add this only to ipython articles -->
+    <!-- cribbed from ipython's html_full.tpl -->
+<!-- updated w.r.t. http://docs.mathjax.org/en/latest/start.html -->
+<script type="text/javascript"
+  src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+<script type="text/javascript">
+init_mathjax = function() {
+    if (window.MathJax) {
+        // MathJax loaded
+        MathJax.Hub.Config({
+            tex2jax: {
+                inlineMath: [ ["\\(","\\)"] ],
+                displayMath: [ ["\\[","\\]"] ]
+            },
+            displayAlign: 'left', // Change this to 'center' to center equations.
+            "HTML-CSS": {
+                styles: {'.MathJax_Display': {"margin": 0}}
+            }
+        });
+        MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+    }
+}
+init_mathjax();
+</script>
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script><![CDATA[window.jQuery || document.write('<script src="js/libs/jquery-1.7.1.min.js"><\/script>')]]></script>
+    <script type="text/javascript" src="/static/packed.js?98d60569"></script>
+    <script src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+</body>
+</html>

@@ -125,29 +125,36 @@ In&nbsp;[1]:
 <span class="n">mm_ipy</span> <span class="o">=</span> <span class="n">imp</span><span class="o">.</span><span class="n">load_source</span><span class="p">(</span><span class="s">&#39;mm_ipy&#39;</span><span class="p">,</span> <span class="s">&#39;code/ipynb_pub/mm_ipy.py&#39;</span><span class="p">)</span>
 </pre></div>
 
-<p></div>
-</div></p>
-<p></div>
+</div>
+</div>
+
+</div>
+
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>Then let's connect the dots between rst markup in documentation and HTML renditions of values in ipython notebook cell outputs:</p>
 </div>
+
 <div class="cell border-box-sizing code_cell vbox">
 <div class="input hbox">
 <div class="prompt input_prompt">
 In&nbsp;[2]:
 </div>
 <div class="input_area box-flex1">
-<div class="highlight"><pre><span class="kn">from</span> <span class="nn">docutils.core</span> <span class="kn">import</span> <span class="n">publish_parts</span></p>
-<p><span class="k">class</span> <span class="nc">Doc</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf"><strong>init</strong></span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">it</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">it</span> <span class="o">=</span> <span class="n">it</span></p>
-<pre><code>&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;_repr_html_&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
-    &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;publish_parts&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;it&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;__doc__&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;writer_name&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;html&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;)[&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;html_body&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
-</code></pre>
-<p></pre></div></p>
-<p></div>
-</div></p>
-<p></div>
+<div class="highlight"><pre><span class="kn">from</span> <span class="nn">docutils.core</span> <span class="kn">import</span> <span class="n">publish_parts</span>
+
+<span class="k">class</span> <span class="nc">Doc</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">it</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">it</span> <span class="o">=</span> <span class="n">it</span>
+
+    <span class="k">def</span> <span class="nf">_repr_html_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">publish_parts</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">it</span><span class="o">.</span><span class="n">__doc__</span><span class="p">,</span> <span class="n">writer_name</span><span class="o">=</span><span class="s">&#39;html&#39;</span><span class="p">)[</span><span class="s">&#39;html_body&#39;</span><span class="p">]</span>
+</pre></div>
+
+</div>
+</div>
+
+</div>
+
 <div class="cell border-box-sizing code_cell vbox">
 <div class="input hbox">
 <div class="prompt input_prompt">
@@ -155,11 +162,14 @@ In&nbsp;[3]:
 </div>
 <div class="input_area box-flex1">
 <div class="highlight"><pre><span class="n">Doc</span><span class="p">(</span><span class="n">mm_ipy</span><span class="p">)</span>
-</pre></div></p>
-<p></div>
-</div></p>
+</pre></div>
+
+</div>
+</div>
+
 <div class="vbox output_wrapper">
 <div class="output vbox">
+
 
 <div class="hbox output_area"><div class="prompt output_prompt">
     Out[3]:</div>
@@ -191,14 +201,18 @@ Matthias Bussonnier (Carreau) Dec 01, 2013</li>
 
 </div>
 
-<p></div>
-</div></p>
-<p></div>
-</div></p>
-<p></div>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>The notebook should have some article metadata in a markdown cell surrounded by a certain kind of pre tags:</p>
 </div>
+
 <div class="cell border-box-sizing code_cell vbox">
 <div class="input hbox">
 <div class="prompt input_prompt">
@@ -206,11 +220,14 @@ In&nbsp;[4]:
 </div>
 <div class="input_area box-flex1">
 <div class="highlight"><pre><span class="n">Doc</span><span class="p">(</span><span class="n">mm_ipy</span><span class="o">.</span><span class="n">article_meta</span><span class="p">)</span>
-</pre></div></p>
-<p></div>
-</div></p>
+</pre></div>
+
+</div>
+</div>
+
 <div class="vbox output_wrapper">
 <div class="output vbox">
+
 
 <div class="hbox output_area"><div class="prompt output_prompt">
     Out[4]:</div>
@@ -238,11 +255,14 @@ for details).</p>
 
 </div>
 
-<p></div>
-</div></p>
-<p></div>
-</div></p>
-<p></div>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+
 <div class="cell border-box-sizing code_cell vbox">
 <div class="input hbox">
 <div class="prompt input_prompt">
@@ -250,11 +270,14 @@ In&nbsp;[5]:
 </div>
 <div class="input_area box-flex1">
 <div class="highlight"><pre><span class="n">Doc</span><span class="p">(</span><span class="n">mm_ipy</span><span class="o">.</span><span class="n">grok_yaml</span><span class="p">)</span>
-</pre></div></p>
-<p></div>
-</div></p>
+</pre></div>
+
+</div>
+</div>
+
 <div class="vbox output_wrapper">
 <div class="output vbox">
+
 
 <div class="hbox output_area"><div class="prompt output_prompt">
     Out[5]:</div>
@@ -287,14 +310,18 @@ In&nbsp;[5]:
 
 </div>
 
-<p></div>
-</div></p>
-<p></div>
-</div></p>
-<p></div>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Packages-from-apt-and-PyPI">Packages from apt and PyPI<a class="anchor-link" href="#Packages-from-apt-and-PyPI">&#182;</a></h2>
-</div></p>
+</div>
+
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>The container doesn't have access to packages installed in the host system via pip or apt-get. But I can install from pypi within the container.</p>
 <p>Installing from within the Dockerfile makes the package part of the container, but it involves killing and re-starting the container. And it feels less minimal/modular somehow.</p>
