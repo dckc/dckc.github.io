@@ -48,65 +48,74 @@ DanC&gt; interesting... my backup is evidently python pickles of XMLRPC response
     &lt;class xmlrpclib.DateTime at 0x7f20e444eef0&gt;  </p>
 </blockquote>
 <p>The files are numbered:</p>
-<p>```python
-def _numbered_files(pattern='[0-9]*',
+<pre><code class="python">def _numbered_files(pattern='[0-9]*',
                     breadcrumbs='/home/connolly/sites/breadcrumbs'):
     from pathlib import Path
-    return Path(breadcrumbs).glob(pattern)</p>
-<p>breadcrumbs_bak = list(_numbered_files())
+    return Path(breadcrumbs).glob(pattern)
+
+breadcrumbs_bak = list(_numbered_files())
 sorted(int(f.parts[-1]) for f in breadcrumbs_bak)[:10]
-```</p>
+</code></pre>
+
 <pre><code>[4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
 </code></pre>
 <p>Each is a pickled XMLRPC response:</p>
-<p>```python
-import pickle</p>
-<p>breadcrumbs_xmlrpc = dict((int(f.parts[-1]), pickle.load(f.open('rb'))) for f in breadcrumbs_bak)
+<pre><code class="python">import pickle
+
+breadcrumbs_xmlrpc = dict((int(f.parts[-1]), pickle.load(f.open('rb'))) for f in breadcrumbs_bak)
 x = breadcrumbs_xmlrpc[228]
-x['title'], x['dateCreated'], x['dateCreated'].<strong>class</strong>
-```</p>
+x['title'], x['dateCreated'], x['dateCreated'].__class__
+</code></pre>
+
 <pre><code>('hAudio for microformats mixtapes, in progress',
  &lt;DateTime '20080306T17:00:05' at 7fa8242a5320&gt;,
  &lt;class xmlrpclib.DateTime at 0x7fa82427cf58&gt;)
 </code></pre>
 <h2>MadMode blog pages</h2>
-<p>```python
-from collections import OrderedDict
-from <strong>future</strong> import print_function
-from sys import stderr</p>
-<p>class BlogWriter(object):
-    def <strong>init</strong>(self, pages):
-        self._pages = pages</p>
-<pre><code>def addPage(self, body, title, date, tags, published, slug):
-    datestr = date.isoformat()
-    headings = OrderedDict(title=repr(title),
-                           date=datestr[:10],
-                           tags="[%s]" % (', '.join("'%s'" % tag for tag in tags)),
-                           published=published)
-    header = '\n'.join(["%s: %s" % (k, v) for k, v in headings.iteritems()])
-    yyyy = datestr[:4]
-    page = (self._pages / yyyy / slug).with_suffix('.md')
-    print("addPage: ", page, tags, file=stderr)
-    with page.open('wb') as out:
-        out.write(header)
-        out.write('\n\n')
-        out.write(body.encode('utf-8'))
+<pre><code class="python">from collections import OrderedDict
+from __future__ import print_function
+from sys import stderr
+
+
+class BlogWriter(object):
+    def __init__(self, pages):
+        self._pages = pages
+
+    def addPage(self, body, title, date, tags, published, slug):
+        datestr = date.isoformat()
+        headings = OrderedDict(title=repr(title),
+                               date=datestr[:10],
+                               tags=&quot;[%s]&quot; % (', '.join(&quot;'%s'&quot; % tag for tag in tags)),
+                               published=published)
+        header = '\n'.join([&quot;%s: %s&quot; % (k, v) for k, v in headings.iteritems()])
+        yyyy = datestr[:4]
+        page = (self._pages / yyyy / slug).with_suffix('.md')
+        print(&quot;addPage: &quot;, page, tags, file=stderr)
+        with page.open('wb') as out:
+            out.write(header)
+            out.write('\n\n')
+            out.write(body.encode('utf-8'))
+
+def _madmode():
+    from pathlib import Path
+
+    return BlogWriter(Path('/home/connolly/sites') / 'madmode-blog' / 'pages')
+
+mmwr = _madmode()
 </code></pre>
-<p>def _madmode():
-    from pathlib import Path</p>
-<pre><code>return BlogWriter(Path('/home/connolly/sites') / 'madmode-blog' / 'pages')
-</code></pre>
-<p>mmwr = _madmode()
-```</p>
-<p>```python
-from time import mktime
+
+<pre><code class="python">from time import mktime
 from datetime import datetime
-import re</p>
-<p>def drupal2md(body):
-    body = body.split('</title>', 1)[1]  # remove redundant title
+import re
+
+
+def drupal2md(body):
+    body = body.split('&lt;/title&gt;', 1)[1]  # remove redundant title
     body = body.replace('\r', '')  # unix newlines
-    return body</p>
-<p>def findTags(body):
+    return body
+
+
+def findTags(body):
     tags = []
     for txt in body.split('&lt;'):
         if txt.startswith('a '):
@@ -116,7 +125,7 @@ import re</p>
                 name, txt = txt.split('=', 1)
                 name = name.strip()
                 txt = txt.strip()
-                _, value, txt = txt.split('"', 2)
+                _, value, txt = txt.split('&quot;', 2)
                 attrs[name] = value
                 txt = txt.strip()
             href = attrs.get('href', '')
@@ -124,15 +133,18 @@ import re</p>
                 if href.endswith('/'):
                     href = href[:-1]
                 tags.append(href.split('/')[-1])
-    return tags</p>
-<p>for postid, item in sorted(breadcrumbs_xmlrpc.items()):
+    return tags
+
+
+for postid, item in sorted(breadcrumbs_xmlrpc.items()):
     print(postid, item['title'], file=stderr)
     dt = datetime.fromtimestamp(mktime(item['dateCreated'].timetuple()))
     tags = ['breadcrumbs'] + findTags(item['content'])
     mmwr.addPage(drupal2md(item['content']), title=item['title'], date=dt,
                  tags=tags,
                  published=True, slug='breadcrumbs_%04d' % postid)
-```</p>
+</code></pre>
+
 <pre><code>4 On OpenID and comment policies
 addPage:  /home/connolly/sites/madmode-blog/pages/2005/breadcrumbs_0004.md ['breadcrumbs']
 5 little burst of PAW demo hacking
@@ -349,17 +361,19 @@ addPage:  /home/connolly/sites/madmode-blog/pages/2010/breadcrumbs_0252.md ['bre
 addPage:  /home/connolly/sites/madmode-blog/pages/2010/breadcrumbs_0253.md ['breadcrumbs']
 </code></pre>
 <h2>PyData Tools</h2>
-<p><code>python
-import pandas as pd
-dict(pandas=pd.__version__)</code></p>
+<pre><code class="python">import pandas as pd
+dict(pandas=pd.__version__)
+</code></pre>
+
 <pre><code>{'pandas': u'0.17.1'}
 </code></pre>
-<p><code>python
-items = pd.DataFrame.from_records(breadcrumbs_xmlrpc.values())
+<pre><code class="python">items = pd.DataFrame.from_records(breadcrumbs_xmlrpc.values())
 items.postid = items.postid.astype(int)
 items = items.set_index('postid')
 print(items.dtypes)
-items[['title', 'dateCreated']].sort_values('dateCreated').head()</code></p>
+items[['title', 'dateCreated']].sort_values('dateCreated').head()
+</code></pre>
+
 <pre><code>content              object
 dateCreated          object
 description          object
@@ -415,8 +429,9 @@ dtype: object
 </table>
 </div>
 
-<p><code>python
-items.loc[[228], ['title', 'dateCreated']]</code></p>
+<pre><code class="python">items.loc[[228], ['title', 'dateCreated']]
+</code></pre>
+
 <div>
 <table border="1" class="dataframe">
   <thead>
@@ -465,8 +480,8 @@ items.loc[[228], ['title', 'dateCreated']]</code></p>
     </aside>
     <hr />
     <nav>
-        
-        
+        <a class="prev" href="/2017/ut-austin-expenses.html">College Expense Tracking in BASIC09</a>
+        |
         <a class="next" href="/2017/sel4-rpi.html">Making Secure IoT: seL4 on my Raspberry Pi 3B</a>
     </nav>
 </article>

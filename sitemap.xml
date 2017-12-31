@@ -3,7 +3,7 @@
     <!-- homepage -->
     <url>
         <loc>http://www.madmode.com//</loc>
-        <lastmod>2017-12-29</lastmod>
+        <lastmod>2017-12-30</lastmod>
         <changefreq>hourly</changefreq>
         <priority>1</priority>
     </url>
@@ -43,6 +43,12 @@
         <priority>0.4</priority>
     </url>
     <!-- all pages -->
+    <url>
+        <loc>http://www.madmode.com//2017/ut-austin-expenses/</loc>
+        <lastmod>2017-12-30</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>1</priority>
+    </url>
     <url>
         <loc>http://www.madmode.com//2017/breadcrumbs-migrate/</loc>
         <lastmod>2017-12-29</lastmod>

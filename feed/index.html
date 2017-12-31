@@ -5,9 +5,460 @@
         <link>http://www.madmode.com/</link>
         <description>Dan Connolly's tinkering notebook</description>
         <language>en-us</language>
-        <pubDate>Fri, 29 Dec 2017 14:34:34 +0000</pubDate>
-        <lastBuildDate>Fri, 29 Dec 2017 14:34:34 +0000</lastBuildDate>
+        <pubDate>Sat, 30 Dec 2017 18:32:51 +0000</pubDate>
+        <lastBuildDate>Sat, 30 Dec 2017 18:32:51 +0000</lastBuildDate>
         
+        <item>
+            <title>College Expense Tracking in BASIC09</title>
+            <link>http://www.madmode.com//2017/ut-austin-expenses/</link>
+            <description>&lt;p&gt;It&#39;s no wonder my kids struggle so much more to pay for college:&lt;/p&gt;
+&lt;blockquote class=&#34;twitter-tweet&#34; data-lang=&#34;en&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;Hours of minimum wage work needed to pay for four years of public college&lt;br&gt;&lt;br&gt;Boomer: 306&lt;br&gt;Millennial: 4,449&lt;br&gt;&lt;br&gt;Source: &lt;a href=&#34;https://t.co/3ZZDpC9Fgw&#34;&gt;https://t.co/3ZZDpC9Fgw&lt;/a&gt;&lt;/p&gt;&amp;mdash; Ryan Carson (@ryancarson) &lt;a href=&#34;https://twitter.com/ryancarson/status/943468921834717185?ref_src=twsrc%5Etfw&#34;&gt;December 20, 2017&lt;/a&gt;&lt;/blockquote&gt;
+
+&lt;script async src=&#34;https://platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;
+
+&lt;p&gt;In my freshman year at U.T.  Austin, I wrote a &lt;a href=&#34;https://en.wikipedia.org/wiki/BASIC09&#34;&gt;BASIC09&lt;/a&gt; program
+to track my expenses:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;basic&#34;&gt;PRINT CHR$(12); &amp;quot;Expenses -- by Dan Connolly&amp;quot;
+PRINT &amp;quot;&amp;lt;A&amp;gt; - Edit Accounts&amp;quot;
+PRINT &amp;quot;&amp;lt;E&amp;gt; - Journal Entry&amp;quot;
+PRINT &amp;quot;&amp;lt;R&amp;gt; - Generate Report&amp;quot;
+PRINT &amp;quot;&amp;lt;C&amp;gt; - Clean up file&amp;quot;
+PRINT &amp;quot;&amp;lt;Q&amp;gt; - Quit&amp;quot;
+RUN Choose(&amp;quot;Choice: &amp;quot;,&amp;quot;AERCQ&amp;quot;,Choice)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;I found a &lt;code&gt;Rpt02.22&lt;/code&gt; report that shows tuition of about $500, mostly covered by a scholarship:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;python&#34;&gt;def _cocodisks():
+    from pathlib import Path
+    return Path(&#39;1986-cocodisks&#39;)
+
+EXP = _cocodisks() / &#39;archive&#39; / &#39;PRG-x&#39; / &#39;EXP&#39;
+tx_lines = list((EXP / &#39;Rpt02.22&#39;).open())
+tx_lines = tx_lines[1:]  # skip blank line
+tx_lines[:2] + tx_lines[8:11]
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;[u&#39;Date        Description   Amount  Source Name   Src Bal Dest Name     Dest Bal\n&#39;,
+ u&#39;----------- ------------- ------- ------------- ------- ------------- --------\n&#39;,
+ u&#39; 9-01-86:11 Books          117.85 Cash           182.15 Books/Supplie  117.85\n&#39;,
+ u&#39; 9-15-86:11 Scholarship    296.46 National Meri -296.46 U T            496.28\n&#39;,
+ u&#39; 9-15-86:15 Scholarship     78.54 National Meri -375.00 Cash           260.69\n&#39;]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The last page of the report shows account balances:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;python&#34;&gt;acct_hd_ix = next(ix for ix, line in enumerate(tx_lines) if line.strip().startswith(&#39;Num&#39;))
+acct_lines = tx_lines[acct_hd_ix:]
+acct_lines[:5]
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;[u&#39; Num  Account Name  Balance\n&#39;,
+ u&#39;----  ------------- -------\n&#39;,
+ u&#39;   1: Cash             63.51\n&#39;,
+ u&#39;   2: Checks           28.00\n&#39;,
+ u&#39;   3: Bank Account    888.52\n&#39;]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;But the &lt;code&gt;Jrnl&lt;/code&gt; data file goes thru March 12...&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;1986-cocodisks/archive/PRG-x/EXP$ ls -l Jrnl 
+-r--r--r-- 1 connolly connolly 5443 Mar 12  1987 Jrnl
+986-cocodisks/archive/PRG-x/EXP$ sha1sum Jrnl 
+3f75dbc8bcdac51874259c44ef1fcad55fe068e0  Jrnl
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;... where that report only goes thru Feb 22:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;python&#34;&gt;tx_lines[acct_hd_ix - 7: acct_hd_ix - 5]
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;[u&#39; 2-22-87:11 Bus               .50 Cash            63.51 Living Expens  138.94\n&#39;,
+ u&#39; 2-22-87:15 NOW -----         .00                   .00                   .00\n&#39;]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;Porting BASIC09 File Reading Code to Python&lt;/h2&gt;
+&lt;p&gt;I spent some time poring over the &lt;a href=&#34;https://bitbucket.org/DanC/madmode-blog/src/08c15cccd1ef?at=default&#34;&gt;EXP&lt;/a&gt; source code (&lt;code&gt;08c15cc&lt;/code&gt;)
+to get the data out:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;1986-cocodisks/archive/PRG-x/EXP$ wc *.b
+    0    38   300 Acct.b
+    3   506  4490 Entry.b
+    7   564  5141 Exp.b
+    1   125  1021 Rec.b
+    2   142  1269 Report.b
+   13  1375 12221 total
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The &lt;code&gt;file&lt;/code&gt; command even recognizes the compiled format:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;1986-cocodisks/archive/PRG-x/EXP$ file Expenses 
+Expenses: OS9/6809 module: BASIC I-code subroutine
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code class=&#34;python&#34;&gt;import pandas as pd
+import numpy as np
+dict(pandas=pd.__version__, numpy=np.__version__)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;{&#39;numpy&#39;: &#39;1.10.1&#39;, &#39;pandas&#39;: u&#39;0.17.1&#39;}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The file is just 5K. These days it&#39;s trivial to read that into memory,
+but my coco only had 16K of RAM, upgraded from 4K.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;python&#34;&gt;Jrnl = (EXP / &#39;Jrnl&#39;).open(&#39;rb&#39;).read()
+len(Jrnl)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;5443
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The transaction format is mostly straightforward,
+though I&#39;m glad I had the source code to decode the &lt;code&gt;key&lt;/code&gt; field:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;python&#34;&gt;import datetime
+from collections import namedtuple, OrderedDict
+import struct
+
+class Trans(namedtuple(&#39;Trans&#39;, &#39;key, desc, amt, db, cr&#39;)):
+    &amp;quot;&amp;quot;&amp;quot;
+    TYPE Trans=Key:INTEGER; Desc:STRING[13]; Amt:REAL; DB,CR:BYTE
+    &amp;quot;&amp;quot;&amp;quot;
+    struct = struct.Struct(&#39;&amp;gt;h13s5sBB&#39;)
+
+    @classmethod
+    def unpack(cls, data):
+        it = cls(*cls.struct.unpack(data[:cls.struct.size]))
+        it = it._replace(desc=Basic09.string(it.desc),
+                         amt=Basic09.real(it.amt))
+        return it
+
+    @property
+    def indx(self):
+        return self.key % 32 + 1
+
+    @property
+    def date(self):
+        r&amp;quot;&amp;quot;&amp;quot;
+        port of PROCEDURE DateStr
+
+        Indx=MOD(Key,32)+1 \Copy=Key/32
+        Day=MOD(Copy,31)+1 \Copy=Copy/31
+        Month=MOD(Copy,12)+1 \Copy=Copy/12
+        Year=86+Copy
+        &amp;quot;&amp;quot;&amp;quot;
+        copy = self.key / 32
+        day = copy % 31 + 1
+        copy = copy / 31
+        month = copy % 12 + 1
+        copy = copy / 12
+        year = 1986 + copy
+        try:
+            return datetime.date(year, month, day)
+        except ValueError:  # Nov 31???
+            return datetime.date(year, month, day - 1)
+
+    def as_dict(self):
+        return dict(date=self.date, indx=self.indx,
+                    desc=self.desc, amt=round(self.amt, 2), db=self.db, cr=self.cr)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;I couldn&#39;t figure out how to decode the floating point
+account balances until I realized I was comparing them
+against the Feb 22 report rather than their March 12 values.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Type REAL&lt;/p&gt;
+&lt;p&gt;REAL numbers are stored in 5 consecutive memory bytes.
+The first byte is the (8-bit) exponent in binary two&#39;s-complement representation.
+The next four bytes are the binary sign-and-magnitude representation of the mantissa;
+the mantissa in the first 31 bits, and the sign of the mantissa in the last
+(least significant) bit of the last byte of the real quantity.
+ -- &lt;a href=&#34;http://www.roug.org/soren/6809/basic09.pdf&#34;&gt;BASIC09: Programming Language Reference Manual&lt;/a&gt;
+ Copyright (c) 1983 Microware Systems Corporation&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;pre&gt;&lt;code class=&#34;python&#34;&gt;class Basic09(object):
+    @classmethod
+    def string(cls, data):
+        return data[:data.find(&#39;\xff&#39;)] if &#39;\xff&#39; in data else data
+
+    @classmethod
+    def real(cls, b5):
+        exp, mag = struct.unpack(&#39;&amp;gt;bI&#39;, b5)
+        sgn = -1 if (mag % 2) else 1
+        mag = mag &amp;gt;&amp;gt; 1
+        mag = mag * 1.0 / (2 ** 31)
+        return mag * (2 ** exp) * sgn
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The overall file format is a linked list:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;python&#34;&gt;class Global(namedtuple(&#39;Global&#39;, &#39;trx, head, tail, rec, avail, name, bal, file&#39;)):
+    &amp;quot;&amp;quot;&amp;quot;
+    TYPE Global=Trx:Trans; Head,Tail,Rec,Avail:INTEGER; Name(32):STRING
+    &amp;quot;&amp;quot;&amp;quot;
+    struct = struct.Struct(&#39;&amp;gt;hhhh%ds%dsB&#39; % (32 * 13, 32 * 5))
+    @classmethod
+    def unpack(cls, data):
+        trx = Trans.unpack(data)
+        data = data[Trans.struct.size:]
+        it = cls(*((trx,) + cls.struct.unpack(data[:cls.struct.size])))
+        ea = 13
+        name = [Basic09.string(it.name[ea * ix:ea * (ix + 1)]) for ix in range(32)]
+        ea = 5
+        bal = [Basic09.real(it.bal[ea * ix:ea * (ix + 1)]) for ix in range(32)]
+        return it._replace(name=name, bal=bal)
+
+    def accounts(self):
+        a = pd.DataFrame(dict(name=self.name, bal=self.bal), columns=[&#39;name&#39;, &#39;bal&#39;])
+        a.index = a.index + 1
+        return a
+
+    def iter_trans(self, jrnl):
+        here = self.rec
+        while True:
+            after, before = struct.unpack(&#39;&amp;gt;HH&#39;, jrnl[here + Trans.struct.size:][:4])
+            here = after
+            if here == 0:
+                break
+            yield Trans.unpack(jrnl[here:])
+
+G = Global.unpack(Jrnl)
+print G.trx
+print dict(head=G.head, tail=G.tail, rec=G.rec, avail=G.avail)
+ut_accounts = G.accounts()
+ut_accounts.head(3)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;Trans(key=32767, desc=&#39;Delphi Bill&#39;, amt=46.80000001192093, db=10, cr=19)
+{&#39;avail&#39;: 5443, &#39;rec&#39;: 0, &#39;tail&#39;: 5313, &#39;head&#39;: 607}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;div&gt;
+&lt;table border=&#34;1&#34; class=&#34;dataframe&#34;&gt;
+  &lt;thead&gt;
+    &lt;tr style=&#34;text-align: right;&#34;&gt;
+      &lt;th&gt;&lt;/th&gt;
+      &lt;th&gt;name&lt;/th&gt;
+      &lt;th&gt;bal&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;th&gt;1&lt;/th&gt;
+      &lt;td&gt;Cash&lt;/td&gt;
+      &lt;td&gt;76.220001&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;2&lt;/th&gt;
+      &lt;td&gt;Checks&lt;/td&gt;
+      &lt;td&gt;552.950000&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;3&lt;/th&gt;
+      &lt;td&gt;Bank Account&lt;/td&gt;
+      &lt;td&gt;890.420005&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/div&gt;
+
+&lt;pre&gt;&lt;code class=&#34;python&#34;&gt;journal = pd.DataFrame.from_records(
+    (tx.as_dict() for tx in G.iter_trans(Jrnl)),
+    columns=[&#39;date&#39;, &#39;indx&#39;, &#39;desc&#39;, &#39;amt&#39;, &#39;db&#39;, &#39;cr&#39;]).set_index([&#39;date&#39;, &#39;indx&#39;])
+
+journal = journal.merge(ut_accounts[[&#39;name&#39;]], left_on=&#39;db&#39;, right_index=True)
+journal = journal.rename(columns=dict(name=&#39;Source Name&#39;))
+journal = journal.merge(ut_accounts[[&#39;name&#39;]], left_on=&#39;cr&#39;, right_index=True)
+journal = journal.rename(columns=dict(name=&#39;Dest Name&#39;))
+journal = journal.sort_index()
+
+journal.iloc[6:9]
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;div&gt;
+&lt;table border=&#34;1&#34; class=&#34;dataframe&#34;&gt;
+  &lt;thead&gt;
+    &lt;tr style=&#34;text-align: right;&#34;&gt;
+      &lt;th&gt;&lt;/th&gt;
+      &lt;th&gt;&lt;/th&gt;
+      &lt;th&gt;desc&lt;/th&gt;
+      &lt;th&gt;amt&lt;/th&gt;
+      &lt;th&gt;db&lt;/th&gt;
+      &lt;th&gt;cr&lt;/th&gt;
+      &lt;th&gt;Source Name&lt;/th&gt;
+      &lt;th&gt;Dest Name&lt;/th&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;date&lt;/th&gt;
+      &lt;th&gt;indx&lt;/th&gt;
+      &lt;th&gt;&lt;/th&gt;
+      &lt;th&gt;&lt;/th&gt;
+      &lt;th&gt;&lt;/th&gt;
+      &lt;th&gt;&lt;/th&gt;
+      &lt;th&gt;&lt;/th&gt;
+      &lt;th&gt;&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;th&gt;1986-09-01&lt;/th&gt;
+      &lt;th&gt;11&lt;/th&gt;
+      &lt;td&gt;Books&lt;/td&gt;
+      &lt;td&gt;117.85&lt;/td&gt;
+      &lt;td&gt;1&lt;/td&gt;
+      &lt;td&gt;23&lt;/td&gt;
+      &lt;td&gt;Cash&lt;/td&gt;
+      &lt;td&gt;Books/Supplie&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th rowspan=&#34;2&#34; valign=&#34;top&#34;&gt;1986-09-15&lt;/th&gt;
+      &lt;th&gt;11&lt;/th&gt;
+      &lt;td&gt;Scholarship&lt;/td&gt;
+      &lt;td&gt;296.46&lt;/td&gt;
+      &lt;td&gt;7&lt;/td&gt;
+      &lt;td&gt;20&lt;/td&gt;
+      &lt;td&gt;National Meri&lt;/td&gt;
+      &lt;td&gt;U T&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;15&lt;/th&gt;
+      &lt;td&gt;Scholarship&lt;/td&gt;
+      &lt;td&gt;78.54&lt;/td&gt;
+      &lt;td&gt;7&lt;/td&gt;
+      &lt;td&gt;1&lt;/td&gt;
+      &lt;td&gt;National Meri&lt;/td&gt;
+      &lt;td&gt;Cash&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Computing running balances with pandas with &lt;code&gt;cumsum&lt;/code&gt; was fun.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;python&#34;&gt;def running_balance(journal):
+    cr = journal[[&#39;cr&#39;, &#39;amt&#39;]].rename(columns=dict(cr=&#39;acct&#39;))
+    cr[&#39;col&#39;] = &#39;cr&#39;
+    db = journal[[&#39;db&#39;, &#39;amt&#39;]].rename(columns=dict(db=&#39;acct&#39;))
+    db[&#39;col&#39;] = &#39;db&#39;
+    db.amt = -db.amt
+    ea = cr.append(db).sort_index()
+    ea[&#39;bal&#39;] = ea.groupby(&#39;acct&#39;).amt.cumsum()
+    cum = ea.reset_index().pivot_table(index=[&#39;date&#39;, &#39;indx&#39;], columns=&#39;col&#39;, values=[&#39;bal&#39;])
+    journal = journal.copy()
+    journal.insert(len(journal.columns) - 1, &#39;Src Bal&#39;, cum.bal.db)
+    journal[&#39;Dest Bal&#39;] = cum.bal.cr
+    return journal
+
+running_balance(journal).to_csv(&#39;ut-austin-journal.csv&#39;)
+
+running_balance(journal).iloc[6:9]
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;div&gt;
+&lt;table border=&#34;1&#34; class=&#34;dataframe&#34;&gt;
+  &lt;thead&gt;
+    &lt;tr style=&#34;text-align: right;&#34;&gt;
+      &lt;th&gt;&lt;/th&gt;
+      &lt;th&gt;&lt;/th&gt;
+      &lt;th&gt;desc&lt;/th&gt;
+      &lt;th&gt;amt&lt;/th&gt;
+      &lt;th&gt;db&lt;/th&gt;
+      &lt;th&gt;cr&lt;/th&gt;
+      &lt;th&gt;Source Name&lt;/th&gt;
+      &lt;th&gt;Src Bal&lt;/th&gt;
+      &lt;th&gt;Dest Name&lt;/th&gt;
+      &lt;th&gt;Dest Bal&lt;/th&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;date&lt;/th&gt;
+      &lt;th&gt;indx&lt;/th&gt;
+      &lt;th&gt;&lt;/th&gt;
+      &lt;th&gt;&lt;/th&gt;
+      &lt;th&gt;&lt;/th&gt;
+      &lt;th&gt;&lt;/th&gt;
+      &lt;th&gt;&lt;/th&gt;
+      &lt;th&gt;&lt;/th&gt;
+      &lt;th&gt;&lt;/th&gt;
+      &lt;th&gt;&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;th&gt;1986-09-01&lt;/th&gt;
+      &lt;th&gt;11&lt;/th&gt;
+      &lt;td&gt;Books&lt;/td&gt;
+      &lt;td&gt;117.85&lt;/td&gt;
+      &lt;td&gt;1&lt;/td&gt;
+      &lt;td&gt;23&lt;/td&gt;
+      &lt;td&gt;Cash&lt;/td&gt;
+      &lt;td&gt;182.15&lt;/td&gt;
+      &lt;td&gt;Books/Supplie&lt;/td&gt;
+      &lt;td&gt;117.85&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th rowspan=&#34;2&#34; valign=&#34;top&#34;&gt;1986-09-15&lt;/th&gt;
+      &lt;th&gt;11&lt;/th&gt;
+      &lt;td&gt;Scholarship&lt;/td&gt;
+      &lt;td&gt;296.46&lt;/td&gt;
+      &lt;td&gt;7&lt;/td&gt;
+      &lt;td&gt;20&lt;/td&gt;
+      &lt;td&gt;National Meri&lt;/td&gt;
+      &lt;td&gt;-296.46&lt;/td&gt;
+      &lt;td&gt;U T&lt;/td&gt;
+      &lt;td&gt;496.28&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;15&lt;/th&gt;
+      &lt;td&gt;Scholarship&lt;/td&gt;
+      &lt;td&gt;78.54&lt;/td&gt;
+      &lt;td&gt;7&lt;/td&gt;
+      &lt;td&gt;1&lt;/td&gt;
+      &lt;td&gt;National Meri&lt;/td&gt;
+      &lt;td&gt;-375.00&lt;/td&gt;
+      &lt;td&gt;Cash&lt;/td&gt;
+      &lt;td&gt;260.69&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/div&gt;
+
+&lt;p&gt;And with that, we have recovered the journal data from the report:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;python&#34;&gt;tx_lines[:2] + tx_lines[8:11]
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code&gt;[u&#39;Date        Description   Amount  Source Name   Src Bal Dest Name     Dest Bal\n&#39;,
+ u&#39;----------- ------------- ------- ------------- ------- ------------- --------\n&#39;,
+ u&#39; 9-01-86:11 Books          117.85 Cash           182.15 Books/Supplie  117.85\n&#39;,
+ u&#39; 9-15-86:11 Scholarship    296.46 National Meri -296.46 U T            496.28\n&#39;,
+ u&#39; 9-15-86:15 Scholarship     78.54 National Meri -375.00 Cash           260.69\n&#39;]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;And we can compute account balances:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;python&#34;&gt;src_bal = journal.groupby(&#39;db&#39;)[[&#39;amt&#39;]].sum()
+dst_bal = journal.groupby(&#39;cr&#39;)[[&#39;amt&#39;]].sum()
+bal = src_bal.merge(dst_bal, left_index=True, right_index=True, how=&#39;outer&#39;, suffixes=[&#39;_src&#39;, &#39;_dst&#39;]).fillna(0)
+bal[&#39;balance&#39;] = bal.amt_dst - bal.amt_src
+bal = bal.drop([&#39;amt_src&#39;, &#39;amt_dst&#39;], axis=1)
+bal = bal.merge(ut_accounts[[&#39;name&#39;]], left_index=True, right_index=True)[[&#39;name&#39;, &#39;balance&#39;]]
+bal.to_csv(&#39;ut-austin-accounts.csv&#39;, index_label=&#39;acct_num&#39;)
+bal[:3]
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;div&gt;
+&lt;table border=&#34;1&#34; class=&#34;dataframe&#34;&gt;
+  &lt;thead&gt;
+    &lt;tr style=&#34;text-align: right;&#34;&gt;
+      &lt;th&gt;&lt;/th&gt;
+      &lt;th&gt;name&lt;/th&gt;
+      &lt;th&gt;balance&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;th&gt;1&lt;/th&gt;
+      &lt;td&gt;Cash&lt;/td&gt;
+      &lt;td&gt;76.22&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;2&lt;/th&gt;
+      &lt;td&gt;Checks&lt;/td&gt;
+      &lt;td&gt;552.95&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;3&lt;/th&gt;
+      &lt;td&gt;Bank Account&lt;/td&gt;
+      &lt;td&gt;890.42&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/div&gt;</description>
+            <pubDate>Sat, 30 Dec 2017 00:00:00 +0000</pubDate>
+            <guid>http://www.madmode.com//2017/ut-austin-expenses/</guid>
+        </item>
         <item>
             <title>Migrating Breadcrumbs</title>
             <link>http://www.madmode.com//2017/breadcrumbs-migrate/</link>
@@ -24,65 +475,74 @@ DanC&amp;gt; interesting... my backup is evidently python pickles of XMLRPC resp
     &amp;lt;class xmlrpclib.DateTime at 0x7f20e444eef0&amp;gt;  &lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;The files are numbered:&lt;/p&gt;
-&lt;p&gt;```python
-def _numbered_files(pattern=&#39;[0-9]*&#39;,
+&lt;pre&gt;&lt;code class=&#34;python&#34;&gt;def _numbered_files(pattern=&#39;[0-9]*&#39;,
                     breadcrumbs=&#39;/home/connolly/sites/breadcrumbs&#39;):
     from pathlib import Path
-    return Path(breadcrumbs).glob(pattern)&lt;/p&gt;
-&lt;p&gt;breadcrumbs_bak = list(_numbered_files())
+    return Path(breadcrumbs).glob(pattern)
+
+breadcrumbs_bak = list(_numbered_files())
 sorted(int(f.parts[-1]) for f in breadcrumbs_bak)[:10]
-```&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
 &lt;pre&gt;&lt;code&gt;[4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Each is a pickled XMLRPC response:&lt;/p&gt;
-&lt;p&gt;```python
-import pickle&lt;/p&gt;
-&lt;p&gt;breadcrumbs_xmlrpc = dict((int(f.parts[-1]), pickle.load(f.open(&#39;rb&#39;))) for f in breadcrumbs_bak)
+&lt;pre&gt;&lt;code class=&#34;python&#34;&gt;import pickle
+
+breadcrumbs_xmlrpc = dict((int(f.parts[-1]), pickle.load(f.open(&#39;rb&#39;))) for f in breadcrumbs_bak)
 x = breadcrumbs_xmlrpc[228]
-x[&#39;title&#39;], x[&#39;dateCreated&#39;], x[&#39;dateCreated&#39;].&lt;strong&gt;class&lt;/strong&gt;
-```&lt;/p&gt;
+x[&#39;title&#39;], x[&#39;dateCreated&#39;], x[&#39;dateCreated&#39;].__class__
+&lt;/code&gt;&lt;/pre&gt;
+
 &lt;pre&gt;&lt;code&gt;(&#39;hAudio for microformats mixtapes, in progress&#39;,
  &amp;lt;DateTime &#39;20080306T17:00:05&#39; at 7fa8242a5320&amp;gt;,
  &amp;lt;class xmlrpclib.DateTime at 0x7fa82427cf58&amp;gt;)
 &lt;/code&gt;&lt;/pre&gt;
 &lt;h2&gt;MadMode blog pages&lt;/h2&gt;
-&lt;p&gt;```python
-from collections import OrderedDict
-from &lt;strong&gt;future&lt;/strong&gt; import print_function
-from sys import stderr&lt;/p&gt;
-&lt;p&gt;class BlogWriter(object):
-    def &lt;strong&gt;init&lt;/strong&gt;(self, pages):
-        self._pages = pages&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;def addPage(self, body, title, date, tags, published, slug):
-    datestr = date.isoformat()
-    headings = OrderedDict(title=repr(title),
-                           date=datestr[:10],
-                           tags=&#34;[%s]&#34; % (&#39;, &#39;.join(&#34;&#39;%s&#39;&#34; % tag for tag in tags)),
-                           published=published)
-    header = &#39;\n&#39;.join([&#34;%s: %s&#34; % (k, v) for k, v in headings.iteritems()])
-    yyyy = datestr[:4]
-    page = (self._pages / yyyy / slug).with_suffix(&#39;.md&#39;)
-    print(&#34;addPage: &#34;, page, tags, file=stderr)
-    with page.open(&#39;wb&#39;) as out:
-        out.write(header)
-        out.write(&#39;\n\n&#39;)
-        out.write(body.encode(&#39;utf-8&#39;))
+&lt;pre&gt;&lt;code class=&#34;python&#34;&gt;from collections import OrderedDict
+from __future__ import print_function
+from sys import stderr
+
+
+class BlogWriter(object):
+    def __init__(self, pages):
+        self._pages = pages
+
+    def addPage(self, body, title, date, tags, published, slug):
+        datestr = date.isoformat()
+        headings = OrderedDict(title=repr(title),
+                               date=datestr[:10],
+                               tags=&amp;quot;[%s]&amp;quot; % (&#39;, &#39;.join(&amp;quot;&#39;%s&#39;&amp;quot; % tag for tag in tags)),
+                               published=published)
+        header = &#39;\n&#39;.join([&amp;quot;%s: %s&amp;quot; % (k, v) for k, v in headings.iteritems()])
+        yyyy = datestr[:4]
+        page = (self._pages / yyyy / slug).with_suffix(&#39;.md&#39;)
+        print(&amp;quot;addPage: &amp;quot;, page, tags, file=stderr)
+        with page.open(&#39;wb&#39;) as out:
+            out.write(header)
+            out.write(&#39;\n\n&#39;)
+            out.write(body.encode(&#39;utf-8&#39;))
+
+def _madmode():
+    from pathlib import Path
+
+    return BlogWriter(Path(&#39;/home/connolly/sites&#39;) / &#39;madmode-blog&#39; / &#39;pages&#39;)
+
+mmwr = _madmode()
 &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;def _madmode():
-    from pathlib import Path&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;return BlogWriter(Path(&#39;/home/connolly/sites&#39;) / &#39;madmode-blog&#39; / &#39;pages&#39;)
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;mmwr = _madmode()
-```&lt;/p&gt;
-&lt;p&gt;```python
-from time import mktime
+
+&lt;pre&gt;&lt;code class=&#34;python&#34;&gt;from time import mktime
 from datetime import datetime
-import re&lt;/p&gt;
-&lt;p&gt;def drupal2md(body):
-    body = body.split(&#39;&lt;/title&gt;&#39;, 1)[1]  # remove redundant title
+import re
+
+
+def drupal2md(body):
+    body = body.split(&#39;&amp;lt;/title&amp;gt;&#39;, 1)[1]  # remove redundant title
     body = body.replace(&#39;\r&#39;, &#39;&#39;)  # unix newlines
-    return body&lt;/p&gt;
-&lt;p&gt;def findTags(body):
+    return body
+
+
+def findTags(body):
     tags = []
     for txt in body.split(&#39;&amp;lt;&#39;):
         if txt.startswith(&#39;a &#39;):
@@ -92,7 +552,7 @@ import re&lt;/p&gt;
                 name, txt = txt.split(&#39;=&#39;, 1)
                 name = name.strip()
                 txt = txt.strip()
-                _, value, txt = txt.split(&#39;&#34;&#39;, 2)
+                _, value, txt = txt.split(&#39;&amp;quot;&#39;, 2)
                 attrs[name] = value
                 txt = txt.strip()
             href = attrs.get(&#39;href&#39;, &#39;&#39;)
@@ -100,15 +560,18 @@ import re&lt;/p&gt;
                 if href.endswith(&#39;/&#39;):
                     href = href[:-1]
                 tags.append(href.split(&#39;/&#39;)[-1])
-    return tags&lt;/p&gt;
-&lt;p&gt;for postid, item in sorted(breadcrumbs_xmlrpc.items()):
+    return tags
+
+
+for postid, item in sorted(breadcrumbs_xmlrpc.items()):
     print(postid, item[&#39;title&#39;], file=stderr)
     dt = datetime.fromtimestamp(mktime(item[&#39;dateCreated&#39;].timetuple()))
     tags = [&#39;breadcrumbs&#39;] + findTags(item[&#39;content&#39;])
     mmwr.addPage(drupal2md(item[&#39;content&#39;]), title=item[&#39;title&#39;], date=dt,
                  tags=tags,
                  published=True, slug=&#39;breadcrumbs_%04d&#39; % postid)
-```&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
 &lt;pre&gt;&lt;code&gt;4 On OpenID and comment policies
 addPage:  /home/connolly/sites/madmode-blog/pages/2005/breadcrumbs_0004.md [&#39;breadcrumbs&#39;]
 5 little burst of PAW demo hacking
@@ -325,17 +788,19 @@ addPage:  /home/connolly/sites/madmode-blog/pages/2010/breadcrumbs_0252.md [&#39
 addPage:  /home/connolly/sites/madmode-blog/pages/2010/breadcrumbs_0253.md [&#39;breadcrumbs&#39;]
 &lt;/code&gt;&lt;/pre&gt;
 &lt;h2&gt;PyData Tools&lt;/h2&gt;
-&lt;p&gt;&lt;code&gt;python
-import pandas as pd
-dict(pandas=pd.__version__)&lt;/code&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;python&#34;&gt;import pandas as pd
+dict(pandas=pd.__version__)
+&lt;/code&gt;&lt;/pre&gt;
+
 &lt;pre&gt;&lt;code&gt;{&#39;pandas&#39;: u&#39;0.17.1&#39;}
 &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;code&gt;python
-items = pd.DataFrame.from_records(breadcrumbs_xmlrpc.values())
+&lt;pre&gt;&lt;code class=&#34;python&#34;&gt;items = pd.DataFrame.from_records(breadcrumbs_xmlrpc.values())
 items.postid = items.postid.astype(int)
 items = items.set_index(&#39;postid&#39;)
 print(items.dtypes)
-items[[&#39;title&#39;, &#39;dateCreated&#39;]].sort_values(&#39;dateCreated&#39;).head()&lt;/code&gt;&lt;/p&gt;
+items[[&#39;title&#39;, &#39;dateCreated&#39;]].sort_values(&#39;dateCreated&#39;).head()
+&lt;/code&gt;&lt;/pre&gt;
+
 &lt;pre&gt;&lt;code&gt;content              object
 dateCreated          object
 description          object
@@ -391,8 +856,9 @@ dtype: object
 &lt;/table&gt;
 &lt;/div&gt;
 
-&lt;p&gt;&lt;code&gt;python
-items.loc[[228], [&#39;title&#39;, &#39;dateCreated&#39;]]&lt;/code&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;python&#34;&gt;items.loc[[228], [&#39;title&#39;, &#39;dateCreated&#39;]]
+&lt;/code&gt;&lt;/pre&gt;
+
 &lt;div&gt;
 &lt;table border=&#34;1&#34; class=&#34;dataframe&#34;&gt;
   &lt;thead&gt;
@@ -5357,90 +5823,6 @@ untrusted code but rather just facilitating testing, auditing, and design.
 More on that in another episode...&lt;/p&gt;</description>
             <pubDate>Mon, 29 Jul 2013 00:00:00 +0000</pubDate>
             <guid>http://www.madmode.com//2013/python-capability-idioms-2-encapsulation/</guid>
-        </item>
-        <item>
-            <title>Capability idioms for python, part 1: scripts vs. modules</title>
-            <link>http://www.madmode.com//2013/python-capability-idioms-part-1/</link>
-            <description>&lt;p&gt;In the python &lt;a href=&#34;http://docs.python.org/2/library/__main__.html&#34;&gt;top-level script
-environment&lt;/a&gt;, the
-idomatic &#34;conditional script&#34; stanza is:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;if __name__ == &#34;__main__&#34;:
-    main()
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;For example, to count the lines in the files given as arguments:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;import sys
-
-def main():
-    for filename in sys.argv[1:]:
-        stream = open(filename)
-        qty = len([line for line in stream])
-        print qty, filename
-
-if __name__ == &#39;__main__&#39;:
-    main()
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Suppose we re-organize this as:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;def main(argv, open_arg, stdout):
-    for filename in argv[1:]:
-        stream = open_arg(filename)
-        qty = len([line for line in stream])
-        print &amp;gt;&amp;gt;stdout, qty, filename
-
-if __name__ == &#39;__main__&#39;:
-    def _script():
-        from sys import argv, stdout
-
-        def open_arg(arg):
-            if arg not in argv[1:]:
-                raise IOError(
-                    &#39;only paths given as arguments can be opened&#39;)
-            return open(arg)
-
-        main(argv=argv[:], stdout=stdout, open_arg=open_arg)
-
-    _script()
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Now &lt;code&gt;main()&lt;/code&gt; communicates with the outside world only through
-&lt;a href=&#34;http://erights.org/elib/capability/ode/ode-capabilities.html&#34;&gt;capabilities&lt;/a&gt;
-passed to it.&lt;/p&gt;
-&lt;p&gt;Capabilities such as &lt;code&gt;sys.argv&lt;/code&gt; and &lt;code&gt;sys.stdout&lt;/code&gt; are visible only
-in the &lt;code&gt;_initial_caps()&lt;/code&gt; trusted computing base. Note that this TCB
-is not executed if this module is imported from another module.&lt;/p&gt;
-&lt;p&gt;The &lt;code&gt;main()&lt;/code&gt; function is fully unit-testable now, as well:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;import StringIO
-
-
-def main(argv, open_arg, stdout):
-    r&#39;&#39;&#39;
-    &amp;gt;&amp;gt;&amp;gt; caps = Mock.caps()
-    &amp;gt;&amp;gt;&amp;gt; main(**caps)
-    &amp;gt;&amp;gt;&amp;gt; caps[&#39;stdout&#39;].getvalue()
-    &#39;3 f1\n&#39;
-    &#39;&#39;&#39;
-    for filename in argv[1:]:
-        stream = open_arg(filename)
-        qty = len([line for line in stream])
-        print &amp;gt;&amp;gt;stdout, qty, filename
-
-
-class Mock(object):
-    @classmethod
-    def caps(cls):
-        argv = [&#39;prog&#39;, &#39;f1&#39;]
-
-        def open_arg(x):
-            if x in argv[1:]:
-                return [&#39;line1&#39;, &#39;line2&#39;, &#39;line3&#39;]
-            raise IOError()
-
-        out = StringIO.StringIO()
-
-        return dict(argv=argv[:], stdout=out, open_arg=open_arg)
-
-...
-&lt;/code&gt;&lt;/pre&gt;</description>
-            <pubDate>Thu, 25 Jul 2013 00:00:00 +0000</pubDate>
-            <guid>http://www.madmode.com//2013/python-capability-idioms-part-1/</guid>
         </item>
         
     </channel>
