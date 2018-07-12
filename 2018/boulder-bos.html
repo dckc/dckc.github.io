@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+    <meta charset="utf-8" />
+    
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <title>MadMode: Smart Contracts for Health Research Data Sharing | Code</title>
+    <meta name="description" content="MadMode by Dan Connolly"/>
+    <meta name="viewport" content="width=device-width"/>
+
+    <!-- https://dev.twitter.com/docs/cards -->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:creator" content="dckc" />
+    <link rel="stylesheet" type="text/css" href="/static/packed.css?8d9af232"/>
+    <link rel="alternate" type="application/rss+xml" href="/feed/" title="Everything (RSS)"/>
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+</head>
+<body class="">
+    <!--[if lt IE 7]>
+    <p class="chromeframe">Your browser is <em>ancient!</em> Please <a href="http://www.quirksmode.org/upgrade.html">upgrade</a>.</p>
+    <![endif]-->
+    <div class="container">
+        <header class="main-title">
+            <h1><a href="/">MadMode</a></h1>
+            <small>Dan Connolly's tinkering lab notebook</small>
+        </header>
+        <div class="contents">
+            
+
+    <article lang="en" class="" itemscope="itemscope" itemtype="http://schema.org/BlogPosting">
+    <link itemprop="url" href="/2018/boulder-bos.html" />
+    <header>
+        <h2><a itemprop="name" href="/2018/boulder-bos.html">Smart Contracts for Health Research Data Sharing</a></h2></header>
+    
+    <section>
+        <p>I'm under contract with RChain, two days a week from June to December,
+to work on <a href="https://github.com/rchain/bounties/issues/788">smart contracts for health research data
+sharing</a>. I'm still at KUMC for the other three days a week.</p>
+<h2>RChain Devcon Boulder</h2>
+<p>In April, I was invited to <a href="https://developer.rchain.coop/conference">RChain Devcon</a> in Boulder. I enjoyed
+Greg's <a href="https://www.youtube.com/watch?v=3R3IL1bGm0s&amp;t=617s">RChain VM talk</a>. (<em>More on that later, I hope.</em>) Vlad's
+CBC Casper talk was mostly familiar; I think I got most of it from
+<a href="https://www.youtube.com/watch?v=z3sY8zZRPtw">his devcon three talk</a>, which was just my speed.</p>
+<p>I gave a short talk about <a href="https://docs.google.com/presentation/d/1B2Vu8o3ACwruY6HY1ayXRQ4qkNKsMy4hdbOdxrCHI2o/edit">Getting Involved in the RChain Bounty
+Program</a> (<a href="https://www.youtube.com/watch?v=HsQTDNEIbjs&amp;t=1s">video</a>).</p>
+<p>TimBL had written <a href="https://webfoundation.org/2018/03/web-birthday-29/">The web is under threat</a>, which I used as a
+springboard for <a href="https://docs.google.com/presentation/d/1GOboFZj311rfGExrtCFp3aaQ2vYhxHqX3qnix21nqo4/edit">Can RChain Answer?</a> (<a href="https://www.youtube.com/watch?v=ZnBbi6ifzdo&amp;t=849s">video</a>). My summary
+slide is:</p>
+<blockquote>
+<p>It has a lot of the right pieces:</p>
+<ul>
+<li>Object Capability Discipline</li>
+<li>Support for Formal Verification</li>
+<li>Integrated Economics with Network Architecture</li>
+<li>Scalability</li>
+<li>Down to transistors</li>
+<li>Up to the globe</li>
+<li>Visionary Leadership</li>
+<li>Cooperative Governance</li>
+</ul>
+</blockquote>
+<p>I did a quick run up of capabilities from simple closure-based objects
+to sealing and unsealing to capability-based money as in <a href="http://erights.org/elib/capability/ode/index.html">Miller,
+Morningstar, and Franz</a> from FC 2000, including:</p>
+<blockquote>
+<p>Before presenting the following simple example of capability-based
+money, we must attempt to head off a confusion this example
+repeatedly causes. <strong>We are not proposing to actually do money this
+way!</strong> A desirable money system must also provide for: ... blinding,
+non-repudiation, accounting controls, and backing (redeemability).</p>
+</blockquote>
+<p>Then—tada!—I showed that <strong>RChain <em>does</em> propose to do money this
+way</strong> by translating the E code to <a href="https://github.com/rchain/rchain/blob/master/casper/src/main/rholang/MakeMint.rho">MakeMint.rho</a>:</p>
+<pre><code class="rholang">   contract MakeMint(return) = {
+     new pairCh, thisMint, internalMakePurse in {
+       MakeBrandPair!(*pairCh) | for(@p &lt;- pairCh) {
+       ...
+</code></pre>
+
+<h2>HERON Clinical Data Repository Access Policy</h2>
+<p>The main smart contract I want to work on is an evolution of the
+<a href="https://informatics.kumc.edu/work/wiki/HeronAdminDev">HERON policy enforcement layer</a>, a bunch of python / PHP / SQL
+code that enforces the policy around access to KUMC's clinical data
+repository on ~500K patients: you have to be qualified faculty or
+sponsored by one, and your human subjects training has to be current
+and you have to sign a couple forms:</p>
+<p><img alt="flow of authority" src="https://informatics.kumc.edu/work/graphviz/a02d7fe066856aadf1894e50f41f4b2aa27ca3b4.dot.png" /></p>
+<p>Once you get through all that, you can use the i2b2 ad-hoc query
+interface to do "cohort discovery"; for example, to find out if enough
+of the right kind of patients come through KU Med for the study you
+want to do.</p>
+<h2>i2b2 Harvard Symposium</h2>
+<p>The <a href="http://transmartfoundation.org/harvard-symposium-2018/">i2b2 tranSMART Foundation Harvard Symposium</a> was this year's
+annual meeting of the i2b2 user community. Automation of regulatory
+processes is a regular topic and this year <a href="http://geekdoctor.blogspot.com/">John Halamka</a> spoke on
+<em>Emerging Models of Data Flow - APIs, Blockchain and Cloud</em>.  He cut
+through a lot of the mystery around blockchain technology with a great
+illustration of one-way hashing. :)</p>
+<p><img
+src="https://lh3.googleusercontent.com/6w32pE2Tpc6ZHzHSWKR-TmNvIvL1Nl_21z3UAYFdCukNr-MJcDlPpVTy1HRnTOcrVD2jTt59TQeaD4WEmcftD8PtxAQWeA-OIlRJ8mageizVjdaTUCCL2ENSjmHulogCqPtwcYeQ-Q=w640-h480"
+width="640" height="480" /></p>
+<h2>Decentralized identity, verifiable claims</h2>
+<p>While killing time in the airport, I managed to reach Manu Sporny. His
+work around <a href="https://veres.io/use-cases/verifiable-prescriptions/">verifyable prescriptions</a> has certain parallels with
+research data sharing. It wasn't all good news, but he did put me in
+touch with a couple of his colleagues in the Boston area.</p>
+<p>I had hoped to meet with <a href="https://dustycloud.org/">Chris Webber</a> and
+sync up on js libraries for <a href="https://w3c-ccg.github.io/ocap-ld/">linked data
+capabilities</a>. Capability security
+seems necessary and sufficient, to me, for decentralized access
+control. As Stiegler put it in the <a href="http://erights.org/talks/efun/SecurityPictureBook.pdf">picture
+book</a>:</p>
+<blockquote>
+<p>The patterns described in this picturebook are simple because they
+discard the modern fascination with the identities of the
+participants. Individual Authentication is so pervasive, it is now a
+part of the problem.</p>
+<p>Suppose that your car, instead of accepting a delegatable key,
+demanded that your driver’s license match the car’s title registry,
+which happens to be in your spouse’s name. Entrepreneurs would leap
+forward to develop ever more powerful "identity management" for
+automobiles. We would subcontract to security experts so our
+teenage daughters could borrow the car to buy milk. Heaven forfend
+that the daughter, breaking her leg, had to delegate to her best
+friend to get to the hospital.</p>
+</blockquote>
+<p>Unfortunately, while Chris is closer to Boston these days, he's still a couple hours away.</p>
+<p>But I did get to meet <a href="http://computingjoy.com/">Dmitri Zagidulin</a> over breakfast. He has
+done javascript work both with TimBL and company on
+<a href="https://github.com/solid/solid">solid</a> and with Manu on decentralized
+identifiers
+(e.g. <a href="https://github.com/digitalbazaar/did-io">did-io</a>). He isn't yet
+working on linked data capabilities yet, so I twisted his arm in that
+direction, and <a href="http://www.madmode.com/2011/07/secure-mashups-csrf-resistent.html">away from
+WebID</a>.</p>
+<p>Things started to click for him when I talked about verifyable claims
+in terms of insurance and markets:</p>
+<blockquote>
+<p>Proof of identity, in so much as it involves revelation of the
+profile, or enables its revelation through the use of unique
+identifiers, is trade in an asset when the information revealed is
+more than the minimum required with current technology. -- <a href="https://www.w3.org/2000/12/drm-ws/pp/hp-poorvi2.html">Vora
+et. al from HP at W3C 2001 DRM
+Workshop</a></p>
+</blockquote>
+<p>Take proof of age, for example. A smart contract for a client might
+ask "who will bet me $10 at 50-to-1 that this request comes from
+someone over 21 years of age?" A business where people are routinely
+physically present is in a position to take such bets with high
+confidence.</p>
+<h2>Personal Health Records</h2>
+<p>Manu also put me in touch with <a href="http://healthurl.com/www/Blogs_+.html">Adrian
+Gropper</a>, CTO of Patient
+Privacy Rights. Meeting in the airport as he was arriving and I was
+departing was a bit hectic, so I couldn't be sure whether I had read
+the paper he and Mark Miller worked:</p>
+<ul>
+<li><a href="https://github.com/WebOfTrustInfo/rebooting-the-web-of-trust-fall2017/blob/master/final-documents/identity-hubs-capabilities-perspective.md">Identity Hubs Capabilities Perspective</a> Rebooting the Web of
+   Trust V, October 13, 2017 by Adrian Gropper, Drummond Reed, Mark
+   S. Miller</li>
+</ul>
+<p>His description of <a href="http://hieofone.org/">HIEofone</a> increased the
+priority of UMA in my things-to-study-in-more-depth list:</p>
+<blockquote>
+<p>HIE of One (Health Information Exchange of One) is a
+volunteer-driven open source project to combine emerging standards
+for access authorization (OpenID HEART) and emerging standards for
+blockchain-based self-sovereign identity (DID) into a
+patient-centered health record infrastructure.</p>
+</blockquote>
+<p>He was one of several people on this trip that talked about FHIR
+deployment in ways that make me want to look into it again. In
+particular, he mentioned a FHIR sandbox by CMS, the medicare folks.</p>
+<h2>OCap-safe JavaScript</h2>
+<p>On the way home, I got stuck in the Washington D.C. airport overnight
+due to weather. I used the time to start
+<a href="https://github.com/dckc/tinyses2rho/">tinyses2rho</a>, some exploratory
+scala code to integrate TinySES with RChain.</p>
+<p>TinySES is a small subset of JavaScript designed so that non-experts
+can use to write non-trivial non-exploitable smart contracts. It comes
+from Mark Miller and company, who have been working on object
+capabilities and smart contracts at least as far back as the early
+'90s, and recently <a href="https://www.coindesk.com/new-startup-zooko-naval-betting-better-crypto-contracts/">launched
+Agoric</a>.</p>
+<p><a href='https://photos.google.com/share/AF1QipPEmCV0T84sLHj1L1zNUQ-eldo2SVxeNYYf49RhnQF-5kp6kHZua4BAbfgCDOrICw?key=cmVENTBqc2YwY2g2QzZxQkJjSUVvVXFYYXg3QTVB&source=ctrlq.org'><img alt='DCA in the wee hours' src='https://lh3.googleusercontent.com/rv9s-h-_E58jZftv4H1XcBlgGtx1hszNMMpXrQyMVDGuath90K8OtXn7_ItZxR0G6n-_1dEVujUf0ED_nKtPq8qZElbDRsAY7PkWvKyOGejZgAZVU6HLKmQ3cKOdF0Rf-gCrh0zM8w=w2400' /></a></p>
+    </section>
+    <aside>
+        <p>
+            <span class="article-author" itemprop="author" itemscope="itemscope" itemtype="http://schema.org/Person">
+                <span itemprop="name">Dan Connolly</span> —
+            </span>
+            <time datetime="2018-07-12" itemprop="datePublished">2018-07-12</time>
+            
+            — <a href="/2018/boulder-bos.html">Permalink</a>
+            — <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/">License</a>.
+	    <br />
+	    
+	    | <a class='tag' rel='tag'
+		 href="/search/label/capabilities/">capabilities</a>
+   	    
+	    | <a class='tag' rel='tag'
+		 href="/search/label/smart-contracts/">smart-contracts</a>
+   	    
+	    | <a class='tag' rel='tag'
+		 href="/search/label/travel/">travel</a>
+   	    
+	    | <a class='tag' rel='tag'
+		 href="/search/label/presentation/">presentation</a>
+   	    
+	    | <a class='tag' rel='tag'
+		 href="/search/label/BOS/">BOS</a>
+   	    
+	    | <a class='tag' rel='tag'
+		 href="/search/label/Boulder/">Boulder</a>
+   	    
+	    | <a class='tag' rel='tag'
+		 href="/search/label/health/">health</a>
+   	    
+	    | <a class='tag' rel='tag'
+		 href="/search/label/data/">data</a>
+   	    
+	    | <a class='tag' rel='tag'
+		 href="/search/label/research/">research</a>
+   	    
+	    | <a class='tag' rel='tag'
+		 href="/search/label/rchain/">rchain</a>
+   	    
+        </p>
+    </aside>
+    <hr />
+    <nav>
+        
+        
+        <a class="next" href="/2018/rchain-gov-forum-SEA.html">dreaming big at the RChain Governance Forum</a>
+    </nav>
+</article>
+
+
+        </div>
+        <nav class="sidebar">
+            <ul>
+                <li class="home"><a href="/" hreflang="en">Home</a></li>
+<!-- @@                <li class="code"><a href="@@ url_for("section", section="code") }}" hreflang="en">Blog</a></li> -->
+               <li>Archives
+		 
+               </li>
+
+                <li class="contact"><a href="/contact/" hreflang="en">Contact</a></li>
+            </ul>
+        </nav>
+        <footer class="site-footer">
+            <address>
+  <a href="https://www.codementor.io/dckc" rel="me">
+    <img  class="social-icon"
+          src="https://cdn.codementor.io/badges/i_am_a_codementor_dark.svg"
+          alt="I am a codementor" /></a>
+  &#160;&#160;&#160;
+  <a href="https://github.com/dckc" rel="me">
+    <img src="/static/img/GitHub-Mark/PNG/GitHub-Mark-64px.png"
+	 width="40px" height="40px" class="social-icon"
+	 alt="dckc on github" /></a>
+  &#160;&#160;&#160;
+  <a href="http://bitbucket.org/DanC" rel="me">
+    <img src="/static/img/bitbucket_icon.png"
+	 width="40px" height="40px" class="social-icon"
+	 alt="bitbucket/DanC code" /></a>
+  &#160;&#160;&#160;
+  <a href="https://twitter.com/dckc" rel="me">
+    <img src="/static/img/twitter_icon.png"
+	 width="40px" height="40px" class="social-icon"
+	 alt="@dckc on twitter" /></a>
+  &#160;&#160;&#160;
+  <a href="https://www.linkedin.com/in/connollydan/" rel="me">
+    <img class="social-icon"
+         src="/static/img/In-2C-34px-R.png"
+	 alt="Dan Connolly on LinkedIn" /></a>
+  &#160;&#160;&#160;
+  <a href="https://keybase.io/dckc">
+    <img class="social-icon"
+         src="https://keybase.io/images/icons/icon-keybase-logo-48.png"
+         alt="dckc on keybase" />
+  </a>
+  &#160;&#160;&#160;
+  <a href="https://21.co/madmode/" rel="me">
+    <img class="social-icon"
+         src="https://static.21.co/shared/img/icon-21-gold.svg" alt=""/>
+  </a>
+
+  <br />
+  <small>&#169; 1994-2017 <a href="/contact/">Dan Connolly. Contact me.</a></small>
+
+              <br/>
+            </address>
+        </footer>
+    </div>
+    <!-- /container -->
+
+    <!-- TODO: add this only to ipython articles -->
+    <!-- cribbed from ipython's html_full.tpl -->
+<!-- updated w.r.t. http://docs.mathjax.org/en/latest/start.html -->
+<script type="text/javascript"
+  src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+<script type="text/javascript">
+init_mathjax = function() {
+    if (window.MathJax) {
+        // MathJax loaded
+        MathJax.Hub.Config({
+            tex2jax: {
+                inlineMath: [ ["\\(","\\)"] ],
+                displayMath: [ ["\\[","\\]"] ]
+            },
+            displayAlign: 'left', // Change this to 'center' to center equations.
+            "HTML-CSS": {
+                styles: {'.MathJax_Display': {"margin": 0}}
+            }
+        });
+        MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+    }
+}
+init_mathjax();
+</script>
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script><![CDATA[window.jQuery || document.write('<script src="js/libs/jquery-1.7.1.min.js"><\/script>')]]></script>
+    <script type="text/javascript" src="/static/packed.js?98d60569"></script>
+    <script src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+</body>
+</html>

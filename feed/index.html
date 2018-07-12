@@ -5,9 +5,165 @@
         <link>http://www.madmode.com/</link>
         <description>Dan Connolly's tinkering notebook</description>
         <language>en-us</language>
-        <pubDate>Thu, 22 Feb 2018 01:11:13 +0000</pubDate>
-        <lastBuildDate>Thu, 22 Feb 2018 01:11:13 +0000</lastBuildDate>
+        <pubDate>Thu, 12 Jul 2018 18:40:04 +0000</pubDate>
+        <lastBuildDate>Thu, 12 Jul 2018 18:40:04 +0000</lastBuildDate>
         
+        <item>
+            <title>Smart Contracts for Health Research Data Sharing</title>
+            <link>http://www.madmode.com//2018/boulder-bos/</link>
+            <description>&lt;p&gt;I&#39;m under contract with RChain, two days a week from June to December,
+to work on &lt;a href=&#34;https://github.com/rchain/bounties/issues/788&#34;&gt;smart contracts for health research data
+sharing&lt;/a&gt;. I&#39;m still at KUMC for the other three days a week.&lt;/p&gt;
+&lt;h2&gt;RChain Devcon Boulder&lt;/h2&gt;
+&lt;p&gt;In April, I was invited to &lt;a href=&#34;https://developer.rchain.coop/conference&#34;&gt;RChain Devcon&lt;/a&gt; in Boulder. I enjoyed
+Greg&#39;s &lt;a href=&#34;https://www.youtube.com/watch?v=3R3IL1bGm0s&amp;amp;t=617s&#34;&gt;RChain VM talk&lt;/a&gt;. (&lt;em&gt;More on that later, I hope.&lt;/em&gt;) Vlad&#39;s
+CBC Casper talk was mostly familiar; I think I got most of it from
+&lt;a href=&#34;https://www.youtube.com/watch?v=z3sY8zZRPtw&#34;&gt;his devcon three talk&lt;/a&gt;, which was just my speed.&lt;/p&gt;
+&lt;p&gt;I gave a short talk about &lt;a href=&#34;https://docs.google.com/presentation/d/1B2Vu8o3ACwruY6HY1ayXRQ4qkNKsMy4hdbOdxrCHI2o/edit&#34;&gt;Getting Involved in the RChain Bounty
+Program&lt;/a&gt; (&lt;a href=&#34;https://www.youtube.com/watch?v=HsQTDNEIbjs&amp;amp;t=1s&#34;&gt;video&lt;/a&gt;).&lt;/p&gt;
+&lt;p&gt;TimBL had written &lt;a href=&#34;https://webfoundation.org/2018/03/web-birthday-29/&#34;&gt;The web is under threat&lt;/a&gt;, which I used as a
+springboard for &lt;a href=&#34;https://docs.google.com/presentation/d/1GOboFZj311rfGExrtCFp3aaQ2vYhxHqX3qnix21nqo4/edit&#34;&gt;Can RChain Answer?&lt;/a&gt; (&lt;a href=&#34;https://www.youtube.com/watch?v=ZnBbi6ifzdo&amp;amp;t=849s&#34;&gt;video&lt;/a&gt;). My summary
+slide is:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;It has a lot of the right pieces:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Object Capability Discipline&lt;/li&gt;
+&lt;li&gt;Support for Formal Verification&lt;/li&gt;
+&lt;li&gt;Integrated Economics with Network Architecture&lt;/li&gt;
+&lt;li&gt;Scalability&lt;/li&gt;
+&lt;li&gt;Down to transistors&lt;/li&gt;
+&lt;li&gt;Up to the globe&lt;/li&gt;
+&lt;li&gt;Visionary Leadership&lt;/li&gt;
+&lt;li&gt;Cooperative Governance&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;I did a quick run up of capabilities from simple closure-based objects
+to sealing and unsealing to capability-based money as in &lt;a href=&#34;http://erights.org/elib/capability/ode/index.html&#34;&gt;Miller,
+Morningstar, and Franz&lt;/a&gt; from FC 2000, including:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Before presenting the following simple example of capability-based
+money, we must attempt to head off a confusion this example
+repeatedly causes. &lt;strong&gt;We are not proposing to actually do money this
+way!&lt;/strong&gt; A desirable money system must also provide for: ... blinding,
+non-repudiation, accounting controls, and backing (redeemability).&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Then—tada!—I showed that &lt;strong&gt;RChain &lt;em&gt;does&lt;/em&gt; propose to do money this
+way&lt;/strong&gt; by translating the E code to &lt;a href=&#34;https://github.com/rchain/rchain/blob/master/casper/src/main/rholang/MakeMint.rho&#34;&gt;MakeMint.rho&lt;/a&gt;:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;rholang&#34;&gt;   contract MakeMint(return) = {
+     new pairCh, thisMint, internalMakePurse in {
+       MakeBrandPair!(*pairCh) | for(@p &amp;lt;- pairCh) {
+       ...
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2&gt;HERON Clinical Data Repository Access Policy&lt;/h2&gt;
+&lt;p&gt;The main smart contract I want to work on is an evolution of the
+&lt;a href=&#34;https://informatics.kumc.edu/work/wiki/HeronAdminDev&#34;&gt;HERON policy enforcement layer&lt;/a&gt;, a bunch of python / PHP / SQL
+code that enforces the policy around access to KUMC&#39;s clinical data
+repository on ~500K patients: you have to be qualified faculty or
+sponsored by one, and your human subjects training has to be current
+and you have to sign a couple forms:&lt;/p&gt;
+&lt;p&gt;&lt;img alt=&#34;flow of authority&#34; src=&#34;https://informatics.kumc.edu/work/graphviz/a02d7fe066856aadf1894e50f41f4b2aa27ca3b4.dot.png&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Once you get through all that, you can use the i2b2 ad-hoc query
+interface to do &#34;cohort discovery&#34;; for example, to find out if enough
+of the right kind of patients come through KU Med for the study you
+want to do.&lt;/p&gt;
+&lt;h2&gt;i2b2 Harvard Symposium&lt;/h2&gt;
+&lt;p&gt;The &lt;a href=&#34;http://transmartfoundation.org/harvard-symposium-2018/&#34;&gt;i2b2 tranSMART Foundation Harvard Symposium&lt;/a&gt; was this year&#39;s
+annual meeting of the i2b2 user community. Automation of regulatory
+processes is a regular topic and this year &lt;a href=&#34;http://geekdoctor.blogspot.com/&#34;&gt;John Halamka&lt;/a&gt; spoke on
+&lt;em&gt;Emerging Models of Data Flow - APIs, Blockchain and Cloud&lt;/em&gt;.  He cut
+through a lot of the mystery around blockchain technology with a great
+illustration of one-way hashing. :)&lt;/p&gt;
+&lt;p&gt;&lt;img
+src=&#34;https://lh3.googleusercontent.com/6w32pE2Tpc6ZHzHSWKR-TmNvIvL1Nl_21z3UAYFdCukNr-MJcDlPpVTy1HRnTOcrVD2jTt59TQeaD4WEmcftD8PtxAQWeA-OIlRJ8mageizVjdaTUCCL2ENSjmHulogCqPtwcYeQ-Q=w640-h480&#34;
+width=&#34;640&#34; height=&#34;480&#34; /&gt;&lt;/p&gt;
+&lt;h2&gt;Decentralized identity, verifiable claims&lt;/h2&gt;
+&lt;p&gt;While killing time in the airport, I managed to reach Manu Sporny. His
+work around &lt;a href=&#34;https://veres.io/use-cases/verifiable-prescriptions/&#34;&gt;verifyable prescriptions&lt;/a&gt; has certain parallels with
+research data sharing. It wasn&#39;t all good news, but he did put me in
+touch with a couple of his colleagues in the Boston area.&lt;/p&gt;
+&lt;p&gt;I had hoped to meet with &lt;a href=&#34;https://dustycloud.org/&#34;&gt;Chris Webber&lt;/a&gt; and
+sync up on js libraries for &lt;a href=&#34;https://w3c-ccg.github.io/ocap-ld/&#34;&gt;linked data
+capabilities&lt;/a&gt;. Capability security
+seems necessary and sufficient, to me, for decentralized access
+control. As Stiegler put it in the &lt;a href=&#34;http://erights.org/talks/efun/SecurityPictureBook.pdf&#34;&gt;picture
+book&lt;/a&gt;:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;The patterns described in this picturebook are simple because they
+discard the modern fascination with the identities of the
+participants. Individual Authentication is so pervasive, it is now a
+part of the problem.&lt;/p&gt;
+&lt;p&gt;Suppose that your car, instead of accepting a delegatable key,
+demanded that your driver’s license match the car’s title registry,
+which happens to be in your spouse’s name. Entrepreneurs would leap
+forward to develop ever more powerful &#34;identity management&#34; for
+automobiles. We would subcontract to security experts so our
+teenage daughters could borrow the car to buy milk. Heaven forfend
+that the daughter, breaking her leg, had to delegate to her best
+friend to get to the hospital.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Unfortunately, while Chris is closer to Boston these days, he&#39;s still a couple hours away.&lt;/p&gt;
+&lt;p&gt;But I did get to meet &lt;a href=&#34;http://computingjoy.com/&#34;&gt;Dmitri Zagidulin&lt;/a&gt; over breakfast. He has
+done javascript work both with TimBL and company on
+&lt;a href=&#34;https://github.com/solid/solid&#34;&gt;solid&lt;/a&gt; and with Manu on decentralized
+identifiers
+(e.g. &lt;a href=&#34;https://github.com/digitalbazaar/did-io&#34;&gt;did-io&lt;/a&gt;). He isn&#39;t yet
+working on linked data capabilities yet, so I twisted his arm in that
+direction, and &lt;a href=&#34;http://www.madmode.com/2011/07/secure-mashups-csrf-resistent.html&#34;&gt;away from
+WebID&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Things started to click for him when I talked about verifyable claims
+in terms of insurance and markets:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Proof of identity, in so much as it involves revelation of the
+profile, or enables its revelation through the use of unique
+identifiers, is trade in an asset when the information revealed is
+more than the minimum required with current technology. -- &lt;a href=&#34;https://www.w3.org/2000/12/drm-ws/pp/hp-poorvi2.html&#34;&gt;Vora
+et. al from HP at W3C 2001 DRM
+Workshop&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Take proof of age, for example. A smart contract for a client might
+ask &#34;who will bet me $10 at 50-to-1 that this request comes from
+someone over 21 years of age?&#34; A business where people are routinely
+physically present is in a position to take such bets with high
+confidence.&lt;/p&gt;
+&lt;h2&gt;Personal Health Records&lt;/h2&gt;
+&lt;p&gt;Manu also put me in touch with &lt;a href=&#34;http://healthurl.com/www/Blogs_+.html&#34;&gt;Adrian
+Gropper&lt;/a&gt;, CTO of Patient
+Privacy Rights. Meeting in the airport as he was arriving and I was
+departing was a bit hectic, so I couldn&#39;t be sure whether I had read
+the paper he and Mark Miller worked:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/WebOfTrustInfo/rebooting-the-web-of-trust-fall2017/blob/master/final-documents/identity-hubs-capabilities-perspective.md&#34;&gt;Identity Hubs Capabilities Perspective&lt;/a&gt; Rebooting the Web of
+   Trust V, October 13, 2017 by Adrian Gropper, Drummond Reed, Mark
+   S. Miller&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;His description of &lt;a href=&#34;http://hieofone.org/&#34;&gt;HIEofone&lt;/a&gt; increased the
+priority of UMA in my things-to-study-in-more-depth list:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;HIE of One (Health Information Exchange of One) is a
+volunteer-driven open source project to combine emerging standards
+for access authorization (OpenID HEART) and emerging standards for
+blockchain-based self-sovereign identity (DID) into a
+patient-centered health record infrastructure.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;He was one of several people on this trip that talked about FHIR
+deployment in ways that make me want to look into it again. In
+particular, he mentioned a FHIR sandbox by CMS, the medicare folks.&lt;/p&gt;
+&lt;h2&gt;OCap-safe JavaScript&lt;/h2&gt;
+&lt;p&gt;On the way home, I got stuck in the Washington D.C. airport overnight
+due to weather. I used the time to start
+&lt;a href=&#34;https://github.com/dckc/tinyses2rho/&#34;&gt;tinyses2rho&lt;/a&gt;, some exploratory
+scala code to integrate TinySES with RChain.&lt;/p&gt;
+&lt;p&gt;TinySES is a small subset of JavaScript designed so that non-experts
+can use to write non-trivial non-exploitable smart contracts. It comes
+from Mark Miller and company, who have been working on object
+capabilities and smart contracts at least as far back as the early
+&#39;90s, and recently &lt;a href=&#34;https://www.coindesk.com/new-startup-zooko-naval-betting-better-crypto-contracts/&#34;&gt;launched
+Agoric&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#39;https://photos.google.com/share/AF1QipPEmCV0T84sLHj1L1zNUQ-eldo2SVxeNYYf49RhnQF-5kp6kHZua4BAbfgCDOrICw?key=cmVENTBqc2YwY2g2QzZxQkJjSUVvVXFYYXg3QTVB&amp;source=ctrlq.org&#39;&gt;&lt;img alt=&#39;DCA in the wee hours&#39; src=&#39;https://lh3.googleusercontent.com/rv9s-h-_E58jZftv4H1XcBlgGtx1hszNMMpXrQyMVDGuath90K8OtXn7_ItZxR0G6n-_1dEVujUf0ED_nKtPq8qZElbDRsAY7PkWvKyOGejZgAZVU6HLKmQ3cKOdF0Rf-gCrh0zM8w=w2400&#39; /&gt;&lt;/a&gt;&lt;/p&gt;</description>
+            <pubDate>Thu, 12 Jul 2018 00:00:00 +0000</pubDate>
+            <guid>http://www.madmode.com//2018/boulder-bos/</guid>
+        </item>
         <item>
             <title>dreaming big at the RChain Governance Forum</title>
             <link>http://www.madmode.com//2018/rchain-gov-forum-SEA/</link>
@@ -5790,40 +5946,6 @@ Q(a)                      (3)  Implication-Elimination (Modus Ponens) (2) (0)
 &lt;/div&gt;</description>
             <pubDate>Sun, 29 Dec 2013 00:00:00 +0000</pubDate>
             <guid>http://www.madmode.com//2013/fs-tt/fs86/</guid>
-        </item>
-        <item>
-            <title>Toward a virtual iPhoto archive</title>
-            <link>http://www.madmode.com//2013/iphoto-vm/</link>
-            <description>&lt;p&gt;The macbook that hold our oldest (digital) family photos is aging
-rapidly (keyboard and mouse went out years ago; battery hardly
-works). I set it up as a home theater PC and media workstation back in
-August 2012, but despite having a big 32&#34; (TV) screen, we don&#39;t use it
-much. Every time I sit down to it, it wants to spend 20 minutes
-updating all the software. So I&#39;m looking into using a Mac OS VM (aka
-&lt;a href=&#34;http://www.hackintosh.com/&#34;&gt;hackintosh&lt;/a&gt;) to access the iPhoto
-libraries, at least long enough to migrate them to another platform.&lt;/p&gt;
-&lt;p&gt;The path is reasonably well-trodden:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;http://www.macbreaker.com/2012/02/snow-leopard-virtualbox.html&#34;&gt;How to install a Snow Leopard Hackintosh in Virtualbox&lt;/a&gt;
-   Feb 8, 2012, MacBreaker&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;But there&#39;s a catch:&lt;/p&gt;
-&lt;blockquote&gt;
-&lt;p&gt;This guide does not cover AMD processors&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;I found a work-around:
-&lt;a href=&#34;http://prasys.info/2010/01/empire-efi-v-1-085-is-out/&#34;&gt;Empire EFI with AMD support&lt;/a&gt;. My
-&lt;a href=&#34;https://www.diigo.com/user/dckc-madmode/vm+mac&#34;&gt;mac vm bookmarks on diigo&lt;/a&gt;
-from Nov 2013 detail a few other known issues.&lt;/p&gt;
-&lt;p&gt;I can boot to Mac OS X by way of a (virtual) install DVD, but I can&#39;t
-get the normal bootloader path to work. (&lt;em&gt;Oops... I neglected to
-record the symptoms.&lt;/em&gt;)&lt;/p&gt;
-&lt;p&gt;I haven&#39;t really peeled back all the layers to understand how things
-work; perhaps I should forgo using pre-packaged stuff and Use The
-Source, Luke.&lt;/p&gt;
-&lt;p&gt;Wish me luck.&lt;/p&gt;</description>
-            <pubDate>Sun, 22 Dec 2013 00:00:00 +0000</pubDate>
-            <guid>http://www.madmode.com//2013/iphoto-vm/</guid>
         </item>
         
     </channel>
